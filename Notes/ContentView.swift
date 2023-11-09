@@ -25,10 +25,10 @@ struct ContentView: View {
                  */
             }
             .toolbar {
-
                 ToolbarItem {
                     Button( action: {
-                        addNote()
+                        //addNote()
+                        fetchAll()
                     }, label: {
                         Label("Add Item", systemImage: "plus")
                     })
@@ -41,10 +41,16 @@ struct ContentView: View {
     }
     
     private func addNote() {
-         viewModel.addUser(username: "max", email: "m@j.com", id: 1)
-        viewModel.addNote(inputTitle: "title", inputContaint: "conaint", inputTimestamp: Date.now, inputId: 1, inputUser: viewModel.users[0])
+         viewModel.addUser(username: "tim", email: "m@j.com", id: 1)
+        viewModel.addNote(inputTitle: "title", inputContaint: "conaint", inputTimestamp: Date.now, inputId: 2, inputUser: viewModel.users[0])
     }
     
+    private func fetchAll() {
+        let users = viewModel.fetchUser(inputUsername: "max")
+        let users2 = viewModel.fetchUser(inputUsername: "tim")
+        let notes1 = viewModel.fetchNotes(inputUser: viewModel.users[0])
+        let notes2 = viewModel.fetchNotes(inputUser: users[0])
+    }
     
 /*
     private func deleteItems(offsets: IndexSet) {
