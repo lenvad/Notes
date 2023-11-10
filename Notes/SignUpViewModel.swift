@@ -13,7 +13,8 @@ class SignUpViewModel: ObservableObject {
     @Published var emailInput: String = ""
     @Published var errorMessage: String = ""
     @Published var isUserAdded: Bool = false
-
+    
+    var loggedinUser: User = User()
     let footnoteFont = Font.system(.footnote, design: .monospaced)
     var users: [User] = []
     var min: Int32 = 1
@@ -30,8 +31,8 @@ class SignUpViewModel: ObservableObject {
                                                      email: emailInput,
                                                      id: generateRandomNumber(min: min, max: max))
             DataManager.shared.save()
+            loggedinUser = user
             errorMessage = ""
-            print("user added")
             isUserAdded = true
         } else {
             errorMessage = "username already token"

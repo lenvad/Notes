@@ -13,11 +13,13 @@ class ContentViewModel: ObservableObject {
     @Published var errorMessage = ""
     @Published var isLinkActive = false
     
+    var loggedinUser: User = User()
     let footnoteFont = Font.system(.footnote, design: .monospaced)
     
     func usernameEqualToInput() {
         let user = fetchUserByUsername(inputUsername: usernameInput)
-        if(!user.isEmpty) {
+        if(user != nil) {
+            loggedinUser = user!
             isLinkActive = true
             errorMessage = ""
         }
@@ -26,7 +28,7 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    func fetchUserByUsername(inputUsername: String) -> [User] {
+    func fetchUserByUsername(inputUsername: String) -> User? {
         let user = DataManager.shared.fetchUsersByUsername(username: inputUsername)
         return user
     }

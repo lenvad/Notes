@@ -79,12 +79,12 @@ class DataManager {
       return fetchedNotes
     }
     
-    func fetchUsersByUsername(username: String) -> [User] {
+    func fetchUsersByUsername(username: String) -> User? {
       let request: NSFetchRequest<User> = User.fetchRequest()
         request.predicate = NSPredicate(format: "username = %@", username)
-      var fetchedUsers: [User] = []
+      var fetchedUsers: User? = User()
       do {
-          fetchedUsers = try persistentContainer.viewContext.fetch(request)
+          fetchedUsers = try persistentContainer.viewContext.fetch(request).first
       } catch let error {
          print("Error fetching users \(error)")
       }
