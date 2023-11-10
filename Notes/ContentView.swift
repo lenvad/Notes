@@ -40,7 +40,10 @@ struct ContentView: View {
                             NavigationLink("", destination: NotesListView(), isActive: $viewModel.isLinkActive)
                                 .opacity(0)
                         )
-
+                    
+                    Spacer()
+                         .frame(width: 30)
+                    
                     NavigationLink(
                         destination: SignUpView()
                     ) {

@@ -28,8 +28,7 @@ class SignUpViewModel: ObservableObject {
         if(uniqueUsernameChecker()) {
             let user = DataManager.shared.createUser(username: usernameInput,
                                                      email: emailInput,
-                                                     id: generateRandomNumber(min: min, max: max)
-            )
+                                                     id: generateRandomNumber(min: min, max: max))
             DataManager.shared.save()
             errorMessage = ""
             print("user added")
