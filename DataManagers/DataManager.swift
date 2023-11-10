@@ -27,6 +27,7 @@ class DataManager {
     if context.hasChanges {
       do {
           try context.save()
+          
       } catch {
           let nserror = error as NSError
           fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
@@ -56,7 +57,29 @@ class DataManager {
       return note
     }
     
-    func fetchUsers(username: String) -> [User] {
+    func fetchAllUsers() -> [User] {
+      let request: NSFetchRequest<User> = User.fetchRequest()
+      var fetchedUsers: [User] = []
+      do {
+          fetchedUsers = try persistentContainer.viewContext.fetch(request)
+      } catch let error {
+         print("Error fetching singers \(error)")
+      }
+      return fetchedUsers
+    }
+    
+    func fetchAllNotes() -> [Note] {
+      let request: NSFetchRequest<Note> = Note.fetchRequest()
+      var fetchedNotes: [Note] = []
+      do {
+          fetchedNotes = try persistentContainer.viewContext.fetch(request)
+      } catch let error {
+         print("Error fetching singers \(error)")
+      }
+      return fetchedNotes
+    }
+    
+    func fetchUsersByUsername(username: String) -> [User] {
       let request: NSFetchRequest<User> = User.fetchRequest()
         request.predicate = NSPredicate(format: "username = %@", username)
       var fetchedUsers: [User] = []
@@ -67,6 +90,7 @@ class DataManager {
       }
       return fetchedUsers
     }
+    
     
     func fetchNotes(user: User) -> [Note] {
       let request: NSFetchRequest<Note> = Note.fetchRequest()

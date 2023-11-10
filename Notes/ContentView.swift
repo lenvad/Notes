@@ -6,75 +6,54 @@
 //
 
 import SwiftUI
-import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @State var notes: [Note] = []
     
     @StateObject var viewModel = ContentViewModel()
     
     var body: some View {
-        NavigationView {
-            List {
-                /*
-                ForEach(0..<notes.count) { index in
-                    Text(notes[index].title!)
-                }
-                //.onDelete(perform: deleteItems)
-                 */
-            }
-            .toolbar {
-                ToolbarItem {
-                    Button( action: {
-                        //addNote()
-                        fetchAll()
-                    }, label: {
-                        Label("Add Item", systemImage: "plus")
-                    })
-                }
-                ToolbarItem {
-                    EditButton()
-                }
-            }
-        }
-    }
-    
-    private func addNote() {
-         viewModel.addUser(username: "tim", email: "m@j.com", id: 1)
-        viewModel.addNote(inputTitle: "title", inputContaint: "conaint", inputTimestamp: Date.now, inputId: 2, inputUser: viewModel.users[0])
-    }
-    
-    private func fetchAll() {
-        let users = viewModel.fetchUser(inputUsername: "max")
-        let users2 = viewModel.fetchUser(inputUsername: "tim")
-        let notes1 = viewModel.fetchNotes(inputUser: viewModel.users[0])
-        let notes2 = viewModel.fetchNotes(inputUser: users[0])
-    }
-    
-/*
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { notes[$0] }.forEach(viewContext.delete)
+        NavigationView() {
+            VStack(alignment: .center, spacing: 15) {
+                Text(viewModel.errorMessage)
+                    .font(viewModel.footnoteFont)
+                    .gridCellColumns(4)
+                    .padding()
+                    .background(viewModel.errorMessage == "" ? .clear : .red.opacity(0.2))
+                    .overlay(Rectangle().frame(width: 1, height: nil, alignment: .leading).foregroundColor(viewModel.errorMessage == "" ? .clear : Color.red), alignment: .leading)
+                
+                TextField("Username", text: $viewModel.usernameInput)
+                    .padding()
+                    .cornerRadius(20.0)
+                
+                HStack {
+                    Button(action: {
+                        viewModel.usernameEqualToInput()
+                    }) {
+                      Text("Sign In")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(15.0)
+                    }.frame(alignment: .bottom)
+                        .background(
+                            NavigationLink("", destination: NotesListView(), isActive: $viewModel.isLinkActive)
+                                .opacity(0)
+                        )
 
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                    NavigationLink(
+                        destination: SignUpView()
+                    ) {
+                        Text("Sign Up")
+                    }.font(.headline)
+                        .foregroundColor(.blue)
+                }
             }
+            .padding()
         }
     }
- */
 }
-
-
 
 #Preview {
     ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
-
-
-
