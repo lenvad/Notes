@@ -11,6 +11,7 @@ import SwiftUI
 class SignUpViewModel: ObservableObject {
     @Published var usernameInput: String = ""
     @Published var emailInput: String = ""
+    @Published var passwordInput: String = ""
     @Published var errorMessage: String = ""
     @Published var isUserAdded: Bool = false
     
@@ -26,9 +27,11 @@ class SignUpViewModel: ObservableObject {
     }
     
     func addUser() {
+        print(1)
         if(uniqueUsernameChecker()) {
             let user = DataManager.shared.createUser(username: usernameInput,
                                                      email: emailInput,
+                                                     password: passwordInput,
                                                      id: generateRandomNumber(min: min, max: max))
             DataManager.shared.save()
             loggedinUser = user
@@ -41,11 +44,10 @@ class SignUpViewModel: ObservableObject {
     
     func uniqueUsernameChecker() -> Bool {
         var allUsernames: [String] = []
-        var username: String
         fetchAllUsers()
         
         for user in users {
-            allUsernames.append(user.username)
+            allUsernames.append(user.username!)
         }
         
         if(!allUsernames.contains(usernameInput)) {
@@ -56,18 +58,18 @@ class SignUpViewModel: ObservableObject {
     }
     
     func generateRandomNumber(min: Int32, max: Int32) -> Int32 {
-        var idNumbers: [Int32] = []
+        var idNumbers: [Int] = []
         var num: Int32
         
         fetchAllUsers()
         
         for (user) in users {
-            idNumbers.append(user.id)
+            idNumbers.append(Int(user.id))
         }
         
         repeat {
             num = Int32.random(in: min..<max)
-        } while (!idNumbers.contains(num))
+        } while idNumbers.contains(Int(num))
         
         return num
     }

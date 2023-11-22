@@ -2,13 +2,14 @@
 //  Note+CoreDataProperties.swift
 //  Notes
 //
-//  Created by Lena Vadakkel on 09.11.23.
+//  Created by Lena Vadakkel on 16.11.23.
 //
 //
 
 import Foundation
 import CoreData
-
+import UIKit
+import Combine
 
 extension Note {
 
@@ -16,7 +17,7 @@ extension Note {
         return NSFetchRequest<Note>(entityName: "Note")
     }
 
-    @NSManaged public var containt: String?
+    @NSManaged public var content: String?
     @NSManaged public var id: Int32
     @NSManaged public var noteId: UUID?
     @NSManaged public var timestamp: Date?
@@ -27,4 +28,21 @@ extension Note {
 
 extension Note : Identifiable {
 
+}
+
+
+final class NotesCollectionViewCell: UICollectionViewCell {
+    let contentLabel = UILabel()
+    let titleLabel = UILabel()
+    
+    private var contentSubscription: AnyCancellable?
+    private var titleSubscription: AnyCancellable?
+    
+    func setup(with note: Note) {
+        contentSubscription = note.publisher(for: \.content)
+            .assign(to: \.text, on: contentLabel)
+        titleSubscription = note.publisher(for: \.title)
+            .assign(to: \.text, on: titleLabel)
+        
+    }
 }

@@ -9,15 +9,18 @@ import Foundation
 
 class NotesListViewModel: ObservableObject {
     @Published var allNotesOfUser: [Note] = []
-    @Published var users: [User] = []
+    @Published var user: User = User()
+    let dateFormatter: DateFormatter
     
-    func fetchAllUser() {
-        users = DataManager.shared.fetchAllUsers()
+    init() {
+        dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .short
+        dateFormatter.dateStyle = .short
     }
     
-    func addNote(inputTitle: String, inputContaint: String, inputTimestamp: Date, inputId: Int32, inputUser: User) {
-        let note = DataManager.shared.createNote(title: inputTitle, containt: inputContaint, timestamp: inputTimestamp, id: inputId, user: inputUser)
-        DataManager.shared.save()
+    func onAppearance(inputUsername: String) {
+        user = fetchUserByUsername(inputUsername: inputUsername)!
+        fetchNotes(inputUser: user)
     }
     
     func fetchUserByUsername(inputUsername: String) -> User? {
@@ -25,9 +28,9 @@ class NotesListViewModel: ObservableObject {
         return user
     }
     
-    func fetchNotes(inputUser: User) -> [Note] {
-        let notes = DataManager.shared.fetchNotes(user: inputUser)
-        return notes
+    func fetchNotes(inputUser: User) {
+        let notes = DataManager.shared.fetchNotesByUser(user: inputUser)
+        allNotesOfUser = notes
     }
     
     func deleteNote(inputNote: Note) {

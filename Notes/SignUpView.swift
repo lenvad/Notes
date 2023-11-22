@@ -20,12 +20,16 @@ struct SignUpView: View {
                 .overlay(Rectangle().frame(width: 1, height: nil, alignment: .leading).foregroundColor(viewModel.errorMessage == "" ? .clear : Color.red), alignment: .leading)
             
             TextField("Username", text: $viewModel.usernameInput)
+                .underlineTextField()
                 .padding()
-                .cornerRadius(20.0)
+            
+            SecureField("Password", text: $viewModel.passwordInput)
+                .underlineTextField()
+                .padding()
             
             TextField("Email", text: $viewModel.emailInput)
+                .underlineTextField()
                 .padding()
-                .cornerRadius(20.0)
                 
             
             Button(action: {
@@ -33,13 +37,17 @@ struct SignUpView: View {
             }) {
               Text("Sign Up")
                 .font(.headline)
-                .foregroundColor(.blue)
-                .frame(width: 300, height: 30)
-                .padding()
+                .foregroundColor(Color("AccentColor"))
                 .background(Color.clear)
                 .cornerRadius(15.0)
-            }.background(
-                NavigationLink("", destination: NotesListView(), isActive: $viewModel.isUserAdded)
+                .padding()
+            }
+            .overlay(
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(Color("AccentColor"), lineWidth: 2)
+                    )
+            .background(
+                NavigationLink("", destination: NotesListView(username: viewModel.usernameInput).navigationBarBackButtonHidden(true), isActive: $viewModel.isUserAdded)
                     .opacity(0)
             )
         }

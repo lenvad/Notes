@@ -10,21 +10,21 @@ import SwiftUI
 
 class ContentViewModel: ObservableObject {
     @Published var usernameInput: String = ""
+    @Published var passwordInput: String = ""
     @Published var errorMessage = ""
     @Published var isLinkActive = false
     
-    var loggedinUser: User = User()
     let footnoteFont = Font.system(.footnote, design: .monospaced)
+    
     
     func usernameEqualToInput() {
         let user = fetchUserByUsername(inputUsername: usernameInput)
-        if(user != nil) {
-            loggedinUser = user!
+        if(user != nil && user?.password == passwordInput) {
             isLinkActive = true
             errorMessage = ""
         }
         else {
-            errorMessage = "not such user found"
+            errorMessage = "no such user found"
         }
     }
     
