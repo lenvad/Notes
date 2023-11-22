@@ -9,8 +9,14 @@ import SwiftUI
 
 struct WriteOrEditNoteView: View {
     @StateObject var viewModel = WriteOrEditNoteViewModel()
-    var user = User()
-    var note: Note? = nil
+    var user: User
+    var note: Note?
+    
+    
+    init(user: User, note: Note? = nil) {
+        self.user = user
+        self.note = note
+    }
 
     var body: some View {
         NavigationView {
@@ -28,6 +34,7 @@ struct WriteOrEditNoteView: View {
                 }
             }
             .toolbar {
+                /*
                 ToolbarItem(placement: .topBarLeading) {
                     NavigationLink(destination: NotesListView(username: user.username!).navigationBarBackButtonHidden(true)){
                         HStack {
@@ -37,6 +44,7 @@ struct WriteOrEditNoteView: View {
                         }
                     }
                 }
+                 */
                 if viewModel.contentDisabled {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {

@@ -9,13 +9,22 @@ import SwiftUI
 
 struct NotesListView: View {
     @StateObject var viewModel = NotesListViewModel()
-    var username = ""
+    let username: String
     
+    init(username: String) {
+        self.username = username
+        _fetchRequest = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
+
+    }
+    
+    @FetchRequest var fetchRequest: FetchedResults<Note>
+
     var body: some View {
         NavigationView {
-            List(viewModel.allNotesOfUser, id: \.self) { note in
+            List(viewModel.allNotesFromUser, id: \.self) { note in
                     HStack {
-                        NavigationLink(destination: WriteOrEditNoteView(user: note.user!, note: note).navigationBarBackButtonHidden(true)) {
+                        NavigationLink(destination: WriteOrEditNoteView(user: note.user!, note: note)//.navigationBarBackButtonHidden(true)
+                        ) {
                             Text(note.title!)
                                 .foregroundColor(Color("AccentColor"))
                             Spacer()
@@ -34,7 +43,7 @@ struct NotesListView: View {
             .toolbar {
                 ToolbarItem {
                     NavigationLink(
-                        destination: WriteOrEditNoteView(user: viewModel.user).navigationBarBackButtonHidden(true)
+                        destination: WriteOrEditNoteView(user: viewModel.user)//.navigationBarBackButtonHidden(true)
                     ) {
                         Label("Add Item", systemImage: "plus")
                     }
@@ -47,9 +56,14 @@ struct NotesListView: View {
         .onAppear {
             viewModel.onAppearance(inputUsername: username)
         }
+        .onReceive(fetchRequest.publisher) { _ in
+            viewModel.onAppearance(inputUsername: username)
+        }
     }
 }
 
+/*
 #Preview {
     NotesListView()
 }
+*/
