@@ -89,8 +89,9 @@ struct WriteOrEditNoteView: View {
     }
 }
 
- 
+ /*
 #Preview {
     WriteOrEditNoteView()
 }
 
+*/
