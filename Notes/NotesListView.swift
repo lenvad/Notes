@@ -9,15 +9,13 @@ import SwiftUI
 
 struct NotesListView: View {
     @StateObject var viewModel = NotesListViewModel()
+    @FetchRequest var fetchRequest: FetchedResults<Note>
     let username: String
     
     init(username: String) {
         self.username = username
         _fetchRequest = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
-
     }
-    
-    @FetchRequest var fetchRequest: FetchedResults<Note>
 
     var body: some View {
         NavigationView {
