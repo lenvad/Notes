@@ -28,6 +28,7 @@ struct WriteOrEditNoteView: View {
                 }
             }
             .toolbar {
+                /*
                 ToolbarItem(placement: .topBarLeading) {
                     NavigationLink(destination: NotesListView(username: user.username!).navigationBarBackButtonHidden(true)){
                         HStack {
@@ -37,6 +38,7 @@ struct WriteOrEditNoteView: View {
                         }
                     }
                 }
+                 */
                 if viewModel.contentDisabled {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {

@@ -8,7 +8,7 @@
 import Foundation
 
 class NotesListViewModel: ObservableObject {
-    @Published var allNotesOfUser: [Note] = []
+    @Published var allNotesFromUser: [Note] = []
     @Published var user: User = User()
     let dateFormatter: DateFormatter
     
@@ -30,7 +30,7 @@ class NotesListViewModel: ObservableObject {
     
     func fetchNotes(inputUser: User) {
         let notes = DataManager.shared.fetchNotesByUser(user: inputUser)
-        allNotesOfUser = notes
+        allNotesFromUser = notes
     }
     
     func deleteNote(inputNote: Note) {
