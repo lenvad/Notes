@@ -27,6 +27,7 @@ class DataManager {
     if context.hasChanges {
       do {
           try context.save()
+          
       } catch {
           let nserror = error as NSError
           fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
@@ -34,41 +35,61 @@ class DataManager {
     }
   }
     
-    func createUser(username: String, email: String, id: Int32) -> User {
+    func createUser(username: String, email: String, password: String, id: Int32) -> User {
       let user = User(context: persistentContainer.viewContext)
         user.username = username
         user.email = email
         user.id = id
-        //save() //if needed, not in the tutorial
+        user.password = password
       return user
     }
     
-    func createNote(title: String, containt: String, timestamp: Date, id: Int32, user: User) -> Note {
+    func createNote(title: String, content: String, timestamp: Date, id: Int32, user: User) -> Note {
       let note = Note(context: persistentContainer.viewContext)
         note.id = id
         note.timestamp = timestamp
         note.title = title
-        note.containt = containt
-        note.id = id
+        note.content = content
         note.user = user
         user.addToNote(note)
-        //save() //if needed, not in the tutorial
       return note
     }
     
-    func fetchUsers(username: String) -> [User] {
+    func fetchAllUsers() -> [User] {
       let request: NSFetchRequest<User> = User.fetchRequest()
-        request.predicate = NSPredicate(format: "username = %@", username)
       var fetchedUsers: [User] = []
       do {
           fetchedUsers = try persistentContainer.viewContext.fetch(request)
       } catch let error {
-         print("Error fetching users \(error)")
+         print("Error fetching singers \(error)")
       }
       return fetchedUsers
     }
     
-    func fetchNotes(user: User) -> [Note] {
+    func fetchAllNotes() -> [Note] {
+      let request: NSFetchRequest<Note> = Note.fetchRequest()
+      var fetchedNotes: [Note] = []
+      do {
+          fetchedNotes = try persistentContainer.viewContext.fetch(request)
+      } catch let error {
+         print("Error fetching singers \(error)")
+      }
+      return fetchedNotes
+    }
+    
+    func fetchUsersByUsername(username: String) -> User? {
+      let request: NSFetchRequest<User> = User.fetchRequest()
+        request.predicate = NSPredicate(format: "username = %@", username)
+      var fetchedUser: User? = User()
+      do {
+          fetchedUser = try persistentContainer.viewContext.fetch(request).first
+      } catch let error {
+         print("Error fetching users \(error)")
+      }
+      return fetchedUser
+    }
+    
+    func fetchNotesByUser(user: User) -> [Note] {
       let request: NSFetchRequest<Note> = Note.fetchRequest()
       request.predicate = NSPredicate(format: "user = %@", user)
       request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
@@ -79,6 +100,46 @@ class DataManager {
         print("Error fetching notes \(error)")
       }
       return fetchedNotes
+    }
+    
+    func fetchNotesById(id: Int32) -> Note? {
+      let request: NSFetchRequest<Note> = Note.fetchRequest()
+      request.predicate = NSPredicate(format: "id = %@", id as Int32)
+      request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+      var fetchedNote: Note? = Note()
+      do {
+          fetchedNote = try persistentContainer.viewContext.fetch(request).first
+      } catch let error {
+        print("Error fetching notes \(error)")
+      }
+      return fetchedNote
+    }
+
+    
+    func updateNote(title: String, content: String, timestamp: Date, id: Int32, user: User) {
+        let context = persistentContainer.viewContext
+        let note: Note!
+        
+        let fetchNote: NSFetchRequest<Note> = Note.fetchRequest()
+        fetchNote.predicate = NSPredicate(format: "id = %i", id)
+
+        let results = try? context.fetch(fetchNote)
+
+        if results?.count == 0 {
+           // here you are inserting
+            note = Note(context: context)
+        } else {
+           // here you are updating
+            note = (results?.first)
+        }
+        note.id = id
+        note.timestamp = timestamp
+        note.title = title
+        note.content = content
+        note.user = user
+        user.addToNote(note)
+        
+        save()
     }
     
     func deleteUser(user: User) {

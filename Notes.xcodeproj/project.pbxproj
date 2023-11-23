@@ -22,6 +22,12 @@
 		501E50902AFCE77200522448 /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */; };
 		501E50912AFCE77200522448 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508D2AFCE77200522448 /* User+CoreDataClass.swift */; };
 		501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508E2AFCE77200522448 /* User+CoreDataProperties.swift */; };
+		50FF4BED2AFD22BB000A6E25 /* NotesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */; };
+		50FF4BEF2AFD27C9000A6E25 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */; };
+		50FF4BF12AFD2911000A6E25 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */; };
+		50FF4BF32AFE57C6000A6E25 /* NotesListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BF22AFE57C6000A6E25 /* NotesListViewModel.swift */; };
+		50FF4BF52AFE7BC7000A6E25 /* WriteOrEditNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BF42AFE7BC7000A6E25 /* WriteOrEditNoteView.swift */; };
+		50FF4BF72AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BF62AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +66,12 @@
 		501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		501E508D2AFCE77200522448 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
 		501E508E2AFCE77200522448 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListView.swift; sourceTree = "<group>"; };
+		50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
+		50FF4BF22AFE57C6000A6E25 /* NotesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListViewModel.swift; sourceTree = "<group>"; };
+		50FF4BF42AFE7BC7000A6E25 /* WriteOrEditNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteOrEditNoteView.swift; sourceTree = "<group>"; };
+		50FF4BF62AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteOrEditNoteViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +130,12 @@
 				501E50162AF526FA00522448 /* NotesApp.swift */,
 				501E50182AF526FA00522448 /* ContentView.swift */,
 				501E50692AF5381F00522448 /* ContentViewModel.swift */,
+				50FF4BF22AFE57C6000A6E25 /* NotesListViewModel.swift */,
+				50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */,
+				50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */,
+				50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */,
+				50FF4BF42AFE7BC7000A6E25 /* WriteOrEditNoteView.swift */,
+				50FF4BF62AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift */,
 				501E501A2AF526FB00522448 /* Assets.xcassets */,
 				501E501F2AF526FB00522448 /* Persistence.swift */,
 				501E50212AF526FB00522448 /* Notes.xcdatamodeld */,
@@ -290,13 +308,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				501E50202AF526FB00522448 /* Persistence.swift in Sources */,
+				50FF4BF12AFD2911000A6E25 /* SignUpViewModel.swift in Sources */,
 				501E50902AFCE77200522448 /* Note+CoreDataProperties.swift in Sources */,
 				501E508F2AFCE77200522448 /* Note+CoreDataClass.swift in Sources */,
+				50FF4BF32AFE57C6000A6E25 /* NotesListViewModel.swift in Sources */,
 				501E50192AF526FA00522448 /* ContentView.swift in Sources */,
+				50FF4BEF2AFD27C9000A6E25 /* SignUpView.swift in Sources */,
 				501E506A2AF5381F00522448 /* ContentViewModel.swift in Sources */,
 				501E50912AFCE77200522448 /* User+CoreDataClass.swift in Sources */,
 				501E50172AF526FA00522448 /* NotesApp.swift in Sources */,
+				50FF4BED2AFD22BB000A6E25 /* NotesListView.swift in Sources */,
+				50FF4BF52AFE7BC7000A6E25 /* WriteOrEditNoteView.swift in Sources */,
 				501E50232AF526FB00522448 /* Notes.xcdatamodeld in Sources */,
+				50FF4BF72AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift in Sources */,
 				501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */,
 				501E50682AF52E0600522448 /* DataManager.swift in Sources */,
 			);

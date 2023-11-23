@@ -2,7 +2,7 @@
 //  User+CoreDataProperties.swift
 //  Notes
 //
-//  Created by Lena Vadakkel on 09.11.23.
+//  Created by Lena Vadakkel on 16.11.23.
 //
 //
 
@@ -20,6 +20,7 @@ extension User {
     @NSManaged public var id: Int32
     @NSManaged public var userId: UUID?
     @NSManaged public var username: String?
+    @NSManaged public var password: String?
     @NSManaged public var note: NSOrderedSet?
 
 }

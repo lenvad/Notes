@@ -6,34 +6,31 @@
 //
 
 import Foundation
+import SwiftUI
 
 class ContentViewModel: ObservableObject {
-    @Published var allNotesOfUser: [Note] = []
-    @Published var users: [User] = []
+    @Published var usernameInput: String = ""
+    @Published var passwordInput: String = ""
+    @Published var errorMessage = ""
+    @Published var isLinkActive = false
+    
+    let footnoteFont = Font.system(.footnote, design: .monospaced)
     
     
-    
-    func addUser(username: String, email: String, id: Int32) {
-        let user = DataManager.shared.createUser(username: username, email: email, id: id)
-        users.append(user)
-        print(user.username ?? "not work")
-        DataManager.shared.save()
+    func usernameEqualToInput() {
+        let user = fetchUserByUsername(inputUsername: usernameInput)
+        if(user != nil && user?.password == passwordInput) {
+            isLinkActive = true
+            errorMessage = ""
+        }
+        else {
+            errorMessage = "no such user found"
+        }
     }
     
-    func addNote(inputTitle: String, inputContaint: String, inputTimestamp: Date, inputId: Int32, inputUser: User) {
-        let note = DataManager.shared.createNote(title: inputTitle, containt: inputContaint, timestamp: inputTimestamp, id: inputId, user: inputUser)
-        allNotesOfUser.append(note)
-        print(note.containt ?? "not work")
-        DataManager.shared.save()
-    }
-    
-    func fetchUser(inputUsername: String) -> [User] {
-        let user = DataManager.shared.fetchUsers(username: inputUsername)
+    func fetchUserByUsername(inputUsername: String) -> User? {
+        let user = DataManager.shared.fetchUsersByUsername(username: inputUsername)
         return user
     }
     
-    func fetchNotes(inputUser: User) -> [Note] {
-        let notes = DataManager.shared.fetchNotes(user: inputUser)
-        return notes
-    }
 }
