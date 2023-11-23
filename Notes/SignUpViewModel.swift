@@ -15,8 +15,8 @@ class SignUpViewModel: ObservableObject {
     @Published var errorMessage: String = ""
     @Published var isUserAdded: Bool = false
     
-    var loggedinUser: User = User()
-    let footnoteFont = Font.system(.footnote, design: .monospaced)
+	let footnoteFont = Font.system(.footnote, design: .monospaced)
+	
     var users: [User] = []
     var min: Int32 = 1
     var max: Int32 = 1000
@@ -27,14 +27,11 @@ class SignUpViewModel: ObservableObject {
     }
     
     func addUser() {
-        print(1)
         if(uniqueUsernameChecker()) {
-            let user = DataManager.shared.createUser(username: usernameInput,
+            let user = PersistenceController.shared.createUser(username: usernameInput,
                                                      email: emailInput,
                                                      password: passwordInput,
                                                      id: generateRandomNumber(min: min, max: max))
-            DataManager.shared.save()
-            loggedinUser = user
             errorMessage = ""
             isUserAdded = true
         } else {
@@ -44,6 +41,7 @@ class SignUpViewModel: ObservableObject {
     
     func uniqueUsernameChecker() -> Bool {
         var allUsernames: [String] = []
+		
         fetchAllUsers()
         
         for user in users {
@@ -75,6 +73,6 @@ class SignUpViewModel: ObservableObject {
     }
     
     func fetchAllUsers() {
-        users = DataManager.shared.fetchAllUsers()
+        users = PersistenceController.shared.fetchAllUsers()
     }
 }

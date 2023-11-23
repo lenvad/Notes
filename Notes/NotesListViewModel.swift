@@ -9,36 +9,36 @@ import Foundation
 
 class NotesListViewModel: ObservableObject {
     @Published var allNotesFromUser: [Note] = []
-    @Published var user: User = User()
     let dateFormatter: DateFormatter
-    
+	//let presistenceController = PersistenceController()
+	
     init() {
         dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .short
         dateFormatter.dateStyle = .short
     }
     
-    func onAppearance(inputUsername: String) {
-        user = fetchUserByUsername(inputUsername: inputUsername)!
+    func onAppearanceOrRefresh(inputUsername: String) {
+        let user = fetchUserByUsername(inputUsername: inputUsername)
         fetchNotes(inputUser: user)
     }
     
-    func fetchUserByUsername(inputUsername: String) -> User? {
-        let user = DataManager.shared.fetchUsersByUsername(username: inputUsername)
+    func fetchUserByUsername(inputUsername: String) -> User {
+        let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)!
         return user
     }
     
     func fetchNotes(inputUser: User) {
-        let notes = DataManager.shared.fetchNotesByUser(user: inputUser)
+        let notes = PersistenceController.shared.fetchNotesByUser(user: inputUser)
         allNotesFromUser = notes
     }
     
     func deleteNote(inputNote: Note) {
-        DataManager.shared.deleteNote(note: inputNote)
+		PersistenceController.shared.deleteNote(note: inputNote)
     }
     
     func deleteUser(inputUser: User) {
-        DataManager.shared.deleteUser(user: inputUser)
+		PersistenceController.shared.deleteUser(user: inputUser)
         print("deleted")
     }
 }

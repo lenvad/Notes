@@ -16,7 +16,6 @@
 		501E502D2AF526FB00522448 /* NotesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E502C2AF526FB00522448 /* NotesTests.swift */; };
 		501E50372AF526FB00522448 /* NotesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E50362AF526FB00522448 /* NotesUITests.swift */; };
 		501E50392AF526FB00522448 /* NotesUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E50382AF526FB00522448 /* NotesUITestsLaunchTests.swift */; };
-		501E50682AF52E0600522448 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E50672AF52E0600522448 /* DataManager.swift */; };
 		501E506A2AF5381F00522448 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E50692AF5381F00522448 /* ContentViewModel.swift */; };
 		501E508F2AFCE77200522448 /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508B2AFCE77200522448 /* Note+CoreDataClass.swift */; };
 		501E50902AFCE77200522448 /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */; };
@@ -60,7 +59,6 @@
 		501E50322AF526FB00522448 /* NotesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		501E50362AF526FB00522448 /* NotesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesUITests.swift; sourceTree = "<group>"; };
 		501E50382AF526FB00522448 /* NotesUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		501E50672AF52E0600522448 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		501E50692AF5381F00522448 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		501E508B2AFCE77200522448 /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = "<group>"; };
 		501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -106,7 +104,6 @@
 				501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */,
 				501E508D2AFCE77200522448 /* User+CoreDataClass.swift */,
 				501E508E2AFCE77200522448 /* User+CoreDataProperties.swift */,
-				501E50662AF52DF400522448 /* DataManagers */,
 				501E50152AF526FA00522448 /* Notes */,
 				501E502B2AF526FB00522448 /* NotesTests */,
 				501E50352AF526FB00522448 /* NotesUITests */,
@@ -167,14 +164,6 @@
 				501E50382AF526FB00522448 /* NotesUITestsLaunchTests.swift */,
 			);
 			path = NotesUITests;
-			sourceTree = "<group>";
-		};
-		501E50662AF52DF400522448 /* DataManagers */ = {
-			isa = PBXGroup;
-			children = (
-				501E50672AF52E0600522448 /* DataManager.swift */,
-			);
-			path = DataManagers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -322,7 +311,6 @@
 				501E50232AF526FB00522448 /* Notes.xcdatamodeld in Sources */,
 				50FF4BF72AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift in Sources */,
 				501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */,
-				501E50682AF52E0600522448 /* DataManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
