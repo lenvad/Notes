@@ -47,10 +47,8 @@ struct SignUpView: View {
                             .stroke(Color("AccentColor"), lineWidth: 2)
                     )
             .background(
-				/*
                 NavigationLink("", destination: NotesListView(username: viewModel.usernameInput).navigationBarBackButtonHidden(true), isActive: $viewModel.isUserAdded)
                     .opacity(0)
-				 */
             )
         }
     }
