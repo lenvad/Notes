@@ -12,6 +12,7 @@ struct WriteOrEditNoteView: View {
 	var username: String
     var note: Note?
     
+	init(username: String, note: Note) {
         self.username = username
         self.note = note
     }
