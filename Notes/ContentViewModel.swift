@@ -15,7 +15,7 @@ class ContentViewModel: ObservableObject {
     @Published var isLinkActive = false
     
     let footnoteFont = Font.system(.footnote, design: .monospaced)
-    
+    //let presistenceController = PersistenceController()
     
     func usernameEqualToInput() {
         let user = fetchUserByUsername(inputUsername: usernameInput)
@@ -29,7 +29,7 @@ class ContentViewModel: ObservableObject {
     }
     
     func fetchUserByUsername(inputUsername: String) -> User? {
-        let user = DataManager.shared.fetchUsersByUsername(username: inputUsername)
+		let user = PersistenceController.shared.fetchUsersByUsername(username: usernameInput)
         return user
     }
     

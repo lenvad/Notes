@@ -9,19 +9,19 @@ import SwiftUI
 
 struct NotesListView: View {
     @StateObject var viewModel = NotesListViewModel()
-    @FetchRequest var fetchRequest: FetchedResults<Note>
+    //@FetchRequest var fetchRequest: FetchedResults<Note>
     let username: String
     
     init(username: String) {
         self.username = username
-        _fetchRequest = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
+        //_fetchRequest = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
     }
 
     var body: some View {
         NavigationView {
             List(viewModel.allNotesFromUser, id: \.self) { note in
                     HStack {
-                        NavigationLink(destination: WriteOrEditNoteView(user: note.user!, note: note)//.navigationBarBackButtonHidden(true)
+                        NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)//.navigationBarBackButtonHidden(true)
                         ) {
                             Text(note.title!)
                                 .foregroundColor(Color("AccentColor"))
@@ -41,7 +41,7 @@ struct NotesListView: View {
             .toolbar {
                 ToolbarItem {
                     NavigationLink(
-                        destination: WriteOrEditNoteView(user: viewModel.user)//.navigationBarBackButtonHidden(true)
+                        destination: WriteOrEditNoteView(username: username)//.navigationBarBackButtonHidden(true)
                     ) {
                         Label("Add Item", systemImage: "plus")
                     }
@@ -52,11 +52,16 @@ struct NotesListView: View {
             }
         } 
         .onAppear {
-            viewModel.onAppearance(inputUsername: username)
+            viewModel.onAppearanceOrRefresh(inputUsername: username)
         }
+		.refreshable {
+			viewModel.onAppearanceOrRefresh(inputUsername: username)
+		}
+		/*
         .onReceive(fetchRequest.publisher) { _ in
             viewModel.onAppearance(inputUsername: username)
         }
+		 */
     }
 }
 
