@@ -17,7 +17,7 @@ class NotesListViewModel: ObservableObject {
         dateFormatter.timeStyle = .short
         dateFormatter.dateStyle = .short
     }
-    
+    /*
     func onAppearanceOrRefresh(inputUsername: String) {
         let user = fetchUserByUsername(inputUsername: inputUsername)
         fetchNotes(inputUser: user)
@@ -32,7 +32,7 @@ class NotesListViewModel: ObservableObject {
         let notes = PersistenceController.shared.fetchNotesByUser(user: inputUser)
         allNotesFromUser = notes
     }
-    
+    */
     func deleteNote(inputNote: Note) {
 		PersistenceController.shared.deleteNote(note: inputNote)
     }

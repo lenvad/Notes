@@ -9,17 +9,17 @@ import SwiftUI
 
 struct NotesListView: View {
     @StateObject var viewModel = NotesListViewModel()
-    //@FetchRequest var fetchRequest: FetchedResults<Note>
+    @FetchRequest var notesList: FetchedResults<Note>
     let username: String
     
     init(username: String) {
         self.username = username
-        //_fetchRequest = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
+        _notesList = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
     }
 
     var body: some View {
         NavigationView {
-            List(viewModel.allNotesFromUser, id: \.self) { note in
+            List(notesList, id: \.self) { note in
                     HStack {
                         NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)//.navigationBarBackButtonHidden(true)
                         ) {
@@ -50,24 +50,11 @@ struct NotesListView: View {
                     EditButton()
                 }
             }
-        } 
-        .onAppear {
-            viewModel.onAppearanceOrRefresh(inputUsername: username)
         }
-		.refreshable {
-			viewModel.onAppearanceOrRefresh(inputUsername: username)
-		}
-		/*
-        .onReceive(fetchRequest.publisher) { _ in
-            viewModel.onAppearanceOrRefresh(inputUsername: username)
-        }
-		 */
-
     }
 }
 
-/*
 #Preview {
-    NotesListView()
+	NotesListView(username: "Lena")
 }
-*/
+
