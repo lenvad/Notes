@@ -19,20 +19,30 @@ struct NotesListView: View {
 
     var body: some View {
         NavigationView {
-            List(notesList, id: \.self) { note in
-                    HStack {
-                        NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)//.navigationBarBackButtonHidden(true)
-                        ) {
-                            Text(note.title!)
-                                .foregroundColor(Color("AccentColor"))
-                            Spacer()
-                            Text("\(note.timestamp!, formatter: viewModel.dateFormatter)")
-                                .foregroundColor(.secondary)
-                                .font(.system(size: 10))
-                        }.padding(10)
-                    }
-                    .listRowBackground(Color("Orange").opacity(0.4))
-            }
+			List {
+				ForEach(notesList, id: \.self, content:  { note in
+					HStack {
+						NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)//.navigationBarBackButtonHidden(true)
+						) {
+							Text(note.title!)
+								.foregroundColor(Color("AccentColor"))
+							Spacer()
+							Text("\(note.timestamp!, formatter: viewModel.dateFormatter)")
+								.foregroundColor(.secondary)
+								.font(.system(size: 10))
+						}.padding(10)
+					}
+					.swipeActions {
+						Button(action: {
+							viewModel.deleteNote(inputNote: note)
+						}, label: {
+							Text("Delete")
+						})
+						.tint(.red)
+					}
+				})
+				.listRowBackground(Color("Orange").opacity(0.4))
+			}
             /*
             .onDelete { indexSet in
                 viewModel.deleteNote(inputNote: indexSet)
@@ -46,12 +56,12 @@ struct NotesListView: View {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
-                ToolbarItem {
-                    EditButton()
-                }
             }
         }
     }
+	func delete(at note: Note) {
+		viewModel.deleteNote(inputNote: note)
+	}
 }
 
 #Preview {
