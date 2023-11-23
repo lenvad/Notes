@@ -9,12 +9,12 @@ import SwiftUI
 
 struct NotesListView: View {
     @StateObject var viewModel = NotesListViewModel()
-    //@FetchRequest var fetchRequest: FetchedResults<Note>
+    @FetchRequest var fetchRequest: FetchedResults<Note>
     let username: String
     
     init(username: String) {
         self.username = username
-        //_fetchRequest = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
+        _fetchRequest = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
     }
 
     var body: some View {
@@ -57,11 +57,10 @@ struct NotesListView: View {
 		.refreshable {
 			viewModel.onAppearanceOrRefresh(inputUsername: username)
 		}
-		/*
         .onReceive(fetchRequest.publisher) { _ in
-            viewModel.onAppearance(inputUsername: username)
+            viewModel.onAppearanceOrRefresh(inputUsername: username)
         }
-		 */
+		
     }
 }
 

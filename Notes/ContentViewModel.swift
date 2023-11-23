@@ -20,7 +20,7 @@ class ContentViewModel: ObservableObject {
     func usernameEqualToInput() {
         let user = fetchUserByUsername(inputUsername: usernameInput)
         if(user != nil && user?.password == passwordInput) {
-            isLinkActive = true
+            isLinkActive = true 
             errorMessage = ""
         }
         else {
