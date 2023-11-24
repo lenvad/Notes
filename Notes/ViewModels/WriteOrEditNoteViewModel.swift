@@ -10,29 +10,39 @@ import Foundation
 class WriteOrEditNoteViewModel: ObservableObject {
     @Published var contentDisabled = true
     @Published var content = ""
+	
+	//let PresistenceController = PersistenceController()
+
     var counter: Int32 = 0
-    var note: Note? = nil
-    var user: User = User()
+    var note: Note?
     var isLinkActive = false
+	
+	init() {
+		note = nil
+	}
     
     enum ScreenEvent {
-        case onAppearance(note: Note?, user: User)
-        case addOrUpdateNote(inputUser: User)
+        case onAppearance(note: Note?)
+        case addOrUpdateNote(inputUsername: String)
     }
     
+	func fetchUserByUsername(inputUsername: String) -> User {
+		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)!
+		return user
+	}
+	
     func onScreenEvent(_ event: ScreenEvent) {
         switch event {
-        case .onAppearance(let note, let user):
+        case .onAppearance(let note):
             counter = getBiggestId() ?? 0
-            setUser(user)
             if (note != nil ) {
                 setNote(note)
                 contentDisabled = true
             } else {
                 contentDisabled = false
             }
-        case .addOrUpdateNote(inputUser: let user):
-            addOrUpdateNote(inputUser: user)
+        case .addOrUpdateNote(inputUsername: let username):
+            addOrUpdateNote(inputUser: fetchUserByUsername(inputUsername: username))
         }
     }
     
@@ -45,13 +55,13 @@ class WriteOrEditNoteViewModel: ObservableObject {
             counter += 1
         }
         
-        DataManager.shared.updateNote(title: inputTitle, content: inputContent, timestamp: inputTimestamp, id: note?.id ?? counter, user: inputUser)
+		PersistenceController.shared.updateNote(title: inputTitle, content: inputContent, timestamp: inputTimestamp, id: note?.id ?? counter, user: inputUser)
         
         isLinkActive = true
     }
     
     func getBiggestId() -> Int32? {
-        let notes: [Note] = DataManager.shared.fetchAllNotes()
+		let notes: [Note] = PersistenceController.shared.fetchAllNotes()
         let biggestNum = notes.max{ i, j in i.id < j.id }
         return biggestNum?.id
     }
@@ -60,9 +70,5 @@ class WriteOrEditNoteViewModel: ObservableObject {
         content = note?.content ?? ""
         self.note = note
         contentDisabled = true
-    }
-    
-    func setUser(_ inputUser: User) {
-        user = inputUser
     }
 }
