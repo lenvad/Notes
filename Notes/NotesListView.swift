@@ -10,34 +10,47 @@ import SwiftUI
 struct NotesListView: View {
     @StateObject var viewModel = NotesListViewModel()
     @FetchRequest var notesList: FetchedResults<Note>
-    let username: String
+
+    var username: String
     
     init(username: String) {
         self.username = username
         _notesList = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
     }
 
-    var body: some View {
-        NavigationView {
+
+	var body: some View {
+		NavigationView {
 			List {
 				ForEach(notesList, id: \.self, content:  { note in
 					generateNoteItem(note: note)
 				})
-				.listRowBackground(Color("Orange").opacity(0.4))
+				.listRowBackground(Color("OrangeMain").opacity(0.4))
 			}
-            .toolbar {
-                ToolbarItem {
-                    NavigationLink(
-                        destination: WriteOrEditNoteView(username: username)
-                    ) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+			.toolbar {
+				ToolbarItem(placement: .bottomBar ) {
+					NavigationLink(
+						destination: WriteOrEditNoteView(username: username)
+					) {
+						Image(systemName: "plus.circle.fill")
+							.foregroundColor(Color("AccentColor"))
+							.font(.system(size: 35))
+							.shadow(color: .gray, radius: 5)
+					}.frame(maxWidth: .infinity, alignment: .center)
 				}
-            }
+				
+				ToolbarItem(placement: .topBarLeading) {
+					NavigationLink(
+						destination: ContentView().navigationBarBackButtonHidden(true)
+					) {
+						Text("Logout")
+					}
+				}
+			}
 		}
-    }
+	}
 	
-	func generateNoteItem(note: Note) -> some View {
+	private func generateNoteItem(note: Note) -> some View {
 		return HStack {
 			NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)
 			) {

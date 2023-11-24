@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class SignUpViewModel: ObservableObject {
+final class SignUpViewModel: ObservableObject {
     @Published var usernameInput: String = ""
     @Published var emailInput: String = ""
     @Published var passwordInput: String = ""
@@ -56,6 +56,7 @@ class SignUpViewModel: ObservableObject {
   - one upper case letter
   - one lower case letter
   - one digit
+  - 8 characters
  """
 			usernameInvalid = true
 			passwordInvalid = true
@@ -67,6 +68,7 @@ class SignUpViewModel: ObservableObject {
   - one upper case letter
   - one lower case letter
   - one digit
+  - 8 characters
  """
 			usernameInvalid = true
 			passwordInvalid = true
@@ -82,6 +84,7 @@ class SignUpViewModel: ObservableObject {
   - one upper case letter
   - one lower case letter
   - one digit
+  - 8 characters
  """
 			passwordInvalid = true
 			usernameInvalid = false
@@ -104,7 +107,8 @@ class SignUpViewModel: ObservableObject {
             allUsernames.append(user.username) 
         }
         
-        if(!allUsernames.contains(usernameInput)) {
+
+        if !allUsernames.contains(usernameInput) {
             return true
         }
 
@@ -117,7 +121,8 @@ class SignUpViewModel: ObservableObject {
         
         fetchAllUsers()
         
-        for (user) in users {
+
+        for user in users {
             idNumbers.append(Int(user.id))
         }
         

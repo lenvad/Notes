@@ -6,21 +6,20 @@
 //
 
 import Foundation
+import SwiftUI
 
-class NotesListViewModel: ObservableObject {
-    @Published var allNotesFromUser: [Note] = []
+final class NotesListViewModel: ObservableObject {
     let dateFormatter: DateFormatter
-	//let presistenceController = PersistenceController()
+	
+	enum ScreenEvent {
+		case deleteNoteWhenSwipe(note: Note)
+	}
 	
     init() {
         dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .short
         dateFormatter.dateStyle = .short
     }
-	
-	enum ScreenEvent {
-		case deleteNoteWhenSwipe(note: Note)
-	}
 	
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
@@ -31,10 +30,5 @@ class NotesListViewModel: ObservableObject {
 
     func deleteNote(inputNote: Note) {
 		PersistenceController.shared.deleteNote(note: inputNote)
-    }
-    
-    func deleteUser(inputUser: User) {
-		PersistenceController.shared.deleteUser(user: inputUser)
-        print("deleted")
     }
 }

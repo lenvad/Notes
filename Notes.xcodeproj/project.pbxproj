@@ -21,6 +21,7 @@
 		501E50902AFCE77200522448 /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */; };
 		501E50912AFCE77200522448 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508D2AFCE77200522448 /* User+CoreDataClass.swift */; };
 		501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508E2AFCE77200522448 /* User+CoreDataProperties.swift */; };
+		503990812B18B90100E5E97D /* UITextViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503990802B18B90100E5E97D /* UITextViewRepresentable.swift */; };
 		503CE1DC2B10DB69004C7097 /* SignUpButtonText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CE1DB2B10DB69004C7097 /* SignUpButtonText.swift */; };
 		503CE1DE2B10DC8C004C7097 /* UnderliedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CE1DD2B10DC8C004C7097 /* UnderliedTextField.swift */; };
 		503CE1E22B10DD39004C7097 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 503CE1E42B10DD39004C7097 /* Localizable.strings */; };
@@ -69,6 +70,7 @@
 		501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		501E508D2AFCE77200522448 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
 		501E508E2AFCE77200522448 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		503990802B18B90100E5E97D /* UITextViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewRepresentable.swift; sourceTree = "<group>"; };
 		503CE1DB2B10DB69004C7097 /* SignUpButtonText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpButtonText.swift; sourceTree = "<group>"; };
 		503CE1DD2B10DC8C004C7097 /* UnderliedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderliedTextField.swift; sourceTree = "<group>"; };
 		503CE1E32B10DD39004C7097 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				503CE1E42B10DD39004C7097 /* Localizable.strings */,
+				503990802B18B90100E5E97D /* UITextViewRepresentable.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				50FF4BF72AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift in Sources */,
 				501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */,
 				503CE1DC2B10DB69004C7097 /* SignUpButtonText.swift in Sources */,
+				503990812B18B90100E5E97D /* UITextViewRepresentable.swift in Sources */,
 				503CE1E62B10DEA1004C7097 /* ViewExtensionForModifiers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -518,9 +522,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
+				DEVELOPMENT_TEAM = L7YW9PDZP4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -535,6 +541,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lena.Notes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -546,9 +553,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
+				DEVELOPMENT_TEAM = L7YW9PDZP4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -563,6 +572,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lena.Notes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

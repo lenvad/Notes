@@ -39,7 +39,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		case bold
 		case italic
 		case underlined
-		//case checklist
+		case checklist
 	}
 	
 	@MainActor func onScreenEvent(_ event: ScreenEvent) {

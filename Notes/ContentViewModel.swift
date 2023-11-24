@@ -8,7 +8,8 @@
 import Foundation
 import SwiftUI
 
-class ContentViewModel: ObservableObject {
+
+final class ContentViewModel: ObservableObject {
     @Published var usernameInput: String = ""
     @Published var passwordInput: String = ""
     @Published var errorMessage = ""
@@ -23,35 +24,23 @@ class ContentViewModel: ObservableObject {
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .signIn:
-				usernameEqualToInput()
+				valiateInput()
 		}
 	}
 	
-	
-    func usernameEqualToInput() {
-        let user = fetchUserByUsername(inputUsername: usernameInput)
-        if(user != nil && user?.password == passwordInput) {
+    func valiateInput() {
+        let user = PersistenceController.shared.fetchUsersByUsernameAndPassword(username: usernameInput, password: passwordInput)
+		
+        if user != nil {
             isLinkActive = true
             errorMessage = ""
 			usernameInvalid = false
 			passwordInvalid = false
         }
-        else if(user == nil) {
-            errorMessage = "no such user found"
+		else {
+			errorMessage = "no such user found or your password is wrong"
 			usernameInvalid = true
-			passwordInvalid = false
-
-        }
-		else if(user?.password != passwordInput){
-			errorMessage = "password is wrong"
-			usernameInvalid = false
 			passwordInvalid = true
 		}
     }
-    
-    func fetchUserByUsername(inputUsername: String) -> User? {
-		let user = PersistenceController.shared.fetchUsersByUsername(username: usernameInput)
-        return user
-    }
-    
 }
