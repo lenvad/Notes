@@ -16,7 +16,6 @@ struct ContentView: View {
             VStack(alignment: .center, spacing: 10) {
                 Text(viewModel.errorMessage)
                     .font(viewModel.footnoteFont)
-                    .gridCellColumns(4)
                     .padding()
                     .background(viewModel.errorMessage == "" ? .clear : .red.opacity(0.2))
                     .overlay(Rectangle().frame(width: 1, height: nil, alignment: .leading).foregroundColor(viewModel.errorMessage == "" ? .clear : Color.red), alignment: .leading)
@@ -25,8 +24,7 @@ struct ContentView: View {
                     .underlineTextField()
                     .padding()
                     
-                
-                SecureField("Password", text: $viewModel.passwordInput)
+				SecureField("Password", text: $viewModel.passwordInput)
                     .underlineTextField()
                     .padding()
                 
@@ -35,7 +33,7 @@ struct ContentView: View {
                         viewModel.usernameEqualToInput()
                     }) {
                         Text("Sign In")
-							.signUpButton()
+							.signUpButtonText()
                     }.frame(alignment: .bottom)
                         .background(
                             NavigationLink("", 
@@ -65,14 +63,14 @@ struct ContentView: View {
 
 extension View {
     func underlineTextField() -> some View {
-		modifier(UnderlineTextField())
+        modifier(UnderliedTextField())
     }
 	
-	func signUpButton() -> some View {
-		modifier(SignUpButton())
+	func signUpButtonText() -> some View {
+		modifier(SignUpButtonText())
 	}
 }
 
 #Preview {
-	ContentView()
+    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

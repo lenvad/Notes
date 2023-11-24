@@ -5,10 +5,9 @@
 //  Created by Lena Vadakkel on 24.11.23.
 //
 
-import Foundation
 import SwiftUI
 
-struct SignUpButton: ViewModifier {
+struct SignUpButtonText: ViewModifier {
 	func body(content: Content) -> some View {
 		content
 			.font(.headline)
@@ -18,3 +17,4 @@ struct SignUpButton: ViewModifier {
 			.cornerRadius(15.0)
 	}
 }
+

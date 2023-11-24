@@ -1,5 +1,5 @@
 //
-//  UnderlineTextField.swift
+//  UnderliedTextField.swift
 //  Notes
 //
 //  Created by Lena Vadakkel on 24.11.23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UnderlineTextField: ViewModifier {
+struct UnderliedTextField: ViewModifier {
 	func body(content: Content) -> some View {
 		content
 			.padding(.vertical, 10)

@@ -21,6 +21,9 @@
 		501E50902AFCE77200522448 /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */; };
 		501E50912AFCE77200522448 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508D2AFCE77200522448 /* User+CoreDataClass.swift */; };
 		501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508E2AFCE77200522448 /* User+CoreDataProperties.swift */; };
+		503CE1DC2B10DB69004C7097 /* SignUpButtonText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CE1DB2B10DB69004C7097 /* SignUpButtonText.swift */; };
+		503CE1DE2B10DC8C004C7097 /* UnderliedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CE1DD2B10DC8C004C7097 /* UnderliedTextField.swift */; };
+		503CE1E22B10DD39004C7097 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 503CE1E42B10DD39004C7097 /* Localizable.strings */; };
 		50FF4BED2AFD22BB000A6E25 /* NotesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */; };
 		50FF4BEF2AFD27C9000A6E25 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */; };
 		50FF4BF12AFD2911000A6E25 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */; };
@@ -64,6 +67,9 @@
 		501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		501E508D2AFCE77200522448 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
 		501E508E2AFCE77200522448 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		503CE1DB2B10DB69004C7097 /* SignUpButtonText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpButtonText.swift; sourceTree = "<group>"; };
+		503CE1DD2B10DC8C004C7097 /* UnderliedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderliedTextField.swift; sourceTree = "<group>"; };
+		503CE1E32B10DD39004C7097 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListView.swift; sourceTree = "<group>"; };
 		50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
@@ -124,6 +130,8 @@
 		501E50152AF526FA00522448 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
+				503CE1DF2B10DD0E004C7097 /* Resources */,
+				503CE1DA2B10DB33004C7097 /* ViewModifier */,
 				501E50162AF526FA00522448 /* NotesApp.swift */,
 				501E50182AF526FA00522448 /* ContentView.swift */,
 				501E50692AF5381F00522448 /* ContentViewModel.swift */,
@@ -164,6 +172,23 @@
 				501E50382AF526FB00522448 /* NotesUITestsLaunchTests.swift */,
 			);
 			path = NotesUITests;
+			sourceTree = "<group>";
+		};
+		503CE1DA2B10DB33004C7097 /* ViewModifier */ = {
+			isa = PBXGroup;
+			children = (
+				503CE1DB2B10DB69004C7097 /* SignUpButtonText.swift */,
+				503CE1DD2B10DC8C004C7097 /* UnderliedTextField.swift */,
+			);
+			path = ViewModifier;
+			sourceTree = "<group>";
+		};
+		503CE1DF2B10DD0E004C7097 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				503CE1E42B10DD39004C7097 /* Localizable.strings */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				501E501E2AF526FB00522448 /* Preview Assets.xcassets in Resources */,
+				503CE1E22B10DD39004C7097 /* Localizable.strings in Resources */,
 				501E501B2AF526FB00522448 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,12 +331,14 @@
 				50FF4BEF2AFD27C9000A6E25 /* SignUpView.swift in Sources */,
 				501E506A2AF5381F00522448 /* ContentViewModel.swift in Sources */,
 				501E50912AFCE77200522448 /* User+CoreDataClass.swift in Sources */,
+				503CE1DE2B10DC8C004C7097 /* UnderliedTextField.swift in Sources */,
 				501E50172AF526FA00522448 /* NotesApp.swift in Sources */,
 				50FF4BED2AFD22BB000A6E25 /* NotesListView.swift in Sources */,
 				50FF4BF52AFE7BC7000A6E25 /* WriteOrEditNoteView.swift in Sources */,
 				501E50232AF526FB00522448 /* Notes.xcdatamodeld in Sources */,
 				50FF4BF72AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift in Sources */,
 				501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */,
+				503CE1DC2B10DB69004C7097 /* SignUpButtonText.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,6 +373,17 @@
 			targetProxy = 501E50332AF526FB00522448 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		503CE1E42B10DD39004C7097 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				503CE1E32B10DD39004C7097 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		501E503A2AF526FB00522448 /* Debug */ = {
