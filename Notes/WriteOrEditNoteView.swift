@@ -9,13 +9,8 @@ import SwiftUI
 
 struct WriteOrEditNoteView: View {
     @StateObject var viewModel = WriteOrEditNoteViewModel()
-	var username: String
-    var note: Note?
-    
-	init(username: String, note: Note? = nil) {
-        self.username = username
-        self.note = note
-    }
+    var user = User()
+    var note: Note? = nil
 
     var body: some View {
         NavigationView {
@@ -33,9 +28,8 @@ struct WriteOrEditNoteView: View {
                 }
             }
             .toolbar {
-                /*
                 ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: NotesListView(username: user.username!).navigationBarBackButtonHidden(true)) {
+                    NavigationLink(destination: NotesListView(username: user.username!).navigationBarBackButtonHidden(true)){
                         HStack {
                             //Label("Back", systemImage: chevron.backward)
                             Image(systemName: "chevron.backward")
@@ -43,7 +37,6 @@ struct WriteOrEditNoteView: View {
                         }
                     }
                 }
-                 */
                 if viewModel.contentDisabled {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
@@ -61,7 +54,7 @@ struct WriteOrEditNoteView: View {
                 if !viewModel.contentDisabled {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
-                            viewModel.onScreenEvent(.addOrUpdateNote(inputUsername: username))
+                            viewModel.onScreenEvent(.addOrUpdateNote(inputUser: user))
                         }, label: {
                             Text("Save")
                         })
@@ -75,7 +68,7 @@ struct WriteOrEditNoteView: View {
             }
         }
         .onAppear {
-            viewModel.onScreenEvent(.onAppearance(note: note))
+            viewModel.onScreenEvent(.onAppearance(note: note, user: user))
         }
     }
     
@@ -88,9 +81,8 @@ struct WriteOrEditNoteView: View {
     }
 }
 
- /*
+ 
 #Preview {
     WriteOrEditNoteView()
 }
 
-*/

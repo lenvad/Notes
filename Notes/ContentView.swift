@@ -35,7 +35,11 @@ struct ContentView: View {
                         viewModel.usernameEqualToInput()
                     }) {
                         Text("Sign In")
-							.signUpButton()
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color("AccentColor"))
+                            .cornerRadius(15.0)
                     }.frame(alignment: .bottom)
                         .background(
                             NavigationLink("", 
@@ -65,14 +69,14 @@ struct ContentView: View {
 
 extension View {
     func underlineTextField() -> some View {
-		modifier(UnderlineTextField())
+        self
+            .padding(.vertical, 10)
+            .overlay(Rectangle().frame(height: 2).padding(.top, 35))
+            .foregroundColor(Color("AccentColor"))
+            .padding(10)
     }
-	
-	func signUpButton() -> some View {
-		modifier(SignUpButton())
-	}
 }
 
 #Preview {
-	ContentView()
+    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

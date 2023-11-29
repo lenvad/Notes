@@ -11,7 +11,6 @@ import CoreData
 import UIKit
 import Combine
 
-
 extension Note {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Note> {
@@ -31,3 +30,19 @@ extension Note : Identifiable {
 
 }
 
+
+final class NotesCollectionViewCell: UICollectionViewCell {
+    let contentLabel = UILabel()
+    let titleLabel = UILabel()
+    
+    private var contentSubscription: AnyCancellable?
+    private var titleSubscription: AnyCancellable?
+    
+    func setup(with note: Note) {
+        contentSubscription = note.publisher(for: \.content)
+            .assign(to: \.text, on: contentLabel)
+        titleSubscription = note.publisher(for: \.title)
+            .assign(to: \.text, on: titleLabel)
+        
+    }
+}
