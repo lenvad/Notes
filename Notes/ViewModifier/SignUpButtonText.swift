@@ -11,10 +11,10 @@ struct SignUpButtonText: ViewModifier {
 	func body(content: Content) -> some View {
 		content
 			.font(.headline)
-			.foregroundColor(.white)
-			.padding()
-			.background(Color("AccentColor"))
-			.cornerRadius(15.0)
+			.padding(15)
+			.foregroundColor(Color("AccentColor"))
+			.overlay(RoundedRectangle(cornerRadius: 15)
+			.stroke(Color("AccentColor"), lineWidth: 2))
 	}
 }
 

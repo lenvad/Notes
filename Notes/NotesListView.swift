@@ -21,46 +21,42 @@ struct NotesListView: View {
         NavigationView {
 			List {
 				ForEach(notesList, id: \.self, content:  { note in
-					HStack {
-						NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)//.navigationBarBackButtonHidden(true)
-						) {
-							Text(note.title!)
-								.foregroundColor(Color("AccentColor"))
-							Spacer()
-							Text("\(note.timestamp!, formatter: viewModel.dateFormatter)")
-								.foregroundColor(.secondary)
-								.font(.system(size: 10))
-						}.padding(10)
-					}
-					.swipeActions {
-						Button(action: {
-							viewModel.deleteNote(inputNote: note)
-						}, label: {
-							Text("Delete")
-						})
-						.tint(.red)
-					}
+					generateNoteItem(note: note)
 				})
 				.listRowBackground(Color("Orange").opacity(0.4))
 			}
-            /*
-            .onDelete { indexSet in
-                viewModel.deleteNote(inputNote: indexSet)
-            }
-             */
             .toolbar {
                 ToolbarItem {
                     NavigationLink(
-                        destination: WriteOrEditNoteView(username: username)//.navigationBarBackButtonHidden(true)
+                        destination: WriteOrEditNoteView(username: username)
                     ) {
                         Label("Add Item", systemImage: "plus")
                     }
-                }
+				}
             }
-        }
+		}
     }
-	func delete(at note: Note) {
-		viewModel.deleteNote(inputNote: note)
+	
+	func generateNoteItem(note: Note) -> some View {
+		return HStack {
+			NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)
+			) {
+				Text(note.title ?? "Untitled")
+					.foregroundColor(Color("AccentColor"))
+				Spacer()
+				Text("\(note.timestamp, formatter: viewModel.dateFormatter)")
+					.foregroundColor(.secondary)
+					.font(.system(size: 10))
+			}.padding(10)
+		}
+		.swipeActions {
+			Button(action: {
+				viewModel.onScreenEvent(.deleteNoteWhenSwipe(note: note))
+			}, label: {
+				Text("Delete")
+			})
+			.tint(.red)
+		}
 	}
 }
 

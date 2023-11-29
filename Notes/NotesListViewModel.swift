@@ -17,22 +17,18 @@ class NotesListViewModel: ObservableObject {
         dateFormatter.timeStyle = .short
         dateFormatter.dateStyle = .short
     }
-    /*
-    func onAppearanceOrRefresh(inputUsername: String) {
-        let user = fetchUserByUsername(inputUsername: inputUsername)
-        fetchNotes(inputUser: user)
-    }
-    
-    func fetchUserByUsername(inputUsername: String) -> User {
-        let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)!
-        return user
-    }
-    
-    func fetchNotes(inputUser: User) {
-        let notes = PersistenceController.shared.fetchNotesByUser(user: inputUser)
-        allNotesFromUser = notes
-    }
-    */
+	
+	enum ScreenEvent {
+		case deleteNoteWhenSwipe(note: Note)
+	}
+	
+	func onScreenEvent(_ event: ScreenEvent) {
+		switch event {
+			case .deleteNoteWhenSwipe(let note):
+				deleteNote(inputNote: note)
+		}
+	}
+
     func deleteNote(inputNote: Note) {
 		PersistenceController.shared.deleteNote(note: inputNote)
     }

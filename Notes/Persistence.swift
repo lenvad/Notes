@@ -78,7 +78,7 @@ struct PersistenceController {
 		}
 	}
 	
-	func createUser(username: String, email: String, password: String, id: Int32) -> User {
+	func createUser(username: String, email: String, password: String, id: Int32) {
 		let user = User(context: container.viewContext)
 		user.username = username
 		user.email = email
@@ -86,7 +86,6 @@ struct PersistenceController {
 		user.userId = UUID()
 		user.password = password
 		save()
-		return user
 	}
 	
 	func createNote(title: String, content: String, timestamp: Date, id: Int32, user: User) -> Note {

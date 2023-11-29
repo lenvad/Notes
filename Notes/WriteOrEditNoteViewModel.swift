@@ -10,9 +10,8 @@ import Foundation
 class WriteOrEditNoteViewModel: ObservableObject {
     @Published var contentDisabled = true
     @Published var content = ""
+    @Published var errorMessage = ""
 	
-	//let PresistenceController = PersistenceController()
-
     var counter: Int32 = 0
     var note: Note?
     var isLinkActive = false
@@ -26,24 +25,29 @@ class WriteOrEditNoteViewModel: ObservableObject {
         case addOrUpdateNote(inputUsername: String)
     }
     
-	func fetchUserByUsername(inputUsername: String) -> User {
-		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)!
+	func fetchUserByUsername(inputUsername: String) -> User? {
+		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)
 		return user
 	}
 	
     func onScreenEvent(_ event: ScreenEvent) {
-        switch event {
-        case .onAppearance(let note):
-            counter = getBiggestId() ?? 0
-            if (note != nil ) {
-                setNote(note)
-                contentDisabled = true
-            } else {
-                contentDisabled = false
-            }
-        case .addOrUpdateNote(inputUsername: let username):
-            addOrUpdateNote(inputUser: fetchUserByUsername(inputUsername: username))
-        }
+		switch event {
+			case .onAppearance(let note):
+				counter = getBiggestId() ?? 0
+				if (note != nil ) {
+					setNote(note)
+					contentDisabled = true
+				} else {
+					contentDisabled = false
+				}
+			case .addOrUpdateNote(inputUsername: let username):
+				let user = fetchUserByUsername(inputUsername: username)
+				if (user != nil) {
+					addOrUpdateNote(inputUser: user!) // ! (find a way without it)
+				} else {
+					errorMessage = "Error: Please close the app and log in again"
+				}
+		}
     }
     
     func addOrUpdateNote(inputUser: User) {

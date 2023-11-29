@@ -13,44 +13,28 @@ struct SignUpView: View {
     var body: some View {
         VStack {
             Text(viewModel.errorMessage)
-                .font(viewModel.footnoteFont)
-                .gridCellColumns(4)
-                .padding()
-                .background(viewModel.errorMessage == "" ? .clear : .red.opacity(0.2))
-                .overlay(Rectangle().frame(width: 1, height: nil, alignment: .leading).foregroundColor(viewModel.errorMessage == "" ? .clear : Color.red), alignment: .leading)
+				.errorMessageText(errorMessage: viewModel.errorMessage)
             
             TextField("Username", text: $viewModel.usernameInput)
-                .underlineTextField()
-                .padding()
+				.underlineTextField(errorMessageActive: viewModel.usernameInvalid)
             
             SecureField("Password", text: $viewModel.passwordInput)
-                .underlineTextField()
-                .padding()
+				.underlineTextField(errorMessageActive: viewModel.passwordInvalid)
             
             TextField("Email", text: $viewModel.emailInput)
-                .underlineTextField()
-                .padding()
+				.underlineTextField(errorMessageActive: false)
                 
-            
             Button(action: {
-                viewModel.addUser()
+				viewModel.onScreenEvent(.addUserWhenButtonClicked)
             }) {
               Text("Sign Up")
-                .font(.headline)
-                .foregroundColor(Color("AccentColor"))
-                .background(Color.clear)
-                .cornerRadius(15.0)
-                .padding()
             }
-            .overlay(
-                        RoundedRectangle(cornerRadius: 15)
-                            .stroke(Color("AccentColor"), lineWidth: 2)
-                    )
+			.signUpButtonText()
             .background(
                 NavigationLink("", destination: NotesListView(username: viewModel.usernameInput).navigationBarBackButtonHidden(true), isActive: $viewModel.isUserAdded)
                     .opacity(0)
             )
-        }
+		}.padding()
     }
 }
 

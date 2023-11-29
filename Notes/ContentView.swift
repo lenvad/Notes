@@ -14,32 +14,30 @@ struct ContentView: View {
     var body: some View {
         NavigationView() {
             VStack(alignment: .center, spacing: 10) {
-                Text(viewModel.errorMessage)
-                    .font(viewModel.footnoteFont)
-                    .padding()
-                    .background(viewModel.errorMessage == "" ? .clear : .red.opacity(0.2))
-                    .overlay(Rectangle().frame(width: 1, height: nil, alignment: .leading).foregroundColor(viewModel.errorMessage == "" ? .clear : Color.red), alignment: .leading)
-                
+				if(viewModel.errorMessage != "") {
+					Text(viewModel.errorMessage)
+						.errorMessageText(errorMessage: viewModel.errorMessage)
+				}
                 TextField("Username", text: $viewModel.usernameInput)
-                    .underlineTextField()
-                    .padding()
+					.underlineTextField(errorMessageActive: viewModel.usernameInvalid)
                     
 				SecureField("Password", text: $viewModel.passwordInput)
-                    .underlineTextField()
-                    .padding()
-                
+					.underlineTextField(errorMessageActive: viewModel.passwordInvalid)
                 HStack {
                     Button(action: {
-                        viewModel.usernameEqualToInput()
+						viewModel.onScreenEvent(.signIn)
                     }) {
                         Text("Sign In")
-							.signUpButtonText()
+							.font(.headline)
+							.foregroundColor(.white)
+							.padding()
+							.background(Color("AccentColor"))
+							.cornerRadius(15.0)
                     }.frame(alignment: .bottom)
                         .background(
                             NavigationLink("", 
                                            destination: NotesListView(username: viewModel.usernameInput).navigationBarBackButtonHidden(true),
-                                           isActive: $viewModel.isLinkActive).opacity(0)
-                        )
+                                           isActive: $viewModel.isLinkActive).opacity(0))
                     
                     Spacer()
                         .frame(width: 30)
@@ -48,29 +46,13 @@ struct ContentView: View {
                         destination: SignUpView()
                     ) {
                         Text("Sign Up")
-                    }.font(.headline)
-                        .padding(15)
-                        .foregroundColor(Color("AccentColor"))
-                        .overlay(
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .stroke(Color("AccentColor"), lineWidth: 2)
-                                )
+					}.signUpButtonText()
                 }
             }.padding()
         }
     }
 }
 
-extension View {
-    func underlineTextField() -> some View {
-        modifier(UnderliedTextField())
-    }
-	
-	func signUpButtonText() -> some View {
-		modifier(SignUpButtonText())
-	}
-}
-
 #Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    ContentView()
 }

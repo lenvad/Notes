@@ -12,20 +12,41 @@ class ContentViewModel: ObservableObject {
     @Published var usernameInput: String = ""
     @Published var passwordInput: String = ""
     @Published var errorMessage = ""
+    @Published var usernameInvalid = false
+    @Published var passwordInvalid = false
     @Published var isLinkActive = false
-    
-    let footnoteFont = Font.system(.footnote, design: .monospaced)
-    //let presistenceController = PersistenceController()
-    
+        
+	enum ScreenEvent {
+		case signIn
+	}
+	
+	func onScreenEvent(_ event: ScreenEvent) {
+		switch event {
+			case .signIn:
+				usernameEqualToInput()
+		}
+	}
+	
+	
     func usernameEqualToInput() {
         let user = fetchUserByUsername(inputUsername: usernameInput)
         if(user != nil && user?.password == passwordInput) {
-            isLinkActive = true 
+            isLinkActive = true
             errorMessage = ""
+			usernameInvalid = false
+			passwordInvalid = false
         }
-        else {
+        else if(user == nil) {
             errorMessage = "no such user found"
+			usernameInvalid = true
+			passwordInvalid = false
+
         }
+		else if(user?.password != passwordInput){
+			errorMessage = "password is wrong"
+			usernameInvalid = false
+			passwordInvalid = true
+		}
     }
     
     func fetchUserByUsername(inputUsername: String) -> User? {

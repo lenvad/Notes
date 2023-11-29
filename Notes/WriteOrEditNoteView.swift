@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import PencilKit
 
 struct WriteOrEditNoteView: View {
+	//@Binding var canvasView: PKCanvasView
+	
     @StateObject var viewModel = WriteOrEditNoteViewModel()
 	var username: String
     var note: Note?
@@ -20,9 +23,12 @@ struct WriteOrEditNoteView: View {
     var body: some View {
         NavigationView {
             VStack {
-                if viewModel.contentDisabled {
-                    Divider().padding(.top)
-                }
+				if(viewModel.errorMessage != "") {
+					Text(viewModel.errorMessage)
+						.errorMessageText(errorMessage: viewModel.errorMessage)
+				}
+				
+				Divider().padding(.top)
 
                 TextEditor(text: $viewModel.content)
                     .padding(15)
@@ -33,17 +39,6 @@ struct WriteOrEditNoteView: View {
                 }
             }
             .toolbar {
-                /*
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: NotesListView(username: user.username!).navigationBarBackButtonHidden(true)) {
-                        HStack {
-                            //Label("Back", systemImage: chevron.backward)
-                            Image(systemName: "chevron.backward")
-                            Text("Back")
-                        }
-                    }
-                }
-                 */
                 if viewModel.contentDisabled {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
@@ -64,7 +59,7 @@ struct WriteOrEditNoteView: View {
                             viewModel.onScreenEvent(.addOrUpdateNote(inputUsername: username))
                         }, label: {
                             Text("Save")
-                        })
+						}).padding(.trailing)
                     }
                     ToolbarItemGroup(placement: .bottomBar) {
                         toolButton(imageName: "list.bullet")
@@ -73,7 +68,7 @@ struct WriteOrEditNoteView: View {
                     }
                 }
             }
-        }
+		}
         .onAppear {
             viewModel.onScreenEvent(.onAppearance(note: note))
         }
@@ -87,10 +82,21 @@ struct WriteOrEditNoteView: View {
         })
     }
 }
-
- /*
+/*
+extension WriteOrEditNoteView: UIViewRepresentable {
+	func makeUIView(context: Context) -> PKCanvasView {
+		canvasView.tool = PKInkingTool(.pen, color: .gray, width: 10)
+		#if targetEnvironment(simulator)
+		canvasView.drawingPolicy = .anyInput
+		#endif
+		return canvasView
+	}
+	
+	func updateUIView(_ uiView: PKCanvasView, context: Context) {}
+}
+*/
 #Preview {
-    WriteOrEditNoteView()
+    WriteOrEditNoteView(username: "l")
 }
 
-*/
+
