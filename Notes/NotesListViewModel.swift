@@ -7,7 +7,7 @@
 
 import Foundation
 
-class NotesListViewModel: ObservableObject {
+final class NotesListViewModel: ObservableObject {
     @Published var allNotesFromUser: [Note] = []
     let dateFormatter: DateFormatter
 	//let presistenceController = PersistenceController()

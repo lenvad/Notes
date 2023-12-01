@@ -6,11 +6,8 @@
 //
 
 import SwiftUI
-import PencilKit
 
 struct WriteOrEditNoteView: View {
-	//@Binding var canvasView: PKCanvasView
-	
     @StateObject var viewModel = WriteOrEditNoteViewModel()
 	var username: String
     var note: Note?
@@ -29,13 +26,19 @@ struct WriteOrEditNoteView: View {
 				}
 				
 				Divider().padding(.top)
-
+				
+				UITextViewRepresentable(text: $viewModel.content, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic)
+					.disabled(viewModel.contentDisabled)
+				/*
                 TextEditor(text: $viewModel.content)
                     .padding(15)
                     .disabled(viewModel.contentDisabled)
-
+					.bold(viewModel.isBold)
+					.italic(viewModel.isItalic)
+					.underline(viewModel.isUnderlined)
+*/
                 if !viewModel.contentDisabled {
-                    Divider()
+					Divider().padding(.bottom)
                 }
             }
             .toolbar {
@@ -61,10 +64,27 @@ struct WriteOrEditNoteView: View {
                             Text("Save")
 						}).padding(.trailing)
                     }
-                    ToolbarItemGroup(placement: .bottomBar) {
-                        toolButton(imageName: "list.bullet")
-                        toolButton(imageName: "pencil.tip")
-                        toolButton(imageName: "ruler.fill")
+					ToolbarItemGroup(placement: .bottomBar) {
+						toolButton(imageName: "bold",
+								   backgroundColorOn: viewModel.isBold,
+								   action: {
+							viewModel.onScreenEvent(.fontAdjustment(event: .bold))
+						})
+						toolButton(imageName: "italic",
+								   backgroundColorOn: viewModel.isItalic,
+								   action: {
+							viewModel.onScreenEvent(.fontAdjustment(event: .italic))
+						})
+						toolButton(imageName: "underline",
+								   backgroundColorOn: viewModel.isUnderlined,
+								   action: {
+							viewModel.onScreenEvent(.fontAdjustment(event: .underlined))
+						})
+						toolButton(imageName: "highlighter",
+								   backgroundColorOn: false,
+								   action: {
+							
+						})
                     }
                 }
             }
@@ -74,27 +94,19 @@ struct WriteOrEditNoteView: View {
         }
     }
     
-    func toolButton(imageName: String) -> some View {
+	func toolButton(imageName: String, backgroundColorOn : Bool, action: @escaping () -> Void) -> some View {
         return Button(action: {
-            // Handle button action
+            action()
         }, label: {
             Image(systemName: imageName).font(.system(size: 20))
-        })
+				.padding()
+				.overlay(RoundedRectangle(cornerRadius: 10.0)
+					.fill(backgroundColorOn == true ? Color("Orange").opacity(0.3):.clear))
+
+		})
     }
 }
-/*
-extension WriteOrEditNoteView: UIViewRepresentable {
-	func makeUIView(context: Context) -> PKCanvasView {
-		canvasView.tool = PKInkingTool(.pen, color: .gray, width: 10)
-		#if targetEnvironment(simulator)
-		canvasView.drawingPolicy = .anyInput
-		#endif
-		return canvasView
-	}
-	
-	func updateUIView(_ uiView: PKCanvasView, context: Context) {}
-}
-*/
+
 #Preview {
     WriteOrEditNoteView(username: "l")
 }

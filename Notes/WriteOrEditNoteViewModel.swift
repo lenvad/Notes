@@ -7,27 +7,28 @@
 
 import Foundation
 
-class WriteOrEditNoteViewModel: ObservableObject {
+final class WriteOrEditNoteViewModel: ObservableObject {
     @Published var contentDisabled = true
     @Published var content = ""
     @Published var errorMessage = ""
 	
     var counter: Int32 = 0
-    var note: Note?
+    var note: Note? = nil
     var isLinkActive = false
+	@Published var isBold: Bool = false
+	@Published var isItalic: Bool = false
+	var isUnderlined: Bool = false
 	
-	init() {
-		note = nil
-	}
-    
     enum ScreenEvent {
         case onAppearance(note: Note?)
         case addOrUpdateNote(inputUsername: String)
+		case fontAdjustment(event: FontKind)
     }
-    
-	func fetchUserByUsername(inputUsername: String) -> User? {
-		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)
-		return user
+	
+	enum FontKind {
+		case bold
+		case italic
+		case underlined
 	}
 	
     func onScreenEvent(_ event: ScreenEvent) {
@@ -47,8 +48,33 @@ class WriteOrEditNoteViewModel: ObservableObject {
 				} else {
 					errorMessage = "Error: Please close the app and log in again"
 				}
+			case .fontAdjustment(let fontEvent):
+				fontAdjustment(fontEvent)
 		}
     }
+	
+	func fontAdjustment(_ event: FontKind) {
+		switch event {
+			case .bold:
+				isBold = switchBool(boolValue: &isBold)
+			case .italic:
+				isItalic = switchBool(boolValue: &isItalic)
+			case .underlined:
+				isUnderlined = switchBool(boolValue: &isUnderlined)
+		}
+	}
+	
+	func switchBool(boolValue: inout Bool) -> Bool {
+		if(!boolValue) {
+			return true
+		}
+		return false
+	}
+	
+	func fetchUserByUsername(inputUsername: String) -> User? {
+		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)
+		return user
+	}
     
     func addOrUpdateNote(inputUser: User) {
         let inputTitle = content.components(separatedBy: CharacterSet.newlines).first!

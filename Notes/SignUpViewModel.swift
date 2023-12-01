@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class SignUpViewModel: ObservableObject {
+final class SignUpViewModel: ObservableObject {
     @Published var usernameInput: String = ""
     @Published var emailInput: String = ""
     @Published var passwordInput: String = ""
