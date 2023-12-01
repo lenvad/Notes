@@ -28,15 +28,11 @@ struct ContentView: View {
 						viewModel.onScreenEvent(.signIn)
                     }) {
                         Text("Sign In")
-<<<<<<< HEAD:Notes/ContentView.swift
 							.font(.headline)
 							.foregroundColor(.white)
 							.padding()
 							.background(Color("AccentColor"))
 							.cornerRadius(15.0)
-=======
-							.signUpButton()
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/Views/ContentView.swift
                     }.frame(alignment: .bottom)
                         .background(
                             NavigationLink("", 
@@ -57,21 +53,6 @@ struct ContentView: View {
     }
 }
 
-<<<<<<< HEAD:Notes/ContentView.swift
 #Preview {
     ContentView()
-=======
-extension View {
-    func underlineTextField() -> some View {
-		modifier(UnderlineTextField())
-    }
-	
-	func signUpButton() -> some View {
-		modifier(SignUpButton())
-	}
-}
-
-#Preview {
-	ContentView()
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/Views/ContentView.swift
 }

@@ -14,15 +14,9 @@ class SignUpViewModel: ObservableObject {
     @Published var passwordInput: String = ""
     @Published var errorMessage: String = ""
     @Published var isUserAdded: Bool = false
-<<<<<<< HEAD:Notes/SignUpViewModel.swift
 	@Published var usernameInvalid = false
 	@Published var passwordInvalid = false
 
-=======
-    
-	let footnoteFont = Font.system(.footnote, design: .monospaced)
-	
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/ViewModels/SignUpViewModel.swift
     var users: [User] = []
     var min: Int32 = 1
     var max: Int32 = 1000
@@ -44,13 +38,8 @@ class SignUpViewModel: ObservableObject {
 	}
 	
     func addUser() {
-<<<<<<< HEAD:Notes/SignUpViewModel.swift
         if(uniqueUsernameChecker() && passwordChecker()) {
 			PersistenceController.shared.createUser(username: usernameInput,
-=======
-        if(uniqueUsernameChecker()) {
-            let user = PersistenceController.shared.createUser(username: usernameInput,
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/ViewModels/SignUpViewModel.swift
                                                      email: emailInput,
                                                      password: passwordInput,
                                                      id: generateRandomNumber(min: min, max: max))

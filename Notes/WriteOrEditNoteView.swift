@@ -39,20 +39,6 @@ struct WriteOrEditNoteView: View {
                 }
             }
             .toolbar {
-<<<<<<< HEAD:Notes/WriteOrEditNoteView.swift
-=======
-                /*
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink(destination: NotesListView(username: user.username!).navigationBarBackButtonHidden(true)) {
-                        HStack {
-                            //Label("Back", systemImage: chevron.backward)
-                            Image(systemName: "chevron.backward")
-                            Text("Back")
-                        }
-                    }
-                }
-                 */
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/Views/WriteOrEditNoteView.swift
                 if viewModel.contentDisabled {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
@@ -96,7 +82,6 @@ struct WriteOrEditNoteView: View {
         })
     }
 }
-<<<<<<< HEAD:Notes/WriteOrEditNoteView.swift
 /*
 extension WriteOrEditNoteView: UIViewRepresentable {
 	func makeUIView(context: Context) -> PKCanvasView {
@@ -110,16 +95,8 @@ extension WriteOrEditNoteView: UIViewRepresentable {
 	func updateUIView(_ uiView: PKCanvasView, context: Context) {}
 }
 */
-=======
-
- /*
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/Views/WriteOrEditNoteView.swift
 #Preview {
     WriteOrEditNoteView(username: "l")
 }
 
-<<<<<<< HEAD:Notes/WriteOrEditNoteView.swift
 
-=======
-*/
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/Views/WriteOrEditNoteView.swift

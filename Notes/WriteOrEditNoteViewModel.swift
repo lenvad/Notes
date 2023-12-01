@@ -10,14 +10,8 @@ import Foundation
 class WriteOrEditNoteViewModel: ObservableObject {
     @Published var contentDisabled = true
     @Published var content = ""
-<<<<<<< HEAD:Notes/WriteOrEditNoteViewModel.swift
     @Published var errorMessage = ""
 	
-=======
-	
-	//let PresistenceController = PersistenceController()
-
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/ViewModels/WriteOrEditNoteViewModel.swift
     var counter: Int32 = 0
     var note: Note?
     var isLinkActive = false
@@ -31,18 +25,12 @@ class WriteOrEditNoteViewModel: ObservableObject {
         case addOrUpdateNote(inputUsername: String)
     }
     
-<<<<<<< HEAD:Notes/WriteOrEditNoteViewModel.swift
 	func fetchUserByUsername(inputUsername: String) -> User? {
 		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)
-=======
-	func fetchUserByUsername(inputUsername: String) -> User {
-		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)!
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/ViewModels/WriteOrEditNoteViewModel.swift
 		return user
 	}
 	
     func onScreenEvent(_ event: ScreenEvent) {
-<<<<<<< HEAD:Notes/WriteOrEditNoteViewModel.swift
 		switch event {
 			case .onAppearance(let note):
 				counter = getBiggestId() ?? 0
@@ -60,20 +48,6 @@ class WriteOrEditNoteViewModel: ObservableObject {
 					errorMessage = "Error: Please close the app and log in again"
 				}
 		}
-=======
-        switch event {
-        case .onAppearance(let note):
-            counter = getBiggestId() ?? 0
-            if (note != nil ) {
-                setNote(note)
-                contentDisabled = true
-            } else {
-                contentDisabled = false
-            }
-        case .addOrUpdateNote(inputUsername: let username):
-            addOrUpdateNote(inputUser: fetchUserByUsername(inputUsername: username))
-        }
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/ViewModels/WriteOrEditNoteViewModel.swift
     }
     
     func addOrUpdateNote(inputUser: User) {

@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+  Notes
+
+  Created by Lena Vadakkel on 24.11.23.
+  
+*/
+
+"Sign In" = "Sign In";
+"Sign Up" = "Sign Up";
+"Username" = "Username";
+"Password" = "Passowrd";
+"Email" = "Email";
+"Save" = "Save";
+"Delete" = "Delete";

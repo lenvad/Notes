@@ -15,7 +15,6 @@ class ContentViewModel: ObservableObject {
     @Published var usernameInvalid = false
     @Published var passwordInvalid = false
     @Published var isLinkActive = false
-<<<<<<< HEAD:Notes/ContentViewModel.swift
         
 	enum ScreenEvent {
 		case signIn
@@ -29,16 +28,10 @@ class ContentViewModel: ObservableObject {
 	}
 	
 	
-=======
-    
-    let footnoteFont = Font.system(.footnote, design: .monospaced)
-    //let presistenceController = PersistenceController()
-    
->>>>>>> parent of e5af394 (Revert "Fetch request"):Notes/ViewModels/ContentViewModel.swift
     func usernameEqualToInput() {
         let user = fetchUserByUsername(inputUsername: usernameInput)
         if(user != nil && user?.password == passwordInput) {
-            isLinkActive = true 
+            isLinkActive = true
             errorMessage = ""
 			usernameInvalid = false
 			passwordInvalid = false
