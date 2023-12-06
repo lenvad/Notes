@@ -11,7 +11,9 @@ struct WriteOrEditNoteView: View {
     @StateObject var viewModel = WriteOrEditNoteViewModel()
 	var username: String
     var note: Note?
-    
+	@State var text: NSAttributedString = NSAttributedString(string: "")
+	@State var selectedRange: NSRange = NSRange(location: 0, length: 0)
+
 	init(username: String, note: Note? = nil) {
         self.username = username
         self.note = note
@@ -27,7 +29,7 @@ struct WriteOrEditNoteView: View {
 				
 				Divider().padding(.top)
 				
-				UITextViewRepresentable(text: $viewModel.content, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic)
+				UITextViewRepresentable(text: $text, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic, selectedRange: $selectedRange)
 					.disabled(viewModel.contentDisabled)
 				/*
                 TextEditor(text: $viewModel.content)

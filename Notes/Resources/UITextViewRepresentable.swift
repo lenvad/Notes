@@ -9,10 +9,11 @@ import SwiftUI
 
 struct UITextViewRepresentable: UIViewRepresentable {
 	let textView = UITextView()
-	@Binding var text: String
+	@Binding var text: NSAttributedString
 	@Binding var isBold: Bool
 	@Binding var isItalic: Bool
-	
+	@Binding var selectedRange: NSRange
+
 	func makeUIView(context: Context) -> UITextView {
 		textView.delegate = context.coordinator
 		return textView
@@ -20,30 +21,73 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	
 	func updateUIView(_ uiView: UITextView, context: Context) {
 		// SwiftUI -> UIKit
-		uiView.text = text
+		uiView.attributedText = text
+		uiView.selectedRange = selectedRange		
 	}
 	
 	func makeCoordinator() -> Coordinator {
-		Coordinator(text: $text, isBold: $isBold, isItalic: $isItalic)
+		Coordinator(text: $text, isBold: $isBold, isItalic: $isItalic, selectedRange: $selectedRange)
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
-		@Binding var text: String
+		@Binding var text: NSAttributedString
 		@Binding var isBold: Bool
 		@Binding var isItalic: Bool
-		
-		init(text: Binding<String>, isBold: Binding<Bool>, isItalic: Binding<Bool>) {
+		@Binding var selectedRange: NSRange
+
+		init(text: Binding<NSAttributedString>, isBold: Binding<Bool>, isItalic: Binding<Bool>, selectedRange: Binding<NSRange>) {
 			self._text = text
 			self._isBold = isBold
 			self._isItalic = isItalic
+			self._selectedRange = selectedRange
 		}
 		
 		func textViewDidChange(_ textView: UITextView) {
 			// UIKit -> SwiftUI
-			_text.wrappedValue = textView.text
+			print("did change text to \(textView.text)")
+			_text.wrappedValue = textView.attributedText
 		}
-		
+
+		func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+			print("update with new text: \(text), in range: \(range)")
+			if text.isEmpty {
+				return true
+			}
+			
+			let font = UIFont(name: "Helvetica", size: 16) ?? UIFont.systemFont(ofSize: 16)
+
+			let string = NSMutableAttributedString(attributedString: textView.attributedText)
+			
+			let addedString = NSMutableAttributedString(string: text)
+			string.insert(addedString, at: range.location)
+
+			if isBold {
+				string.addAttribute(
+					.font,
+					value: font.bold(),
+					range: NSRange(location: range.location, length: text.count)
+				)
+			}
+
+			if isItalic {
+				string.addAttribute(
+					.font,
+					value: font.italics(),
+					range: NSRange(location: range.location, length: text.count)
+				)
+			}
+
+			_text.wrappedValue = string
+			_selectedRange.wrappedValue = NSRange(location: range.location + text.count, length: 0)
+			return false
+		}
+
 		func textViewDidChangeSelection(_ textView: UITextView) {
+			let range = textView.selectedRange
+			if _selectedRange.wrappedValue != range {
+				_selectedRange.wrappedValue =  range
+			}
+			/*
 			// Fires off every time the user changes the selection.
 			if let font = UIFont(name: "Helvetica", size: 16) {
 				// Fires off every time the user changes the selection.
@@ -58,21 +102,22 @@ struct UITextViewRepresentable: UIViewRepresentable {
 				if(isItalic) {
 					attributes = [NSAttributedString.Key.font : font.italics()]
 				}
-				
+
 				string.addAttributes(attributes, range: range)
-				
+
 				textView.attributedText = string
-				}
-			
+			}
+
 			if let textData = textView.attributedText?.text {
 				let text = String(data: textData, encoding: .utf8) ?? ""
 				print(text)  // abc
 			}
 			if let htmlData = textView.attributedText?.html {
 				let html = String(data: htmlData, encoding: .utf8) ?? ""
-				print(html)  // /* <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" ...
+				print(html)  // /<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" ...
 			}
 			print(textView.selectedRange)
+			*/
 		}
 	}
 }
