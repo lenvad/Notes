@@ -115,28 +115,44 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					range: NSRange(location: range.location, length: text.count)
 				)
 			}
-			//	@Published var colorList: [String] = ["standard", "red", "blue", "green", "yellow", "pink", "purple", "orange"]
 
 			switch color {
 				case "standard":
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: NSRange(location: range.location, length: text.count))
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "strandardFont"),
+										range: NSRange(location: range.location, length: text.count))
 				case "red":
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: NSRange(location: range.location, length: text.count))
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "redFont"),
+										range: NSRange(location: range.location, length: text.count))
 				case "orange":
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.orange, range: NSRange(location: range.location, length: text.count))
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "orangeFont"),
+										range: NSRange(location: range.location, length: text.count))
 				case "yellow":
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.yellow, range: NSRange(location: range.location, length: text.count))
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "yellowFont"),
+										range: NSRange(location: range.location, length: text.count))
 				case "green":
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.green, range: NSRange(location: range.location, length: text.count))
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "greenFont"),
+										range: NSRange(location: range.location, length: text.count))
 				case "blue":
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.blue, range: NSRange(location: range.location, length: text.count))
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "blueFont"),
+										range: NSRange(location: range.location, length: text.count))
 				case "pink":
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.systemPink, range: NSRange(location: range.location, length: text.count))
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "pinkFont"),
+										range: NSRange(location: range.location, length: text.count))
 				case "purple":
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.purple, range: NSRange(location: range.location, length: text.count))
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "purpleFont"),
+										range: NSRange(location: range.location, length: text.count))
 				default:
-					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: NSRange(location: range.location, length: text.count))
-
+					string.addAttribute(NSAttributedString.Key.foregroundColor, 
+										value: UIColor(named: "strandardFont") ,
+										range: NSRange(location: range.location, length: text.count))
 			}
 			
 			_text.wrappedValue = string
@@ -147,11 +163,112 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		
 		
 		func textViewDidChangeSelection(_ textView: UITextView) {
+			/*
+
 			let range = textView.selectedRange
 			if _selectedRange.wrappedValue != range {
 				_selectedRange.wrappedValue =  range
 			}
-			/*
+			
+			
+			 let font = UIFont.systemFont(ofSize: fontSize)
+			 
+			 let string = NSMutableAttributedString(attributedString: textView.attributedText)
+			 
+			 let addedString = NSMutableAttributedString(attributedString:
+			 textView.attributedText)
+			 
+			 string.insert(addedString, at: range.location)
+			 
+			 if isBold && isItalic && !isUnderlined {
+			 string.addAttribute(
+			 .font,
+			 value: font.boldItalics(),
+			 range: range
+			 )
+			 } else if isBold && !isItalic && !isUnderlined {
+			 string.addAttribute(
+			 .font,
+			 value: font.bold(),
+			 range: range
+			 )
+			 } else if isItalic && !isBold && !isUnderlined {
+			 string.addAttribute(
+			 .font,
+			 value: font.italics(),
+			 range: range
+			 )
+			 } else if isUnderlined && isBold && isItalic {
+			 string.addAttributes([.font: font.boldItalics(),
+			 .underlineStyle: NSUnderlineStyle.single.rawValue],
+			 range: range
+			 )
+			 } else if isUnderlined && isBold && !isItalic {
+			 string.addAttributes([.font: font.bold(),
+			 .underlineStyle: NSUnderlineStyle.single.rawValue],
+			 range: range
+			 )
+			 } else if isUnderlined && !isBold && isItalic {
+			 string.addAttributes([.font: font.italics(),
+			 .underlineStyle: NSUnderlineStyle.single.rawValue],
+			 range: range
+			 )
+			 } else if isUnderlined && !isBold && !isItalic {
+			 string.addAttributes([.font: font,
+			 .underlineStyle: NSUnderlineStyle.single.rawValue],
+			 range: range
+			 )
+			 } else {
+			 string.addAttribute(
+			 .font,
+			 value: font,
+			 range: range
+			 )
+			 }
+			 
+			 switch color {
+			 case "standard":
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "strandardFont"),
+			 range: range)
+			 case "red":
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "redFont"),
+			 range: range)
+			 case "orange":
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "orangeFont"),
+			 range: range)
+			 case "yellow":
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "yellowFont"),
+			 range: range)
+			 case "green":
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "greenFont"),
+			 range: range)
+			 case "blue":
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "blueFont"),
+			 range: range)
+			 case "pink":
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "pinkFont"),
+			 range: range)
+			 case "purple":
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "purpleFont"),
+			 range: range)
+			 default:
+			 string.addAttribute(NSAttributedString.Key.foregroundColor,
+			 value: UIColor(named: "strandardFont") ,
+			 range: range)
+			 }
+			 
+			 _text.wrappedValue = string
+			 
+			
+			 
 			// Fires off every time the user changes the selection.
 			if let font = UIFont(name: "Helvetica", size: 16) {
 				// Fires off every time the user changes the selection.
@@ -171,17 +288,9 @@ struct UITextViewRepresentable: UIViewRepresentable {
 
 				textView.attributedText = string
 			}
-
-			if let textData = textView.attributedText?.text {
-				let text = String(data: textData, encoding: .utf8) ?? ""
-				print(text)  // abc
-			}
-			if let htmlData = textView.attributedText?.html {
-				let html = String(data: htmlData, encoding: .utf8) ?? ""
-				print(html)  // /<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" ...
-			}
+			
 			print(textView.selectedRange)
-			*/
+			 */
 		}
 	}
 }
@@ -232,3 +341,4 @@ extension NSAttributedString {
 	var rtf:  Data { data(.rtf)   }
 	var rtfd: Data { data(.rtfd)  }
 }
+

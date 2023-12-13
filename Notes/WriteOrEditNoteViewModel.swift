@@ -10,6 +10,7 @@ import Combine
 
 final class WriteOrEditNoteViewModel: ObservableObject {
 	@Published var errorMessage = ""
+	@MainActor
 	@Published var noteText: NSAttributedString = NSAttributedString(string: "")
 	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
 	@Published var colorList: [String] = ["standard", "red", "blue", "green", "yellow", "pink", "purple", "orange"]
@@ -38,7 +39,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		case underlined
 	}
 	
-	func onScreenEvent(_ event: ScreenEvent) {
+	@MainActor func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .onAppearance(let note):
 				counter = getBiggestId() ?? 0
@@ -85,7 +86,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		return user
 	}
 	
-	func addOrUpdateNote(inputUser: User) {
+	@MainActor func addOrUpdateNote(inputUser: User) {
 		do {
 			let data = try NSKeyedArchiver.archivedData(withRootObject: noteText, requiringSecureCoding: false) // attributedString is NSAttributedString
 			
@@ -111,7 +112,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		return biggestNum?.id
 	}
 	
-	func setNote(_ note: Note?) {
+	@MainActor func setNote(_ note: Note?) {
 		do {
 			let unarchiver = try NSKeyedUnarchiver(forReadingFrom: note?.noteData ?? Data("error".utf8))
 			unarchiver.requiresSecureCoding = false

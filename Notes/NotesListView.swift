@@ -17,25 +17,33 @@ struct NotesListView: View {
         _notesList = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
     }
 
-    var body: some View {
-        NavigationView {
+	var body: some View {
+		NavigationView {
 			List {
 				ForEach(notesList, id: \.self, content:  { note in
 					generateNoteItem(note: note)
 				})
 				.listRowBackground(Color("OrangeMain").opacity(0.4))
 			}
-            .toolbar {
-                ToolbarItem {
-                    NavigationLink(
-                        destination: WriteOrEditNoteView(username: username)
-                    ) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+			.toolbar {
+				ToolbarItem(placement: .topBarTrailing) {
+					NavigationLink(
+						destination: WriteOrEditNoteView(username: username)
+					) {
+						Label("Add Item", systemImage: "plus")
+					}
 				}
-            }
+				
+				ToolbarItem(placement: .topBarLeading) {
+					NavigationLink(
+						destination: ContentView().navigationBarBackButtonHidden(true)
+					) {
+						Text("Logout")
+					}
+				}
+			}
 		}
-    }
+	}
 	
 	func generateNoteItem(note: Note) -> some View {
 		return HStack {
