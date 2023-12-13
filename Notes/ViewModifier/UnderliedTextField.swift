@@ -16,5 +16,6 @@ struct UnderliedTextField: ViewModifier {
 			.overlay(Rectangle().frame(height: 2).padding(.top, 35))
 			.foregroundColor(redUnderline == true ? .red : Color("AccentColor"))
 			.padding(20)
+			.autocorrectionDisabled()
 	}
 }

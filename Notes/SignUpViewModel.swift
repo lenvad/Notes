@@ -56,6 +56,7 @@ final class SignUpViewModel: ObservableObject {
   - one upper case letter
   - one lower case letter
   - one digit
+  - 8 characters
  """
 			usernameInvalid = true
 			passwordInvalid = true
@@ -67,6 +68,7 @@ final class SignUpViewModel: ObservableObject {
   - one upper case letter
   - one lower case letter
   - one digit
+  - 8 characters
  """
 			usernameInvalid = true
 			passwordInvalid = true
@@ -82,6 +84,7 @@ final class SignUpViewModel: ObservableObject {
   - one upper case letter
   - one lower case letter
   - one digit
+  - 8 characters
  """
 			passwordInvalid = true
 			usernameInvalid = false

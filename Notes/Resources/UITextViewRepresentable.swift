@@ -12,8 +12,11 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var text: NSAttributedString
 	@Binding var isBold: Bool
 	@Binding var isItalic: Bool
+	@Binding var isUnderlined: Bool 
+	@Binding var fontSize: Double
 	@Binding var selectedRange: NSRange
-
+	@Binding var color: String
+	
 	func makeUIView(context: Context) -> UITextView {
 		textView.delegate = context.coordinator
 		return textView
@@ -26,20 +29,26 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	func makeCoordinator() -> Coordinator {
-		Coordinator(text: $text, isBold: $isBold, isItalic: $isItalic, selectedRange: $selectedRange)
+		Coordinator(text: $text, isBold: $isBold, isItalic: $isItalic, isUnderlined: $isUnderlined, fontSize: $fontSize, selectedRange: $selectedRange, color: $color)
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
 		@Binding var text: NSAttributedString
 		@Binding var isBold: Bool
 		@Binding var isItalic: Bool
+		@Binding var isUnderlined: Bool
+		@Binding var fontSize: Double
 		@Binding var selectedRange: NSRange
+		@Binding var color: String
 
-		init(text: Binding<NSAttributedString>, isBold: Binding<Bool>, isItalic: Binding<Bool>, selectedRange: Binding<NSRange>) {
+		init(text: Binding<NSAttributedString>, isBold: Binding<Bool>, isItalic: Binding<Bool>, isUnderlined: Binding<Bool>, fontSize: Binding<Double>, selectedRange: Binding<NSRange>, color: Binding<String>) {
 			self._text = text
 			self._isBold = isBold
 			self._isItalic = isItalic
+			self._isUnderlined = isUnderlined
+			self._fontSize = fontSize
 			self._selectedRange = selectedRange
+			self._color = color
 		}
 		
 		func textViewDidChange(_ textView: UITextView) {
@@ -54,34 +63,89 @@ struct UITextViewRepresentable: UIViewRepresentable {
 				return true
 			}
 			
-			let font = UIFont(name: "Helvetica", size: 16) ?? UIFont.systemFont(ofSize: 16)
+			let font = UIFont.systemFont(ofSize: fontSize)
 
 			let string = NSMutableAttributedString(attributedString: textView.attributedText)
 			
 			let addedString = NSMutableAttributedString(string: text)
 			string.insert(addedString, at: range.location)
 
-			if isBold {
+			if isBold && isItalic && !isUnderlined {
+				string.addAttribute(
+					.font,
+					value: font.boldItalics(),
+					range: NSRange(location: range.location, length: text.count)
+				)
+			} else if isBold && !isItalic && !isUnderlined {
 				string.addAttribute(
 					.font,
 					value: font.bold(),
 					range: NSRange(location: range.location, length: text.count)
 				)
-			}
-
-			if isItalic {
+			} else if isItalic && !isBold && !isUnderlined {
 				string.addAttribute(
 					.font,
 					value: font.italics(),
 					range: NSRange(location: range.location, length: text.count)
 				)
+			} else if isUnderlined && isBold && isItalic {
+				string.addAttributes([.font: font.boldItalics(),
+									  .underlineStyle: NSUnderlineStyle.single.rawValue],
+									 range:NSRange(location: range.location, length: text.count)
+				)
+			} else if isUnderlined && isBold && !isItalic {
+				string.addAttributes([.font: font.bold(),
+									  .underlineStyle: NSUnderlineStyle.single.rawValue],
+									 range:NSRange(location: range.location, length: text.count)
+				)
+			} else if isUnderlined && !isBold && isItalic {
+				string.addAttributes([.font: font.italics(),
+									  .underlineStyle: NSUnderlineStyle.single.rawValue],
+									 range:NSRange(location: range.location, length: text.count)
+				)
+			} else if isUnderlined && !isBold && !isItalic {
+				string.addAttributes([.font: font,
+									  .underlineStyle: NSUnderlineStyle.single.rawValue],
+									 range: NSRange(location: range.location, length: text.count)
+				)
+			} else {
+				string.addAttribute(
+					.font,
+					value: font,
+					range: NSRange(location: range.location, length: text.count)
+				)
 			}
+			//	@Published var colorList: [String] = ["standard", "red", "blue", "green", "yellow", "pink", "purple", "orange"]
 
+			switch color {
+				case "standard":
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: NSRange(location: range.location, length: text.count))
+				case "red":
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: NSRange(location: range.location, length: text.count))
+				case "orange":
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.orange, range: NSRange(location: range.location, length: text.count))
+				case "yellow":
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.yellow, range: NSRange(location: range.location, length: text.count))
+				case "green":
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.green, range: NSRange(location: range.location, length: text.count))
+				case "blue":
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.blue, range: NSRange(location: range.location, length: text.count))
+				case "pink":
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.systemPink, range: NSRange(location: range.location, length: text.count))
+				case "purple":
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.purple, range: NSRange(location: range.location, length: text.count))
+				default:
+					string.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: NSRange(location: range.location, length: text.count))
+
+			}
+			
 			_text.wrappedValue = string
 			_selectedRange.wrappedValue = NSRange(location: range.location + text.count, length: 0)
+			
 			return false
 		}
-
+		
+		
 		func textViewDidChangeSelection(_ textView: UITextView) {
 			let range = textView.selectedRange
 			if _selectedRange.wrappedValue != range {

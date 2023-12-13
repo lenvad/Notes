@@ -22,7 +22,7 @@ struct PersistenceController {
 			
             let newNote = Note(context: viewContext)
             newNote.title = "title"
-            newNote.content = "content"
+			newNote.noteData = "content".data(using: .utf8)
 			newNote.timestamp = Date.now
 			newNote.id = 1
 			newNote.user = newUser
@@ -88,12 +88,11 @@ struct PersistenceController {
 		save()
 	}
 	
-	func createNote(title: String, content: String, timestamp: Date, id: Int32, user: User) -> Note {
+	func createNote(title: String, timestamp: Date, id: Int32, user: User) -> Note {
 		let note = Note(context: container.viewContext)
 		note.id = id
 		note.timestamp = timestamp
 		note.title = title
-		note.content = content
 		note.user = user
 		user.addToNote(note)
 		save()
@@ -161,7 +160,7 @@ struct PersistenceController {
 	}
 	
 	
-	func updateNote(title: String, content: String, timestamp: Date, id: Int32, user: User) {
+	func updateNote(title: String, timestamp: Date, id: Int32, data: Data, user: User) -> Note {
 		let context = container.viewContext
 		let note: Note!
 		
@@ -180,11 +179,13 @@ struct PersistenceController {
 		note.id = id
 		note.timestamp = timestamp
 		note.title = title
-		note.content = content
+		note.noteData = data
 		note.user = user
 		user.addToNote(note)
 		
 		save()
+		
+		return note
 	}
 	
 	func deleteUser(user: User) {

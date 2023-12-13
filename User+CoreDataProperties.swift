@@ -20,7 +20,7 @@ extension User {
     @NSManaged public var id: Int32
     @NSManaged public var password: String?
     @NSManaged public var userId: UUID?
-    @NSManaged public var username: String?
+    @NSManaged public var username: String
     @NSManaged public var note: NSOrderedSet?
 
 }

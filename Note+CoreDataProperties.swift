@@ -18,7 +18,7 @@ extension Note {
 
     @NSManaged public var id: Int32
     @NSManaged public var noteId: UUID?
-    @NSManaged public var timestamp: Date?
+    @NSManaged public var timestamp: Date
     @NSManaged public var title: String?
     @NSManaged public var noteData: Data?
     @NSManaged public var user: User?

@@ -11,9 +11,7 @@ struct WriteOrEditNoteView: View {
     @StateObject var viewModel = WriteOrEditNoteViewModel()
 	var username: String
     var note: Note?
-	@State var text: NSAttributedString = NSAttributedString(string: "")
-	@State var selectedRange: NSRange = NSRange(location: 0, length: 0)
-
+	
 	init(username: String, note: Note? = nil) {
         self.username = username
         self.note = note
@@ -29,16 +27,14 @@ struct WriteOrEditNoteView: View {
 				
 				Divider().padding(.top)
 				
-				UITextViewRepresentable(text: $text, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic, selectedRange: $selectedRange)
+				UITextViewRepresentable(text: $viewModel.noteText, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic, isUnderlined: $viewModel.isUnderlined, fontSize: $viewModel.fontSizeDouble ,selectedRange: $viewModel.selectedRange, color: $viewModel.selectedColor)
+					.autocorrectionDisabled()
 					.disabled(viewModel.contentDisabled)
-				/*
-                TextEditor(text: $viewModel.content)
-                    .padding(15)
-                    .disabled(viewModel.contentDisabled)
-					.bold(viewModel.isBold)
-					.italic(viewModel.isItalic)
-					.underline(viewModel.isUnderlined)
-*/
+					.contextMenu {
+						Button("bold") {
+							viewModel.onScreenEvent(.fontAdjustment(event: .bold))
+						}
+					}
                 if !viewModel.contentDisabled {
 					Divider().padding(.bottom)
                 }
@@ -57,7 +53,7 @@ struct WriteOrEditNoteView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                 }
-
+				
                 if !viewModel.contentDisabled {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
@@ -66,32 +62,44 @@ struct WriteOrEditNoteView: View {
                             Text("Save")
 						}).padding(.trailing)
                     }
+					
 					ToolbarItemGroup(placement: .bottomBar) {
 						toolButton(imageName: "bold",
 								   backgroundColorOn: viewModel.isBold,
 								   action: {
 							viewModel.onScreenEvent(.fontAdjustment(event: .bold))
 						})
+						
 						toolButton(imageName: "italic",
 								   backgroundColorOn: viewModel.isItalic,
 								   action: {
 							viewModel.onScreenEvent(.fontAdjustment(event: .italic))
 						})
+						
 						toolButton(imageName: "underline",
 								   backgroundColorOn: viewModel.isUnderlined,
 								   action: {
 							viewModel.onScreenEvent(.fontAdjustment(event: .underlined))
 						})
-						toolButton(imageName: "highlighter",
-								   backgroundColorOn: false,
-								   action: {
-							
-						})
+						
+						Picker("Color", selection: $viewModel.selectedColor) {
+							ForEach(viewModel.colorList, id: \.self) { value in
+								Text(value).tag(value)
+							}
+						}
+						
+						TextField("", text: $viewModel.fontSizeString)
+							.onChange(of: viewModel.fontSizeString) {
+								viewModel.onScreenEvent(.fontSizeChanged)
+							}
+							.font(.headline)
+							.padding(10)
+							.overlay(RoundedRectangle(cornerRadius: 5)
+								.stroke(Color(.lightGray), lineWidth: 0.5))
                     }
                 }
             }
-		}
-        .onAppear {
+		}.onAppear {
             viewModel.onScreenEvent(.onAppearance(note: note))
         }
     }
@@ -100,11 +108,10 @@ struct WriteOrEditNoteView: View {
         return Button(action: {
             action()
         }, label: {
-            Image(systemName: imageName).font(.system(size: 20))
+            Image(systemName: imageName).font(.system(size: 15))
 				.padding()
 				.overlay(RoundedRectangle(cornerRadius: 10.0)
-					.fill(backgroundColorOn == true ? Color("Orange").opacity(0.3):.clear))
-
+					.fill(backgroundColorOn ? Color("OrangeMain").opacity(0.3):.clear))
 		})
     }
 }
