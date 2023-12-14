@@ -27,7 +27,7 @@ struct WriteOrEditNoteView: View {
 				
 				Divider().padding(.top)
 				
-				UITextViewRepresentable(text: $viewModel.noteText, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic, isUnderlined: $viewModel.isUnderlined, fontSize: $viewModel.fontSizeDouble ,selectedRange: $viewModel.selectedRange, color: $viewModel.selectedColor)
+				UITextViewRepresentable(text: $viewModel.noteText, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic, isUnderlined: $viewModel.isUnderlined, fontSize: $viewModel.fontSizeDouble ,selectedRange: $viewModel.selectedRange, color: $viewModel.selectedColor, formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged)
 					.autocorrectionDisabled()
 					.disabled(viewModel.contentDisabled)
 					.contextMenu {
@@ -86,6 +86,8 @@ struct WriteOrEditNoteView: View {
 							ForEach(viewModel.colorList, id: \.self) { value in
 								Text(value).tag(value)
 							}
+						}.onChange(of: viewModel.selectedColor) {
+							viewModel.formattingCurrentlyChanged = true
 						}
 						
 						TextField("", text: $viewModel.fontSizeString)

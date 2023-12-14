@@ -9,17 +9,24 @@ import Foundation
 import Combine
 
 final class WriteOrEditNoteViewModel: ObservableObject {
-	@Published var errorMessage = ""
 	@MainActor
 	@Published var noteText: NSAttributedString = NSAttributedString(string: "")
+	@Published var errorMessage = ""
 	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
 	@Published var colorList: [String] = ["standard", "red", "blue", "green", "yellow", "pink", "purple", "orange"]
+	@MainActor
 	@Published var selectedColor = "standard"
 	@Published var contentDisabled = true
+	@MainActor
 	@Published var isBold: Bool = false
+	@MainActor
 	@Published var isItalic: Bool = false
+	@MainActor
 	@Published var isUnderlined: Bool = false
+	@MainActor
 	@Published var fontSizeString: String = "12"
+	@MainActor
+	@Published var formattingCurrentlyChanged: Bool = false
 	
 	var fontSizeDouble: Double = 12.0
 	var counter: Int32 = 0
@@ -60,10 +67,11 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 				fontAdjustment(fontEvent)
 			case .fontSizeChanged:
 				fontSizeStringToDouble()
+				formattingCurrentlyChanged = true
 		}
 	}
 	
-	func fontAdjustment(_ event: FontKind) {
+	@MainActor func fontAdjustment(_ event: FontKind) {
 		switch event {
 			case .bold:
 				isBold = switchBool(boolValue: &isBold)
@@ -72,10 +80,13 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 			case .underlined:
 				isUnderlined = switchBool(boolValue: &isUnderlined)
 		}
+		if isBold || isItalic || isUnderlined {
+			formattingCurrentlyChanged = true
+		}
 	}
 	
 	func switchBool(boolValue: inout Bool) -> Bool {
-		if(!boolValue) {
+		if !boolValue {
 			return true
 		}
 		return false
@@ -126,7 +137,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		}
 	}
 	
-	func fontSizeStringToDouble() {
+	@MainActor func fontSizeStringToDouble() {
 		print(fontSizeString)
 		if (fontSizeString.range(of: "^[0-9.]*$", options: .regularExpression) != nil) {
 			errorMessage = ""
