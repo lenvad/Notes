@@ -74,9 +74,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 			case .underlined:
 				isUnderlined = switchBool(boolValue: &isUnderlined)
 		}
-		if isBold || isItalic || isUnderlined {
-			formattingCurrentlyChanged = true
-		}
+		formattingCurrentlyChanged = true
 	}
 	
 	func switchBool(boolValue: inout Bool) -> Bool {

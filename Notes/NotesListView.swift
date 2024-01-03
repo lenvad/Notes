@@ -26,12 +26,15 @@ struct NotesListView: View {
 				.listRowBackground(Color("OrangeMain").opacity(0.4))
 			}
 			.toolbar {
-				ToolbarItem(placement: .topBarTrailing) {
+				ToolbarItem(placement: .bottomBar ) {
 					NavigationLink(
 						destination: WriteOrEditNoteView(username: username)
 					) {
-						Label("Add Item", systemImage: "plus")
-					}
+						Image(systemName: "plus.circle.fill")
+							.foregroundColor(Color("AccentColor"))
+							.font(.system(size: 35))
+							.shadow(color: .gray, radius: 5)
+					}.frame(maxWidth: .infinity, alignment: .center)
 				}
 				
 				ToolbarItem(placement: .topBarLeading) {

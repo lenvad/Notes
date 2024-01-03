@@ -38,6 +38,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		print("update view with \(selectedRange), \(context.coordinator) \(context.coordinator.isBold) \(isBold)")
 		print("formattingCurrentlyChanged: \(formattingCurrentlyChanged)")
 		let coordinator = context.coordinator
+		coordinator.debugPrint()
 		
 		if (formattingCurrentlyChanged && selectedRange.length >= 1) {
 			print("formating going to be changed")
@@ -185,7 +186,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					default:
 						color = "standard"
 				}
-				
 			}
 		}
 		
@@ -205,6 +205,10 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					string.deleteCharacters(in: range)
 				}
 				range = NSRange(location: range.location, length: replacementText.count)
+			}
+			
+			if !isUnderlined {
+				string.removeAttribute(.underlineStyle, range: range)
 			}
 			
 			if isBold && isItalic && !isUnderlined {
@@ -306,7 +310,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 				_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
 				
 			} else {
-				_selectedRange.wrappedValue = NSRange(location: range.location + text.length, length: 0)
+				_selectedRange.wrappedValue = range
 				print("NS Range: \(NSRange(location: range.location + text.length, length: 0))")
 			}
 			formattingCurrentlyChanged = false
