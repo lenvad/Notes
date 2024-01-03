@@ -27,14 +27,9 @@ struct WriteOrEditNoteView: View {
 				
 				Divider().padding(.top)
 				
-				UITextViewRepresentable(text: $viewModel.noteText, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic, isUnderlined: $viewModel.isUnderlined, fontSize: $viewModel.fontSizeDouble ,selectedRange: $viewModel.selectedRange, color: $viewModel.selectedColor, formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged)
+				UITextViewRepresentable(text: $viewModel.noteText, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic, isUnderlined: $viewModel.isUnderlined, fontSizeDouble: $viewModel.fontSizeDouble, fontSizeString: $viewModel.fontSizeString ,selectedRange: $viewModel.selectedRange, color: $viewModel.selectedColor, formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged)
 					.autocorrectionDisabled()
 					.disabled(viewModel.contentDisabled)
-					.contextMenu {
-						Button("bold") {
-							viewModel.onScreenEvent(.fontAdjustment(event: .bold))
-						}
-					}
                 if !viewModel.contentDisabled {
 					Divider().padding(.bottom)
                 }

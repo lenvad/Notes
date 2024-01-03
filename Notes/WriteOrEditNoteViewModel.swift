@@ -9,26 +9,20 @@ import Foundation
 import Combine
 
 final class WriteOrEditNoteViewModel: ObservableObject {
-	@MainActor
-	@Published var noteText: NSAttributedString = NSAttributedString(string: "")
+	@MainActor @Published var noteText: NSAttributedString = NSAttributedString(string: "")
+	@MainActor @Published var isBold: Bool = false
+	@MainActor @Published var isItalic: Bool = false
+	@MainActor @Published var isUnderlined: Bool = false
+	@MainActor @Published var formattingCurrentlyChanged: Bool = false
+	@MainActor @Published var selectedColor = "standard"
+	@MainActor @Published var fontSizeDouble: Double = 12.0
+
 	@Published var errorMessage = ""
 	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
 	@Published var colorList: [String] = ["standard", "red", "blue", "green", "yellow", "pink", "purple", "orange"]
-	@MainActor
-	@Published var selectedColor = "standard"
 	@Published var contentDisabled = true
-	@MainActor
-	@Published var isBold: Bool = false
-	@MainActor
-	@Published var isItalic: Bool = false
-	@MainActor
-	@Published var isUnderlined: Bool = false
-	@MainActor
 	@Published var fontSizeString: String = "12"
-	@MainActor
-	@Published var formattingCurrentlyChanged: Bool = false
 	
-	var fontSizeDouble: Double = 12.0
 	var counter: Int32 = 0
 	var note: Note? = nil
 	var isLinkActive = false
