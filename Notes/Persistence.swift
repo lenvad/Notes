@@ -132,6 +132,21 @@ struct PersistenceController {
 		}
 		return fetchedUser
 	}
+
+	func fetchUsersByUsernameAndPassword(username: String, password: String) -> User? {
+		let request: NSFetchRequest<User> = User.fetchRequest()
+		let predicate1 = NSPredicate(format: "username = %@", username)
+		let predicate2 = NSPredicate(format: "password = %@", password)
+		let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate1, predicate2])
+		request.predicate = compound
+		var fetchedUser: User?
+		do {
+			fetchedUser = try container.viewContext.fetch(request).first
+		} catch let error {
+			print("Error fetching users \(error)")
+		}
+		return fetchedUser
+	}
 	
 	func fetchNotesByUser(user: User) -> [Note] {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()

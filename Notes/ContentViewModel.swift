@@ -28,30 +28,18 @@ final class ContentViewModel: ObservableObject {
 	}
 	
     func valiateInput() {
-        let user = fetchUserByUsername(inputUsername: usernameInput)
+        let user = PersistenceController.shared.fetchUsersByUsernameAndPassword(username: usernameInput, password: passwordInput)
 		
-        if user != nil && user?.password == passwordInput {
+        if user != nil {
             isLinkActive = true
             errorMessage = ""
 			usernameInvalid = false
 			passwordInvalid = false
         }
-		else if user?.password != passwordInput && user != nil {
-			errorMessage = "password is wrong"
-			usernameInvalid = false
+		else {
+			errorMessage = "no such user found or your password is wrong"
+			usernameInvalid = true
 			passwordInvalid = true
 		}
-		else {
-			errorMessage = "no such user found"
-			usernameInvalid = true
-			passwordInvalid = false
-			
-		}
     }
-    
-    private func fetchUserByUsername(inputUsername: String) -> User? {
-		let user = PersistenceController.shared.fetchUsersByUsername(username: usernameInput)
-        return user
-    }
-    
 }
