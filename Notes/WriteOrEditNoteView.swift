@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct WriteOrEditNoteView: View {
-	@StateObject var viewModel = WriteOrEditNoteViewModel()
+    @StateObject var viewModel = WriteOrEditNoteViewModel()
 	var username: String
-	var note: Note?
+    var note: Note?
 	@State var isOn = false
 	
 	init(username: String, note: Note? = nil) {
-		self.username = username
-		self.note = note
-	}
-	
-	var body: some View {
-		NavigationView {
-			VStack {
+        self.username = username
+        self.note = note
+    }
+
+    var body: some View {
+        NavigationView {
+            VStack {
 				if viewModel.errorMessage != "" {
 					Text(viewModel.errorMessage)
 						.errorMessageText(errorMessage: viewModel.errorMessage)
@@ -36,39 +36,39 @@ struct WriteOrEditNoteView: View {
 					checklistActivated: $viewModel.checklistActivated,
 					fontSizeDouble: $viewModel.fontSizeDouble,
 					fontSizeString: $viewModel.fontSizeString,
-					selectedRange: $viewModel.selectedRange,
+					selectedRange: $viewModel.selectedRange, 
 					color: $viewModel.selectedColor,
 					formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged
 				)
-				.autocorrectionDisabled()
-				.disabled(viewModel.contentDisabled)
-				if !viewModel.contentDisabled {
+					.autocorrectionDisabled()
+					.disabled(viewModel.contentDisabled)
+                if !viewModel.contentDisabled {
 					Divider().padding(.bottom)
-				}
-			}
-			.toolbar {
-				if viewModel.contentDisabled {
-					ToolbarItem(placement: .topBarTrailing) {
-						Button(action: {
-							viewModel.contentDisabled = false
-						}, label: {
-							Image(systemName: "pencil.circle")
-								.resizable()
-								.frame(width: 40, height: 40)
-								.padding(15)
-						})
-						.frame(maxWidth: .infinity, alignment: .trailing)
-					}
-				}
+                }
+            }
+            .toolbar {
+                if viewModel.contentDisabled {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            viewModel.contentDisabled = false
+                        }, label: {
+                            Image(systemName: "pencil.circle")
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .padding(15)
+                        })
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                }
 				
-				if !viewModel.contentDisabled {
-					ToolbarItem(placement: .navigationBarTrailing) {
-						Button(action: {
-							viewModel.onScreenEvent(.addOrUpdateNote(inputUsername: username))
-						}, label: {
-							Text("Save")
+                if !viewModel.contentDisabled {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            viewModel.onScreenEvent(.addOrUpdateNote(inputUsername: username))
+                        }, label: {
+                            Text("Save")
 						}).padding(.trailing)
-					}
+                    }
 					
 					ToolbarItemGroup(placement: .bottomBar) {
 						toolButton(imageName: "bold",
@@ -90,14 +90,14 @@ struct WriteOrEditNoteView: View {
 								   fontsize: 17,
 								   action: {
 							viewModel.onScreenEvent(.toolbarButtons(event: .underlined))
-						})
-						/*
+						})						
+
 						toolButton(imageName: "checklist",
 								   backgroundColorOn: viewModel.checklistActivated,
 								   fontsize: 15,
 								   action: {
 							viewModel.onScreenEvent(.toolbarButtons(event: .checklist))
-						})*/
+						})
 						
 						Picker("Color", selection: $viewModel.selectedColor) {
 							ForEach(viewModel.colorList, id: \.self) { value in
@@ -115,29 +115,28 @@ struct WriteOrEditNoteView: View {
 							.padding(10)
 							.overlay(RoundedRectangle(cornerRadius: 5)
 								.stroke(Color(.lightGray), lineWidth: 0.5))
-					}
-				}
-			}
+                    }
+                }
+            }
 		}.onAppear {
-			viewModel.onScreenEvent(.onAppearance(note: note))
-		}
-	}
-	
+            viewModel.onScreenEvent(.onAppearance(note: note))
+        }
+    }
+    
 	private func toolButton(imageName: String, backgroundColorOn: Bool, fontsize: Double, action: @escaping () -> Void) -> some View {
-		return Button(action: {
-			action()
-		}, label: {
-			Image(systemName: imageName).font(.system(size: fontsize))
+        return Button(action: {
+            action()
+        }, label: {
+            Image(systemName: imageName).font(.system(size: fontsize))
 				.padding(5)
 				.overlay(RoundedRectangle(cornerRadius: 5.0)
 					.fill(backgroundColorOn ? Color("OrangeMain").opacity(0.3):.clear)
 					.frame(width: 35, height: 35)
 				)
 		})
-	}
+    }
 }
 
 #Preview {
-	WriteOrEditNoteView(username: "l")
+    WriteOrEditNoteView(username: "l")
 }
-

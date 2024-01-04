@@ -107,7 +107,6 @@ final class SignUpViewModel: ObservableObject {
             allUsernames.append(user.username) 
         }
         
-
         if !allUsernames.contains(usernameInput) {
             return true
         }
@@ -120,8 +119,7 @@ final class SignUpViewModel: ObservableObject {
         var num: Int32
         
         fetchAllUsers()
-        
-
+		
         for user in users {
             idNumbers.append(Int(user.id))
         }

@@ -10,14 +10,12 @@ import SwiftUI
 struct NotesListView: View {
     @StateObject var viewModel = NotesListViewModel()
     @FetchRequest var notesList: FetchedResults<Note>
-
     var username: String
     
     init(username: String) {
         self.username = username
         _notesList = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
     }
-
 
 	var body: some View {
 		NavigationView {

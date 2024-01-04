@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 final class ContentViewModel: ObservableObject {
     @Published var usernameInput: String = ""
     @Published var passwordInput: String = ""
