@@ -13,6 +13,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var isBold: Bool
 	@Binding var isItalic: Bool
 	@Binding var isUnderlined: Bool
+	@Binding var checklistActivated: Bool
 	@Binding var fontSizeDouble: Double
 	@Binding var fontSizeString: String
 	@Binding var selectedRange: NSRange
@@ -51,6 +52,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					isBold: $isBold,
 					isItalic: $isItalic,
 					isUnderlined: $isUnderlined,
+					checklistActivated: $checklistActivated,
 					fontSize: $fontSizeDouble,
 					fontSizeString: $fontSizeString,
 					selectedRange: $selectedRange,
@@ -63,6 +65,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		@Binding var isBold: Bool
 		@Binding var isItalic: Bool
 		@Binding var isUnderlined: Bool
+		@Binding var checklistActivated: Bool
 		@Binding var fontSize: Double
 		@Binding var fontSizeString: String
 		@Binding var selectedRange: NSRange
@@ -75,6 +78,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			 isBold:  Binding<Bool>,
 			 isItalic:  Binding<Bool>,
 			 isUnderlined: Binding<Bool>,
+			 checklistActivated: Binding<Bool>,
 			 fontSize: Binding<Double>,
 			 fontSizeString: Binding<String>,
 			 selectedRange: Binding<NSRange>,
@@ -85,6 +89,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			self._isBold = isBold
 			self._isItalic = isItalic
 			self._isUnderlined = isUnderlined
+			self._checklistActivated = checklistActivated
 			self._fontSize = fontSize
 			self._selectedRange = selectedRange
 			self._color = color

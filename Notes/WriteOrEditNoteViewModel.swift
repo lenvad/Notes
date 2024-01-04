@@ -13,6 +13,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	@MainActor @Published var isBold: Bool = false
 	@MainActor @Published var isItalic: Bool = false
 	@MainActor @Published var isUnderlined: Bool = false
+	@MainActor @Published var checklistActivated: Bool = false
 	@MainActor @Published var formattingCurrentlyChanged: Bool = false
 	@MainActor @Published var selectedColor = "standard"
 	@MainActor @Published var fontSizeDouble: Double = 12.0
@@ -30,14 +31,15 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	enum ScreenEvent {
 		case onAppearance(note: Note?)
 		case addOrUpdateNote(inputUsername: String)
-		case fontAdjustment(event: FontKind)
+		case toolbarButtons(event: ToolKinds)
 		case fontSizeChanged
 	}
 	
-	enum FontKind {
+	enum ToolKinds {
 		case bold
 		case italic
 		case underlined
+		case checklist
 	}
 	
 	@MainActor func onScreenEvent(_ event: ScreenEvent) {
@@ -57,15 +59,15 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 				} else {
 					errorMessage = "Error: Please close the app and log in again"
 				}
-			case .fontAdjustment(let fontEvent):
-				fontAdjustment(fontEvent)
+			case .toolbarButtons(let fontEvent):
+				toolbarButtons(fontEvent)
 			case .fontSizeChanged:
 				fontSizeStringToDouble()
 				formattingCurrentlyChanged = true
 		}
 	}
 	
-	@MainActor func fontAdjustment(_ event: FontKind) {
+	@MainActor func toolbarButtons(_ event: ToolKinds) {
 		switch event {
 			case .bold:
 				isBold = switchBool(boolValue: &isBold)
@@ -73,6 +75,8 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 				isItalic = switchBool(boolValue: &isItalic)
 			case .underlined:
 				isUnderlined = switchBool(boolValue: &isUnderlined)
+			case .checklist:
+				checklistActivated = switchBool(boolValue: &checklistActivated)
 		}
 		formattingCurrentlyChanged = true
 	}

@@ -33,6 +33,7 @@ struct WriteOrEditNoteView: View {
 					isBold: $viewModel.isBold,
 					isItalic: $viewModel.isItalic,
 					isUnderlined: $viewModel.isUnderlined,
+					checklistActivated: $viewModel.checklistActivated,
 					fontSizeDouble: $viewModel.fontSizeDouble,
 					fontSizeString: $viewModel.fontSizeString,
 					selectedRange: $viewModel.selectedRange, 
@@ -72,20 +73,30 @@ struct WriteOrEditNoteView: View {
 					ToolbarItemGroup(placement: .bottomBar) {
 						toolButton(imageName: "bold",
 								   backgroundColorOn: viewModel.isBold,
+								   fontsize: 19,
 								   action: {
-							viewModel.onScreenEvent(.fontAdjustment(event: .bold))
+							viewModel.onScreenEvent(.toolbarButtons(event: .bold))
 						})
 						
 						toolButton(imageName: "italic",
 								   backgroundColorOn: viewModel.isItalic,
+								   fontsize: 19,
 								   action: {
-							viewModel.onScreenEvent(.fontAdjustment(event: .italic))
+							viewModel.onScreenEvent(.toolbarButtons(event: .italic))
 						})
 						
 						toolButton(imageName: "underline",
 								   backgroundColorOn: viewModel.isUnderlined,
+								   fontsize: 17,
 								   action: {
-							viewModel.onScreenEvent(.fontAdjustment(event: .underlined))
+							viewModel.onScreenEvent(.toolbarButtons(event: .underlined))
+						})						
+
+						toolButton(imageName: "checklist",
+								   backgroundColorOn: viewModel.checklistActivated,
+								   fontsize: 15,
+								   action: {
+							viewModel.onScreenEvent(.toolbarButtons(event: .checklist))
 						})
 						
 						Picker("Color", selection: $viewModel.selectedColor) {
@@ -112,14 +123,16 @@ struct WriteOrEditNoteView: View {
         }
     }
     
-	func toolButton(imageName: String, backgroundColorOn : Bool, action: @escaping () -> Void) -> some View {
+	private func toolButton(imageName: String, backgroundColorOn: Bool, fontsize: Double, action: @escaping () -> Void) -> some View {
         return Button(action: {
             action()
         }, label: {
-            Image(systemName: imageName).font(.system(size: 15))
-				.padding()
-				.overlay(RoundedRectangle(cornerRadius: 10.0)
-					.fill(backgroundColorOn ? Color("OrangeMain").opacity(0.3):.clear))
+            Image(systemName: imageName).font(.system(size: fontsize))
+				.padding(5)
+				.overlay(RoundedRectangle(cornerRadius: 5.0)
+					.fill(backgroundColorOn ? Color("OrangeMain").opacity(0.3):.clear)
+					.frame(width: 35, height: 35)
+				)
 		})
     }
 }
