@@ -12,7 +12,6 @@ struct SignUpView: View {
 	
 	var body: some View {
 		ZStack {
-			
 			VStack {
 				Text(viewModel.errorMessage)
 					.errorMessageText(errorMessage: viewModel.errorMessage)
@@ -37,13 +36,11 @@ struct SignUpView: View {
 						.opacity(0)
 				)
 			}.padding()
-			VStack {
-				if viewModel.isUserAdded {
-					ProgressView()
-				}
-			}.frame(maxWidth: .infinity, maxHeight: .infinity)
-				.background(viewModel.isUserAdded ? .black.opacity(0.3):.clear)
-			
+
+			if viewModel.isUserAdded {
+				ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+					.background(viewModel.isUserAdded ? .black.opacity(0.3):.clear)
+			}
 		}
 	}
 }

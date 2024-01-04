@@ -15,10 +15,11 @@ struct ContentView: View {
 		NavigationView() {
 			ZStack {
 				VStack(alignment: .center, spacing: 10) {
-					if(viewModel.errorMessage != "") {
+					if !viewModel.errorMessage.isEmpty {
 						Text(viewModel.errorMessage)
 							.errorMessageText(errorMessage: viewModel.errorMessage)
 					}
+					
 					TextField("Username", text: $viewModel.usernameInput)
 						.underlineTextField(errorMessageActive: viewModel.usernameInvalid)
 					
@@ -49,18 +50,16 @@ struct ContentView: View {
 						) {
 							Text("Sign Up")
 						}.signUpButtonText()
-						
 					}
 				}
 				.disabled(viewModel.isLinkActive)
 				.padding()
 				
-				VStack {
 					if viewModel.isLinkActive {
-						ProgressView()
+						ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+							.background(viewModel.isLinkActive ? .black.opacity(0.3):.clear)
 					}
-				}.frame(maxWidth: .infinity, maxHeight: .infinity)
-					.background(viewModel.isLinkActive ? .black.opacity(0.3):.clear)
+				
 			}
 		}
 	}

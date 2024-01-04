@@ -11,6 +11,7 @@ struct WriteOrEditNoteView: View {
     @StateObject var viewModel = WriteOrEditNoteViewModel()
 	var username: String
     var note: Note?
+	@State var isOn = false
 	
 	init(username: String, note: Note? = nil) {
         self.username = username
@@ -20,14 +21,24 @@ struct WriteOrEditNoteView: View {
     var body: some View {
         NavigationView {
             VStack {
-				if(viewModel.errorMessage != "") {
+				if viewModel.errorMessage != "" {
 					Text(viewModel.errorMessage)
 						.errorMessageText(errorMessage: viewModel.errorMessage)
 				}
 				
 				Divider().padding(.top)
 				
-				UITextViewRepresentable(text: $viewModel.noteText, isBold: $viewModel.isBold, isItalic: $viewModel.isItalic, isUnderlined: $viewModel.isUnderlined, fontSizeDouble: $viewModel.fontSizeDouble, fontSizeString: $viewModel.fontSizeString ,selectedRange: $viewModel.selectedRange, color: $viewModel.selectedColor, formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged)
+				UITextViewRepresentable(
+					text: $viewModel.noteText,
+					isBold: $viewModel.isBold,
+					isItalic: $viewModel.isItalic,
+					isUnderlined: $viewModel.isUnderlined,
+					fontSizeDouble: $viewModel.fontSizeDouble,
+					fontSizeString: $viewModel.fontSizeString,
+					selectedRange: $viewModel.selectedRange, 
+					color: $viewModel.selectedColor,
+					formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged
+				)
 					.autocorrectionDisabled()
 					.disabled(viewModel.contentDisabled)
                 if !viewModel.contentDisabled {

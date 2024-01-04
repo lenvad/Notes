@@ -23,33 +23,33 @@ final class ContentViewModel: ObservableObject {
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .signIn:
-				usernameEqualToInput()
+				valiateInput()
 		}
 	}
 	
-	
-    func usernameEqualToInput() {
+    func valiateInput() {
         let user = fetchUserByUsername(inputUsername: usernameInput)
-        if(user != nil && user?.password == passwordInput) {
+		
+        if user != nil && user?.password == passwordInput {
             isLinkActive = true
             errorMessage = ""
 			usernameInvalid = false
 			passwordInvalid = false
         }
-        else if(user == nil) {
-            errorMessage = "no such user found"
-			usernameInvalid = true
-			passwordInvalid = false
-
-        }
-		else if(user?.password != passwordInput){
+		else if user?.password != passwordInput && user != nil {
 			errorMessage = "password is wrong"
 			usernameInvalid = false
 			passwordInvalid = true
 		}
+		else {
+			errorMessage = "no such user found"
+			usernameInvalid = true
+			passwordInvalid = false
+			
+		}
     }
     
-    func fetchUserByUsername(inputUsername: String) -> User? {
+    private func fetchUserByUsername(inputUsername: String) -> User? {
 		let user = PersistenceController.shared.fetchUsersByUsername(username: usernameInput)
         return user
     }

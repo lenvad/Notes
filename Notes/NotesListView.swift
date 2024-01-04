@@ -10,7 +10,7 @@ import SwiftUI
 struct NotesListView: View {
     @StateObject var viewModel = NotesListViewModel()
     @FetchRequest var notesList: FetchedResults<Note>
-    let username: String
+    var username: String
     
     init(username: String) {
         self.username = username
@@ -48,7 +48,7 @@ struct NotesListView: View {
 		}
 	}
 	
-	func generateNoteItem(note: Note) -> some View {
+	private func generateNoteItem(note: Note) -> some View {
 		return HStack {
 			NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)
 			) {

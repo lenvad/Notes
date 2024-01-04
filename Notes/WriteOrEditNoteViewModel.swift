@@ -131,7 +131,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	
 	@MainActor func fontSizeStringToDouble() {
 		print(fontSizeString)
-		if (fontSizeString.range(of: "^[0-9.]*$", options: .regularExpression) != nil) {
+		if fontSizeString.range(of: "^[0-9.]*$", options: .regularExpression) != nil {
 			errorMessage = ""
 			fontSizeDouble = Double(fontSizeString) ?? 12
 		} else {
