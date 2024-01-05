@@ -9,18 +9,12 @@ import SwiftUI
 
 struct NotesListView: View {
 	@StateObject var viewModel: NotesListViewModel
-    /*
-	 @FetchRequest var notesList: FetchedResults<Note>
+	@FetchRequest var notesList: FetchedResults<Note>
 
-    init(username: String) {
-        self.username = username
-        _notesList = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
-    }
-*/
 	var body: some View {
 		NavigationView {
 			List {
-				ForEach(viewModel.notesList, id: \.self, content:  { note in
+				ForEach(notesList, id: \.self, content:  { note in
 					generateNoteItem(note: note)
 				})
 				.listRowBackground(Color("OrangeMain").opacity(0.4))
@@ -48,6 +42,10 @@ struct NotesListView: View {
 				}
 			}
 		}
+		.onAppear {
+			print("view is appearing")
+			//viewModel.onScreenEvent(.onAppear)
+		}
 	}
 	
 	private func generateNoteItem(note: Note) -> some View {
@@ -73,7 +71,16 @@ struct NotesListView: View {
 	}
 }
 
-#Preview {
-	NotesListView(viewModel: NotesListViewModel(username: "l"))
+struct NotesListView_Previews: PreviewProvider {
+	static var previews: some View {
+		NotesListView(
+			viewModel: NotesListViewModel(username: "l"),
+			notesList: FetchRequest(
+				entity: Note.entity(),
+				sortDescriptors: [],
+				predicate: NSPredicate(format: "user.username = %@", "1")
+			)
+		)
+	}
 }
 

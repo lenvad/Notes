@@ -33,8 +33,10 @@ struct SignUpView: View {
 				.signUpButtonText()
 				.background(
 					NavigationLink("", destination: NotesListView(
-						viewModel: NotesListViewModel(username: viewModel.usernameInput)).navigationBarBackButtonHidden(true), isActive: $viewModel.isUserAdded)
-						.opacity(0)
+						viewModel: NotesListViewModel(username: viewModel.usernameInput),
+						notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.usernameInput)
+					).navigationBarBackButtonHidden(true), isActive: $viewModel.isUserAdded)
+					.opacity(0)
 				)
 			}.padding()
 
@@ -46,7 +48,9 @@ struct SignUpView: View {
 	}
 }
 
-#Preview {
-	SignUpView()
+struct SignUpView_Previews: PreviewProvider {
+	static var previews: some View {
+		SignUpView()
+	}
 }
 

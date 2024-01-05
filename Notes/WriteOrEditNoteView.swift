@@ -20,7 +20,7 @@ struct WriteOrEditNoteView: View {
 				Divider().padding(.top)
 				
 				UITextViewRepresentable(
-					text: $viewModel.noteText,
+					text: viewModel.noteText,
 					isBold: $viewModel.isBold,
 					isItalic: $viewModel.isItalic,
 					isUnderlined: $viewModel.isUnderlined,
@@ -29,7 +29,15 @@ struct WriteOrEditNoteView: View {
 					fontSizeString: $viewModel.fontSizeString,
 					selectedRange: $viewModel.selectedRange, 
 					color: $viewModel.selectedColor,
-					formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged
+					formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged,
+					onUpdate: { event in
+						switch event {
+						case .text(let newValue):
+							viewModel.noteText = newValue
+						case .isBold, .isItalic:
+							break
+						}
+					}
 				)
 					.autocorrectionDisabled()
 					.disabled(viewModel.contentDisabled)
@@ -37,30 +45,30 @@ struct WriteOrEditNoteView: View {
 					Divider().padding(.bottom)
                 }
             }
-            .toolbar {
-                if viewModel.contentDisabled {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            viewModel.contentDisabled = false
-                        }, label: {
-                            Image(systemName: "pencil.circle")
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                                .padding(15)
-                        })
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                    }
-                }
-				
-                if !viewModel.contentDisabled {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            viewModel.onScreenEvent(.addOrUpdateNote)
-                        }, label: {
-                            Text("Save")
+			.toolbar(content: {
+				if viewModel.contentDisabled {
+					ToolbarItem(placement: .topBarTrailing) {
+						Button(action: {
+							viewModel.contentDisabled = false
+						}, label: {
+							Image(systemName: "pencil.circle")
+								.resizable()
+								.frame(width: 40, height: 40)
+								.padding(15)
+						})
+						.frame(maxWidth: .infinity, alignment: .trailing)
+					}
+				}
+
+				if !viewModel.contentDisabled {
+					ToolbarItem(placement: .navigationBarTrailing) {
+						Button(action: {
+							viewModel.onScreenEvent(.addOrUpdateNote)
+						}, label: {
+							Text("Save")
 						}).padding(.trailing)
-                    }
-					
+					}
+
 					ToolbarItemGroup(placement: .bottomBar) {
 						toolButton(imageName: "bold",
 								   backgroundColorOn: viewModel.isBold,
@@ -68,20 +76,20 @@ struct WriteOrEditNoteView: View {
 								   action: {
 							viewModel.onScreenEvent(.toolbarButtons(event: .bold))
 						})
-						
+
 						toolButton(imageName: "italic",
 								   backgroundColorOn: viewModel.isItalic,
 								   fontsize: 19,
 								   action: {
 							viewModel.onScreenEvent(.toolbarButtons(event: .italic))
 						})
-						
+
 						toolButton(imageName: "underline",
 								   backgroundColorOn: viewModel.isUnderlined,
 								   fontsize: 17,
 								   action: {
 							viewModel.onScreenEvent(.toolbarButtons(event: .underlined))
-						})						
+						})
 
 						toolButton(imageName: "checklist",
 								   backgroundColorOn: viewModel.checklistActivated,
@@ -89,7 +97,7 @@ struct WriteOrEditNoteView: View {
 								   action: {
 							viewModel.onScreenEvent(.toolbarButtons(event: .checklist))
 						})
-						
+
 						Picker("Color", selection: $viewModel.selectedColor) {
 							ForEach(viewModel.colorList, id: \.self) { value in
 								Text(value).tag(value)
@@ -97,7 +105,7 @@ struct WriteOrEditNoteView: View {
 						}.onChange(of: viewModel.selectedColor) {
 							viewModel.formattingCurrentlyChanged = true
 						}
-						
+
 						TextField("", text: $viewModel.fontSizeString)
 							.onChange(of: viewModel.fontSizeString) {
 								viewModel.onScreenEvent(.fontSizeChanged)
@@ -106,9 +114,9 @@ struct WriteOrEditNoteView: View {
 							.padding(10)
 							.overlay(RoundedRectangle(cornerRadius: 5)
 								.stroke(Color(.lightGray), lineWidth: 0.5))
-                    }
-                }
-            }
+					}
+				}
+			})
 		}.onAppear {
             viewModel.onScreenEvent(.onAppearance)
         }
@@ -128,6 +136,8 @@ struct WriteOrEditNoteView: View {
     }
 }
 
-#Preview {
-	WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: "l"))
+struct WriteOrEditNoteView_Previews: PreviewProvider {
+	static var previews: some View {
+		WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: "l"))
+	}
 }

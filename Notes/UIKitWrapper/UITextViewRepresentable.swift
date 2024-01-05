@@ -7,8 +7,14 @@ import Combine
 import SwiftUI
 
 struct UITextViewRepresentable: UIViewRepresentable {
+	enum TextViewEvent {
+		case text(NSAttributedString)
+		case isBold(Bool)
+		case isItalic(Bool)
+	}
+
 	let textView = UITextView()
-	@Binding var text: NSAttributedString
+	@State var text: NSAttributedString
 	@Binding var isBold: Bool
 	@Binding var isItalic: Bool
 	@Binding var isUnderlined: Bool
@@ -18,7 +24,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var selectedRange: NSRange
 	@Binding var color: String
 	@Binding var formattingCurrentlyChanged: Bool
-	
+	let onUpdate: (TextViewEvent) -> Void
+
 	func makeUIView(context: Context) -> UITextView {
 		textView.delegate = context.coordinator
 		return textView
@@ -57,7 +64,9 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					fontSizeString: $fontSizeString,
 					selectedRange: $selectedRange,
 					color: $color,
-					formattingCurrentlyChanged: $formattingCurrentlyChanged)
+					formattingCurrentlyChanged: $formattingCurrentlyChanged,
+					onUpdate: onUpdate
+		)
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
@@ -71,7 +80,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		@Binding var selectedRange: NSRange
 		@Binding var color: String
 		@Binding var formattingCurrentlyChanged: Bool
-		
+		let onUpdate: (TextViewEvent) -> Void
+
 		private var currentSelectedRange: NSRange?
 		
 		init(text: Binding<NSAttributedString>,
@@ -83,7 +93,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			 fontSizeString: Binding<String>,
 			 selectedRange: Binding<NSRange>,
 			 color: Binding<String>,
-			 formattingCurrentlyChanged: Binding<Bool>
+			 formattingCurrentlyChanged: Binding<Bool>,
+			 onUpdate: @escaping (TextViewEvent) -> Void
 		) {
 			self._text = text
 			self._isBold = isBold
@@ -95,6 +106,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			self._color = color
 			self._formattingCurrentlyChanged = formattingCurrentlyChanged
 			self._fontSizeString = fontSizeString
+			self.onUpdate = onUpdate
 		}
 		
 		func setAttributes(isBold:  Binding<Bool>,
@@ -215,7 +227,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			if !isUnderlined {
 				attributedString.removeAttribute(.underlineStyle, range: range)
 			}
-			
+
 			if isBold && isItalic && !isUnderlined {
 				attributedString.addAttribute(
 					.font,
@@ -273,39 +285,39 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			switch color {
 				case "standard":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "strandardFont"),
+										value: UIColor(named: "StandardFont"),
 										range: range)
 				case "red":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "redFont"),
+										value: UIColor(named: "RedFont"),
 										range: range)
 				case "orange":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "orangeFont"),
+										value: UIColor(named: "OrangeFont"),
 										range: range)
 				case "yellow":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "yellowFont"),
+										value: UIColor(named: "YellowFont"),
 										range: range)
 				case "green":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "greenFont"),
+										value: UIColor(named: "GreenFont"),
 										range: range)
 				case "blue":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "blueFont"),
+										value: UIColor(named: "BlueFont"),
 										range: range)
 				case "pink":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "pinkFont"),
+										value: UIColor(named: "PinkFont"),
 										range: range)
 				case "purple":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "purpleFont"),
+										value: UIColor(named: "PurpleFont"),
 										range: range)
 				default:
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "strandardFont") ,
+										value: UIColor(named: "StandardFont") ,
 										range: range)
 			}
 			
@@ -320,14 +332,14 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			let attributedStringImage = NSAttributedString(attachment: imageAttacament)
 			let stringImage = attributedStringImage.string
 			
-			_text.wrappedValue = attributedString
-			
+			updateText(attributedString)
+
 			if doesItComeFromTextView {
 				if stringOfCurrentLine.contains(stringImage) && replacementText == "\n" {
 					attributedString.insert(attributedStringImage, at: range.location + 1)
 					
-					_text.wrappedValue = attributedString
-					
+					updateText(attributedString)
+
 					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count + 1, length: 0)
 				} else {
 					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
@@ -353,7 +365,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 
 			checklistActivated = false
 			
-			_text.wrappedValue = string
+			updateText(string)
 			_selectedRange.wrappedValue = NSRange(location: range.location + 1, length: 0)
 		}
 
@@ -377,6 +389,11 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			if range.length >= 1 {
 				getAllAttributesFromRangeAndSelectThem(selectedRange: range, attributedText: textView.attributedText)
 			}
+		}
+
+		private func updateText(_ newValue: NSAttributedString) {
+			_text.wrappedValue = newValue
+			onUpdate(.text(newValue))
 		}
 	}
 }

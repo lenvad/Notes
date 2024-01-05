@@ -37,12 +37,15 @@ struct ContentView: View {
 								.cornerRadius(15.0)
 						}.frame(alignment: .bottom)
 							.background(
-								NavigationLink("",
-											   destination: NotesListView(
-												viewModel: NotesListViewModel(username: viewModel.usernameInput)
-											   ).navigationBarBackButtonHidden(true),
-											   isActive: $viewModel.isLinkActive).opacity(0))
-						
+								NavigationLink(
+									"",
+									destination: NotesListView(
+										viewModel: NotesListViewModel(username: viewModel.usernameInput),
+										notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.usernameInput)
+									).navigationBarBackButtonHidden(true),
+									isActive: $viewModel.isLinkActive).opacity(0)
+							)
+
 						Spacer()
 							.frame(width: 30)
 						
@@ -66,7 +69,9 @@ struct ContentView: View {
 	}
 }
 
-#Preview {
-	ContentView()
+struct ContentView_Previews: PreviewProvider {
+	static var previews: some View {
+		ContentView()
+	}
 }
 

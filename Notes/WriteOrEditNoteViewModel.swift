@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 final class WriteOrEditNoteViewModel: ObservableObject {
-	@MainActor @Published var noteText: NSAttributedString = NSAttributedString(string: "")
+	var noteText: NSAttributedString = NSAttributedString(string: "")
 	@MainActor @Published var isBold: Bool = false
 	@MainActor @Published var isItalic: Bool = false
 	@MainActor @Published var isUnderlined: Bool = false
