@@ -4,19 +4,10 @@
 //
 //  Created by Lena Vadakkel on 10.11.23.
 //
-
 import SwiftUI
 
 struct WriteOrEditNoteView: View {
-    @StateObject var viewModel = WriteOrEditNoteViewModel()
-	var username: String
-    var note: Note?
-	@State var isOn = false
-	
-	init(username: String, note: Note? = nil) {
-        self.username = username
-        self.note = note
-    }
+	@StateObject var viewModel: WriteOrEditNoteViewModel
 
     var body: some View {
         NavigationView {
@@ -64,7 +55,7 @@ struct WriteOrEditNoteView: View {
                 if !viewModel.contentDisabled {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
-                            viewModel.onScreenEvent(.addOrUpdateNote(inputUsername: username))
+                            viewModel.onScreenEvent(.addOrUpdateNote)
                         }, label: {
                             Text("Save")
 						}).padding(.trailing)
@@ -119,7 +110,7 @@ struct WriteOrEditNoteView: View {
                 }
             }
 		}.onAppear {
-            viewModel.onScreenEvent(.onAppearance(note: note))
+            viewModel.onScreenEvent(.onAppearance)
         }
     }
     
@@ -138,5 +129,5 @@ struct WriteOrEditNoteView: View {
 }
 
 #Preview {
-    WriteOrEditNoteView(username: "l")
+	WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: "l"))
 }

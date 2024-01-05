@@ -32,7 +32,8 @@ struct SignUpView: View {
 				}
 				.signUpButtonText()
 				.background(
-					NavigationLink("", destination: NotesListView(username: viewModel.usernameInput).navigationBarBackButtonHidden(true), isActive: $viewModel.isUserAdded)
+					NavigationLink("", destination: NotesListView(
+						viewModel: NotesListViewModel(username: viewModel.usernameInput)).navigationBarBackButtonHidden(true), isActive: $viewModel.isUserAdded)
 						.opacity(0)
 				)
 			}.padding()

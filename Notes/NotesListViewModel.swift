@@ -10,12 +10,17 @@ import SwiftUI
 
 final class NotesListViewModel: ObservableObject {
     let dateFormatter: DateFormatter
+	var username: String
+	@FetchRequest var notesList: FetchedResults<Note>
 	
 	enum ScreenEvent {
 		case deleteNoteWhenSwipe(note: Note)
 	}
 	
-    init() {
+	init(username: String) {
+		self.username = username
+		_notesList = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
+
         dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .short
         dateFormatter.dateStyle = .short
@@ -27,6 +32,8 @@ final class NotesListViewModel: ObservableObject {
 				deleteNote(inputNote: note)
 		}
 	}
+	
+
 
     func deleteNote(inputNote: Note) {
 		PersistenceController.shared.deleteNote(note: inputNote)

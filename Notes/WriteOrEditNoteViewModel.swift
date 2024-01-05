@@ -25,12 +25,13 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	@Published var fontSizeString: String = "12"
 	
 	var counter: Int32 = 0
-	var note: Note? = nil
 	var isLinkActive = false
+	var username: String
+	var note: Note?
 	
 	enum ScreenEvent {
-		case onAppearance(note: Note?)
-		case addOrUpdateNote(inputUsername: String)
+		case onAppearance
+		case addOrUpdateNote
 		case toolbarButtons(event: ToolKinds)
 		case fontSizeChanged
 	}
@@ -42,17 +43,22 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		case checklist
 	}
 	
+	init(username: String, note: Note? = nil) {
+		self.username = username
+		self.note = note
+	}
+	
 	@MainActor func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
-			case .onAppearance(let note):
+			case .onAppearance:
 				counter = getBiggestId() ?? 0
 				if (note != nil ) {
-					setNote(note)
+					setNote()
 					contentDisabled = true
 				} else {
 					contentDisabled = false
 				}
-			case .addOrUpdateNote(inputUsername: let username):
+			case .addOrUpdateNote:
 				let user = fetchUserByUsername(inputUsername: username)
 				if (user != nil) {
 					addOrUpdateNote(inputUser: user!)
@@ -119,14 +125,13 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		return biggestNum?.id
 	}
 	
-	@MainActor func setNote(_ note: Note?) {
+	@MainActor func setNote() {
 		do {
 			let unarchiver = try NSKeyedUnarchiver(forReadingFrom: note?.noteData ?? Data("error".utf8))
 			unarchiver.requiresSecureCoding = false
 			let decodedAttributedString = unarchiver.decodeObject(forKey: NSKeyedArchiveRootObjectKey) as! NSAttributedString
 			
 			noteText = decodedAttributedString
-			self.note = note
 			contentDisabled = true
 		} catch {
 			print("error decoding")

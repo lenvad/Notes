@@ -34,14 +34,15 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		
 		uiView.attributedText = text
 		uiView.selectedRange = selectedRange
-		
-		print("update view with \(selectedRange), \(context.coordinator) \(context.coordinator.isBold) \(isBold)")
-		print("formattingCurrentlyChanged: \(formattingCurrentlyChanged)")
+
 		let coordinator = context.coordinator
 		coordinator.debugPrint()
 		
+		if checklistActivated {
+			coordinator.displayUncheckedCheckBox(range: uiView.selectedRange, attributedText: uiView.attributedText)
+		}
+		
 		if (formattingCurrentlyChanged && selectedRange.length >= 1) {
-			print("formating going to be changed")
 			coordinator.applyStyleToCurrentSelectedTextIfNeed(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
 	}
@@ -155,7 +156,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					isBold = false
 				}
 				
-				if (value != nil) {
+				if value != nil {
 					fontSize = Double(value?.pointSize ?? 12)
 					fontSizeString = String(format: "%.2f", Double(value?.pointSize ?? 12))
 				}
@@ -199,70 +200,69 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			
 			var range = selectedRange
 			currentSelectedRange = range
-			let string = NSMutableAttributedString(attributedString: attributedText)
+			let attributedString = NSMutableAttributedString(attributedString: attributedText)
 			
 			if doesItComeFromTextView {
 				let addedString = NSMutableAttributedString(string: replacementText)
-				string.insert(addedString, at: range.location)
+				attributedString.insert(addedString, at: range.location)
 				
 				if replacementText.isEmpty {
-					string.deleteCharacters(in: range)
+					attributedString.deleteCharacters(in: range)
 				}
 				range = NSRange(location: range.location, length: replacementText.count)
 			}
 			
 			if !isUnderlined {
-				string.removeAttribute(.underlineStyle, range: range)
+				attributedString.removeAttribute(.underlineStyle, range: range)
 			}
 			
 			if isBold && isItalic && !isUnderlined {
-				string.addAttribute(
+				attributedString.addAttribute(
 					.font,
 					value: font.boldItalics(),
 					range: range
 				)
 				print("bold and italic")
 			} else if isBold && !isItalic && !isUnderlined {
-				string.addAttribute(
+				attributedString.addAttribute(
 					.font,
 					value: font.bold(),
 					range: range
 				)
 				print("bold only")
 			} else if isItalic && !isBold && !isUnderlined {
-				string.addAttribute(
+				attributedString.addAttribute(
 					.font,
 					value: font.italics(),
 					range: range
 				)
 				print("italic only")
 			} else if isUnderlined && isBold && isItalic {
-				string.addAttributes([.font: font.boldItalics(),
+				attributedString.addAttributes([.font: font.boldItalics(),
 									  .underlineStyle: NSUnderlineStyle.single.rawValue],
 									 range: range
 				)
 				print("bold, italic, underlined")
 			} else if isUnderlined && isBold && !isItalic {
-				string.addAttributes([.font: font.bold(),
+				attributedString.addAttributes([.font: font.bold(),
 									  .underlineStyle: NSUnderlineStyle.single.rawValue],
 									 range: range
 				)
 				print("bold and underlined")
-				
 			} else if isUnderlined && !isBold && isItalic {
-				string.addAttributes([.font: font.italics(),
+				attributedString.addAttributes([.font: font.italics(),
 									  .underlineStyle: NSUnderlineStyle.single.rawValue],
 									 range: range
 				)
 				print("italic and underlined")
 			} else if isUnderlined && !isBold && !isItalic {
-				string.addAttributes([.font: font,
+				attributedString.addAttributes([.font: font,
 									  .underlineStyle: NSUnderlineStyle.single.rawValue],
 									 range: range
 				)
 				print("underlined only")
 			} else {
-				string.addAttribute(
+				attributedString.addAttribute(
 					.font,
 					value: font,
 					range: range
@@ -272,47 +272,66 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			
 			switch color {
 				case "standard":
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "strandardFont"),
 										range: range)
 				case "red":
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "redFont"),
 										range: range)
 				case "orange":
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "orangeFont"),
 										range: range)
 				case "yellow":
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "yellowFont"),
 										range: range)
 				case "green":
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "greenFont"),
 										range: range)
 				case "blue":
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "blueFont"),
 										range: range)
 				case "pink":
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "pinkFont"),
 										range: range)
 				case "purple":
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "purpleFont"),
 										range: range)
 				default:
-					string.addAttribute(NSAttributedString.Key.foregroundColor,
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 										value: UIColor(named: "strandardFont") ,
 										range: range)
 			}
 			
-			_text.wrappedValue = string
+			//get range of current line and make it to string
+			let rangeOfCurrentLine = attributedString.mutableString.lineRange(for: range)
+			let attributedStringOfCurrentLine = attributedString.attributedSubstring(from: rangeOfCurrentLine)
+			let stringOfCurrentLine = attributedStringOfCurrentLine.string
+			
+			//make a UIImage and convert it to String
+			let imageAttacament = NSTextAttachment()
+			imageAttacament.image = UIImage(systemName: "circlebadge")
+			let attributedStringImage = NSAttributedString(attachment: imageAttacament)
+			let stringImage = attributedStringImage.string
+			
+			_text.wrappedValue = attributedString
+			
 			if doesItComeFromTextView {
-				_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
-				
+				if stringOfCurrentLine.contains(stringImage) && replacementText == "\n" {
+					attributedString.insert(attributedStringImage, at: range.location + 1)
+					
+					_text.wrappedValue = attributedString
+					
+					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count + 1, length: 0)
+				} else {
+					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
+				}
 			} else {
 				_selectedRange.wrappedValue = range
 				print("NS Range: \(NSRange(location: range.location + text.length, length: 0))")
@@ -320,6 +339,24 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			formattingCurrentlyChanged = false
 		}
 		
+		func displayUncheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
+			//converting UIImage to NSAttributedString
+			let imageAttacament = NSTextAttachment()
+			imageAttacament.image = UIImage(systemName: "circlebadge")
+			let imageString = NSAttributedString(attachment: imageAttacament)
+			
+			let string = NSMutableAttributedString(attributedString: attributedText)
+			
+			let rangeOfCurrentLine = string.mutableString.lineRange(for: range)
+
+			string.insert(imageString, at: rangeOfCurrentLine.location)
+
+			checklistActivated = false
+			
+			_text.wrappedValue = string
+			_selectedRange.wrappedValue = NSRange(location: range.location + 1, length: 0)
+		}
+
 		func textViewDidChange(_ textView: UITextView) {
 			// UIKit -> SwiftUI
 			print("did change text to \(textView.text)")

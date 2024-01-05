@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct NotesListView: View {
-    @StateObject var viewModel = NotesListViewModel()
-    @FetchRequest var notesList: FetchedResults<Note>
-    var username: String
-    
+	@StateObject var viewModel: NotesListViewModel
+    /*
+	 @FetchRequest var notesList: FetchedResults<Note>
+
     init(username: String) {
         self.username = username
         _notesList = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
     }
-
+*/
 	var body: some View {
 		NavigationView {
 			List {
-				ForEach(notesList, id: \.self, content:  { note in
+				ForEach(viewModel.notesList, id: \.self, content:  { note in
 					generateNoteItem(note: note)
 				})
 				.listRowBackground(Color("OrangeMain").opacity(0.4))
@@ -28,7 +28,9 @@ struct NotesListView: View {
 			.toolbar {
 				ToolbarItem(placement: .bottomBar ) {
 					NavigationLink(
-						destination: WriteOrEditNoteView(username: username)
+						destination: WriteOrEditNoteView(
+							viewModel: WriteOrEditNoteViewModel(username: viewModel.username)
+						)
 					) {
 						Image(systemName: "plus.circle.fill")
 							.foregroundColor(Color("AccentColor"))
@@ -50,7 +52,7 @@ struct NotesListView: View {
 	
 	private func generateNoteItem(note: Note) -> some View {
 		return HStack {
-			NavigationLink(destination: WriteOrEditNoteView(username: username, note: note)
+			NavigationLink(destination: WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: viewModel.username, note: note))
 			) {
 				Text(note.title ?? "Untitled")
 					.foregroundColor(Color("AccentColor"))
@@ -72,6 +74,6 @@ struct NotesListView: View {
 }
 
 #Preview {
-	NotesListView(username: "Lena")
+	NotesListView(viewModel: NotesListViewModel(username: "l"))
 }
 

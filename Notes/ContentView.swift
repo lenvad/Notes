@@ -38,7 +38,9 @@ struct ContentView: View {
 						}.frame(alignment: .bottom)
 							.background(
 								NavigationLink("",
-											   destination: NotesListView(username: viewModel.usernameInput).navigationBarBackButtonHidden(true),
+											   destination: NotesListView(
+												viewModel: NotesListViewModel(username: viewModel.usernameInput)
+											   ).navigationBarBackButtonHidden(true),
 											   isActive: $viewModel.isLinkActive).opacity(0))
 						
 						Spacer()
