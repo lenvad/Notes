@@ -6,21 +6,25 @@
 //
 
 import Foundation
+import SwiftUI
 
-class NotesListViewModel: ObservableObject {
-    @Published var allNotesFromUser: [Note] = []
+final class NotesListViewModel: ObservableObject {
     let dateFormatter: DateFormatter
-	//let presistenceController = PersistenceController()
-	
-    init() {
-        dateFormatter = DateFormatter()
-        dateFormatter.timeStyle = .short
-        dateFormatter.dateStyle = .short
-    }
+	var username: String
+	@FetchRequest var notesList: FetchedResults<Note>
 	
 	enum ScreenEvent {
 		case deleteNoteWhenSwipe(note: Note)
 	}
+	
+	init(username: String) {
+		self.username = username
+		_notesList = FetchRequest(entity: Note.entity(), sortDescriptors: [], predicate: NSPredicate(format: "user.username = %@", username))
+
+        dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .short
+        dateFormatter.dateStyle = .short
+    }
 	
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
@@ -28,13 +32,10 @@ class NotesListViewModel: ObservableObject {
 				deleteNote(inputNote: note)
 		}
 	}
+	
+
 
     func deleteNote(inputNote: Note) {
 		PersistenceController.shared.deleteNote(note: inputNote)
-    }
-    
-    func deleteUser(inputUser: User) {
-		PersistenceController.shared.deleteUser(user: inputUser)
-        print("deleted")
     }
 }

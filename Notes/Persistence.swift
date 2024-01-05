@@ -22,7 +22,7 @@ struct PersistenceController {
 			
             let newNote = Note(context: viewContext)
             newNote.title = "title"
-            newNote.content = "content"
+			newNote.noteData = "content".data(using: .utf8)
 			newNote.timestamp = Date.now
 			newNote.id = 1
 			newNote.user = newUser
@@ -88,12 +88,11 @@ struct PersistenceController {
 		save()
 	}
 	
-	func createNote(title: String, content: String, timestamp: Date, id: Int32, user: User) -> Note {
+	func createNote(title: String, timestamp: Date, id: Int32, user: User) -> Note {
 		let note = Note(context: container.viewContext)
 		note.id = id
 		note.timestamp = timestamp
 		note.title = title
-		note.content = content
 		note.user = user
 		user.addToNote(note)
 		save()
@@ -133,6 +132,21 @@ struct PersistenceController {
 		}
 		return fetchedUser
 	}
+
+	func fetchUsersByUsernameAndPassword(username: String, password: String) -> User? {
+		let request: NSFetchRequest<User> = User.fetchRequest()
+		let predicate1 = NSPredicate(format: "username = %@", username)
+		let predicate2 = NSPredicate(format: "password = %@", password)
+		let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate1, predicate2])
+		request.predicate = compound
+		var fetchedUser: User?
+		do {
+			fetchedUser = try container.viewContext.fetch(request).first
+		} catch let error {
+			print("Error fetching users \(error)")
+		}
+		return fetchedUser
+	}
 	
 	func fetchNotesByUser(user: User) -> [Note] {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
@@ -161,7 +175,7 @@ struct PersistenceController {
 	}
 	
 	
-	func updateNote(title: String, content: String, timestamp: Date, id: Int32, user: User) {
+	func updateNote(title: String, timestamp: Date, id: Int32, data: Data, user: User) -> Note {
 		let context = container.viewContext
 		let note: Note!
 		
@@ -180,11 +194,13 @@ struct PersistenceController {
 		note.id = id
 		note.timestamp = timestamp
 		note.title = title
-		note.content = content
+		note.noteData = data
 		note.user = user
 		user.addToNote(note)
 		
 		save()
+		
+		return note
 	}
 	
 	func deleteUser(user: User) {

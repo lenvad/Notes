@@ -2,14 +2,12 @@
 //  Note+CoreDataProperties.swift
 //  Notes
 //
-//  Created by Lena Vadakkel on 16.11.23.
+//  Created by Lena Vadakkel on 08.12.23.
 //
 //
 
 import Foundation
 import CoreData
-import UIKit
-import Combine
 
 
 extension Note {
@@ -18,11 +16,11 @@ extension Note {
         return NSFetchRequest<Note>(entityName: "Note")
     }
 
-    @NSManaged public var content: String?
     @NSManaged public var id: Int32
     @NSManaged public var noteId: UUID?
     @NSManaged public var timestamp: Date
     @NSManaged public var title: String?
+    @NSManaged public var noteData: Data?
     @NSManaged public var user: User?
 
 }
@@ -30,4 +28,3 @@ extension Note {
 extension Note : Identifiable {
 
 }
-
