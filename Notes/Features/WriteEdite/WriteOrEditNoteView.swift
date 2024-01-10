@@ -34,8 +34,12 @@ struct WriteOrEditNoteView: View {
 						switch event {
 						case .text(let newValue):
 							viewModel.noteText = newValue
-						case .isBold, .isItalic:
-							break
+						case .isBold(let newValue):
+								break
+							//viewModel.isBold = newValue
+						case .isItalic(let newValue):
+								break
+							//viewModel.isItalic = newValue
 						}
 					}
 				)
@@ -129,7 +133,7 @@ struct WriteOrEditNoteView: View {
             Image(systemName: imageName).font(.system(size: fontsize))
 				.padding(5)
 				.overlay(RoundedRectangle(cornerRadius: 5.0)
-					.fill(backgroundColorOn ? Color("OrangeMain").opacity(0.3):.clear)
+					.fill(backgroundColorOn ? Color(.orangeMain).opacity(0.3):.clear)
 					.frame(width: 35, height: 35)
 				)
 		})

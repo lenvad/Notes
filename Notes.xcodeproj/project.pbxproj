@@ -144,10 +144,6 @@
 				503CE1DF2B10DD0E004C7097 /* Resources */,
 				503CE1DA2B10DB33004C7097 /* ViewModifier */,
 				501E50162AF526FA00522448 /* NotesApp.swift */,
-				501E50182AF526FA00522448 /* ContentView.swift */,
-				501E50692AF5381F00522448 /* ContentViewModel.swift */,
-				50FF4BF42AFE7BC7000A6E25 /* WriteOrEditNoteView.swift */,
-				50FF4BF62AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift */,
 				501E501A2AF526FB00522448 /* Assets.xcassets */,
 				501E501F2AF526FB00522448 /* Persistence.swift */,
 				501E50212AF526FB00522448 /* Notes.xcdatamodeld */,
@@ -200,9 +196,29 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		509A99F72B4EA9AD00CB1C00 /* SignIn */ = {
+			isa = PBXGroup;
+			children = (
+				501E50182AF526FA00522448 /* ContentView.swift */,
+				501E50692AF5381F00522448 /* ContentViewModel.swift */,
+			);
+			path = SignIn;
+			sourceTree = "<group>";
+		};
+		509A99F82B4EA9DF00CB1C00 /* WriteEdite */ = {
+			isa = PBXGroup;
+			children = (
+				50FF4BF42AFE7BC7000A6E25 /* WriteOrEditNoteView.swift */,
+				50FF4BF62AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift */,
+			);
+			path = WriteEdite;
+			sourceTree = "<group>";
+		};
 		5DE32C3B2B483FAC00382C49 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				509A99F82B4EA9DF00CB1C00 /* WriteEdite */,
+				509A99F72B4EA9AD00CB1C00 /* SignIn */,
 				5DE32C3D2B483FDE00382C49 /* Authentication */,
 				5DE32C3C2B483FC900382C49 /* NoteList */,
 			);

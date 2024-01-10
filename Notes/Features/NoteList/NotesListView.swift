@@ -17,7 +17,7 @@ struct NotesListView: View {
 				ForEach(notesList, id: \.self, content:  { note in
 					generateNoteItem(note: note)
 				})
-				.listRowBackground(Color("OrangeMain").opacity(0.4))
+				.listRowBackground((Color.orangeMain).opacity(0.4))
 			}
 			.toolbar {
 				ToolbarItem(placement: .bottomBar ) {

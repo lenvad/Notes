@@ -32,7 +32,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	func updateUIView(_ uiView: UITextView, context: Context) {
-		
 		context.coordinator.setAttributes(isBold: $isBold,
 										  isItalic: $isItalic,
 										  isUnderlined: $isUnderlined,
@@ -50,6 +49,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		}
 		
 		if (formattingCurrentlyChanged && selectedRange.length >= 1) {
+			print("1")
 			coordinator.applyStyleToCurrentSelectedTextIfNeed(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
 	}
@@ -124,7 +124,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		
 		func debugPrint() {
 			print()
-			print("\(self) bold: \(self.isBold)")
+			print("\(self)")
+			print("bold: \(self.isBold)")
 			print("italic: \(isItalic)")
 			print("underlined: \(isUnderlined)")
 			print("color: \(color)")
@@ -161,11 +162,14 @@ struct UITextViewRepresentable: UIViewRepresentable {
 				} else {
 					isItalic = false
 				}
-				
+				//onUpdate(.isItalic(isItalic))
+
 				if fontStyle.contains("bold") {
 					isBold = true
+					//onUpdate(.isBold(isBold))
 				} else {
 					isBold = false
+					//onUpdate(.isBold(isBold))
 				}
 				
 				if value != nil {
@@ -279,45 +283,45 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					value: font,
 					range: range
 				)
-				print("standardFont")
+				print("standard")
 			}
 			
 			switch color {
 				case "standard":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "StandardFont"),
+												  value: UIColor(.standardFont),
 										range: range)
 				case "red":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "RedFont"),
+												  value: UIColor(.redFont),
 										range: range)
 				case "orange":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "OrangeFont"),
+												  value: UIColor(.orangeFont),
 										range: range)
 				case "yellow":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "YellowFont"),
+												  value: UIColor(.yellowFont),
 										range: range)
 				case "green":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "GreenFont"),
+												  value: UIColor(.greenFont),
 										range: range)
 				case "blue":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "BlueFont"),
+												  value: UIColor(.blueFont),
 										range: range)
 				case "pink":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "PinkFont"),
+												  value: UIColor(.pink),
 										range: range)
 				case "purple":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "PurpleFont"),
+												  value: UIColor(.purpleFont),
 										range: range)
 				default:
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-										value: UIColor(named: "StandardFont") ,
+												  value: UIColor(.standardFont) ,
 										range: range)
 			}
 			
@@ -333,6 +337,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			let stringImage = attributedStringImage.string
 			
 			updateText(attributedString)
+			print("2")
 
 			if doesItComeFromTextView {
 				if stringOfCurrentLine.contains(stringImage) && replacementText == "\n" {
@@ -345,6 +350,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
 				}
 			} else {
+				print("2")
 				_selectedRange.wrappedValue = range
 				print("NS Range: \(NSRange(location: range.location + text.length, length: 0))")
 			}

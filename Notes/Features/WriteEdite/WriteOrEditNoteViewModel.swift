@@ -10,8 +10,8 @@ import Combine
 
 final class WriteOrEditNoteViewModel: ObservableObject {
 	var noteText: NSAttributedString = NSAttributedString(string: "")
-	@MainActor @Published var isBold: Bool = false
-	@MainActor @Published var isItalic: Bool = false
+	@Published var isBold: Bool = false
+	@Published var isItalic: Bool = false
 	@MainActor @Published var isUnderlined: Bool = false
 	@MainActor @Published var checklistActivated: Bool = false
 	@MainActor @Published var formattingCurrentlyChanged: Bool = false
