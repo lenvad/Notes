@@ -9,39 +9,51 @@ import Foundation
 import Combine
 
 final class WriteOrEditNoteViewModel: ObservableObject {
+	enum ScreenEvent {
+	case onAppearance
+	case addOrUpdateNote
+	case toolbarButtons(event: ToolKinds)
+	case fontSizeChanged
+	}
+
+	enum ToolKinds {
+	case bold
+	case italic
+	case underlined
+	case checklist
+	}
+	
+	enum Colors {
+	case standard
+	case red
+	case blue
+	case green
+	case yellow
+	case pink
+	case purple
+	case orange
+	}
+
 	var noteText: NSAttributedString = NSAttributedString(string: "")
 	@Published var isBold: Bool = false
 	@Published var isItalic: Bool = false
 	@MainActor @Published var isUnderlined: Bool = false
 	@MainActor @Published var checklistActivated: Bool = false
 	@MainActor @Published var formattingCurrentlyChanged: Bool = false
-	@MainActor @Published var selectedColor = "standard"
-	@MainActor @Published var fontSizeDouble: Double = 12.0
+	@Published var selectedColor = "standard"
+	//@MainActor @Published var fontSizeDouble: Double = 12.0
 	
 	@Published var errorMessage = ""
 	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
 	@Published var colorList: [String] = ["standard", "red", "blue", "green", "yellow", "pink", "purple", "orange"]
+	@Published var fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
 	@Published var contentDisabled = true
-	@Published var fontSizeString: String = "12"
+	@Published var fontSize: Int = 12
 	
 	var counter: Int32 = 0
 	var isLinkActive = false
 	var username: String
 	var note: Note?
-	
-	enum ScreenEvent {
-		case onAppearance
-		case addOrUpdateNote
-		case toolbarButtons(event: ToolKinds)
-		case fontSizeChanged
-	}
-	
-	enum ToolKinds {
-		case bold
-		case italic
-		case underlined
-		case checklist
-	}
 	
 	init(username: String, note: Note? = nil) {
 		self.username = username
@@ -53,7 +65,8 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 			case .onAppearance:
 				counter = getBiggestId() ?? 0
 				if (note != nil ) {
-					setNote()
+
+					decodeAndSetNote()
 					contentDisabled = true
 				} else {
 					contentDisabled = false
@@ -68,7 +81,6 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 			case .toolbarButtons(let fontEvent):
 				toolbarButtons(fontEvent)
 			case .fontSizeChanged:
-				fontSizeStringToDouble()
 				formattingCurrentlyChanged = true
 		}
 	}
@@ -101,7 +113,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	
 	@MainActor func addOrUpdateNote(inputUser: User) {
 		do {
-			let data = try NSKeyedArchiver.archivedData(withRootObject: noteText, requiringSecureCoding: false) // attributedString is NSAttributedString
+			let data = try NSKeyedArchiver.archivedData(withRootObject: noteText, requiringSecureCoding: false) // noteText is NSAttributedString
 			
 			let inputTitle = noteText.string.components(separatedBy: CharacterSet.newlines).first!
 			let inputTimestamp = Date.now
@@ -125,7 +137,8 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		return biggestNum?.id
 	}
 	
-	@MainActor func setNote() {
+
+	@MainActor func decodeAndSetNote() {
 		do {
 			let unarchiver = try NSKeyedUnarchiver(forReadingFrom: note?.noteData ?? Data("error".utf8))
 			unarchiver.requiresSecureCoding = false
@@ -135,16 +148,6 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 			contentDisabled = true
 		} catch {
 			print("error decoding")
-		}
-	}
-	
-	@MainActor func fontSizeStringToDouble() {
-		print(fontSizeString)
-		if fontSizeString.range(of: "^[0-9.]*$", options: .regularExpression) != nil {
-			errorMessage = ""
-			fontSizeDouble = Double(fontSizeString) ?? 12
-		} else {
-			errorMessage = "only numbers allowed"
 		}
 	}
 }

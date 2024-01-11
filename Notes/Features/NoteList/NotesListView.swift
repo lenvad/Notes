@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NotesListView: View {
 	@StateObject var viewModel: NotesListViewModel
-	@FetchRequest var notesList: FetchedResults<Note>
+	@FetchRequest(sortDescriptors: [SortDescriptor(\Note.noteId, order: .forward)]) var notesList: FetchedResults<Note>
 
 	var body: some View {
 		NavigationView {
@@ -24,7 +24,7 @@ struct NotesListView: View {
 					NavigationLink(
 						destination: WriteOrEditNoteView(
 							viewModel: WriteOrEditNoteViewModel(username: viewModel.username)
-						)
+						).navigationBarBackButtonHidden(true)
 					) {
 						Image(systemName: "plus.circle.fill")
 							.foregroundColor(Color("AccentColor"))
@@ -50,7 +50,7 @@ struct NotesListView: View {
 	
 	private func generateNoteItem(note: Note) -> some View {
 		return HStack {
-			NavigationLink(destination: WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: viewModel.username, note: note))
+			NavigationLink(destination: WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: viewModel.username, note: note)).navigationBarBackButtonHidden(true)
 			) {
 				Text(note.title ?? "Untitled")
 					.foregroundColor(Color("AccentColor"))

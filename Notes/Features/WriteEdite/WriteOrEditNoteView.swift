@@ -25,8 +25,7 @@ struct WriteOrEditNoteView: View {
 					isItalic: $viewModel.isItalic,
 					isUnderlined: $viewModel.isUnderlined,
 					checklistActivated: $viewModel.checklistActivated,
-					fontSizeDouble: $viewModel.fontSizeDouble,
-					fontSizeString: $viewModel.fontSizeString,
+					fontSize: $viewModel.fontSize,
 					selectedRange: $viewModel.selectedRange, 
 					color: $viewModel.selectedColor,
 					formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged,
@@ -50,6 +49,21 @@ struct WriteOrEditNoteView: View {
                 }
             }
 			.toolbar(content: {
+				ToolbarItem(placement: .navigationBarLeading) {
+					NavigationLink(
+						destination: NotesListView(
+							viewModel: NotesListViewModel(username: viewModel.username),
+							notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.username)
+						).navigationBarBackButtonHidden(true)
+					) {
+						HStack {
+							Image(systemName: "lessthan").font(.system(size: 14))
+							Text("Back")
+						}
+					}
+
+				}
+				
 				if viewModel.contentDisabled {
 					ToolbarItem(placement: .topBarTrailing) {
 						Button(action: {
@@ -71,6 +85,7 @@ struct WriteOrEditNoteView: View {
 						}, label: {
 							Text("Save")
 						}).padding(.trailing)
+							.padding(.top, 0)
 					}
 
 					ToolbarItemGroup(placement: .bottomBar) {
@@ -109,15 +124,14 @@ struct WriteOrEditNoteView: View {
 						}.onChange(of: viewModel.selectedColor) {
 							viewModel.formattingCurrentlyChanged = true
 						}
-
-						TextField("", text: $viewModel.fontSizeString)
-							.onChange(of: viewModel.fontSizeString) {
-								viewModel.onScreenEvent(.fontSizeChanged)
+						
+						Picker("FontSize", selection: $viewModel.fontSize) {
+							ForEach(viewModel.fontSizeList, id: \.self) { value in
+								Text("\(value)").tag(value)
 							}
-							.font(.headline)
-							.padding(10)
-							.overlay(RoundedRectangle(cornerRadius: 5)
-								.stroke(Color(.lightGray), lineWidth: 0.5))
+						}.onChange(of: viewModel.fontSize) {
+							viewModel.formattingCurrentlyChanged = true
+						}
 					}
 				}
 			})
