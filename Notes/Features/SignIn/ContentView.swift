@@ -43,7 +43,7 @@ struct ContentView: View {
 										viewModel: NotesListViewModel(username: viewModel.usernameInput),
 										notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.usernameInput)
 									).navigationBarBackButtonHidden(true),
-									isActive: $viewModel.isLinkActive).opacity(0)
+									isActive: $viewModel.isLinkActive).opacity(0).disabled(true)
 							)
 
 						Spacer()

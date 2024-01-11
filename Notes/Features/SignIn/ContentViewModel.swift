@@ -20,6 +20,14 @@ final class ContentViewModel: ObservableObject {
     @Published var passwordInvalid = false
     @Published var isLinkActive = false
         
+	private var persistenceController : PersistenceController
+	private var userDataManager: UserDataManager
+	
+	init() {
+		self.persistenceController = PersistenceController.shared
+		self.userDataManager = UserDataManager(persistenceController: persistenceController)
+	}
+	
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .signIn:
