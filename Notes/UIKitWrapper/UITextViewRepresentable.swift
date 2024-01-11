@@ -19,8 +19,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var isItalic: Bool
 	@Binding var isUnderlined: Bool
 	@Binding var checklistActivated: Bool
-	@Binding var fontSizeDouble: Double
-	@Binding var fontSizeString: String
+	@Binding var fontSize: Int
 	@Binding var selectedRange: NSRange
 	@Binding var color: String
 	@Binding var formattingCurrentlyChanged: Bool
@@ -35,7 +34,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		context.coordinator.setAttributes(isBold: $isBold,
 										  isItalic: $isItalic,
 										  isUnderlined: $isUnderlined,
-										  fontSize: $fontSizeDouble,
+										  fontSize: $fontSize,
 										  color: $color)
 		
 		uiView.attributedText = text
@@ -60,8 +59,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					isItalic: $isItalic,
 					isUnderlined: $isUnderlined,
 					checklistActivated: $checklistActivated,
-					fontSize: $fontSizeDouble,
-					fontSizeString: $fontSizeString,
+					fontSize: $fontSize,
 					selectedRange: $selectedRange,
 					color: $color,
 					formattingCurrentlyChanged: $formattingCurrentlyChanged,
@@ -70,13 +68,46 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
+		enum Colors {
+			case standard
+			case red
+			case blue
+			case green
+			case yellow
+			case pink
+			case purple
+			case orange
+			
+			func getCurrentColerAsEnumColor(selectedColor: String) -> Colors {
+				switch selectedColor {
+				case "standard":
+					return .standard
+				case "red":
+					return .red
+				case "orange":
+					return .orange
+				case "yellow":
+					return .yellow
+				case "green":
+					return .green
+				case "blue":
+					return .blue
+				case "pink":
+					return .pink
+				case "purple":
+					return .purple
+				default:
+					return .standard
+				}
+			}
+		}
+		
 		@Binding var text: NSAttributedString
 		@Binding var isBold: Bool
 		@Binding var isItalic: Bool
 		@Binding var isUnderlined: Bool
 		@Binding var checklistActivated: Bool
-		@Binding var fontSize: Double
-		@Binding var fontSizeString: String
+		@Binding var fontSize: Int
 		@Binding var selectedRange: NSRange
 		@Binding var color: String
 		@Binding var formattingCurrentlyChanged: Bool
@@ -89,8 +120,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			 isItalic:  Binding<Bool>,
 			 isUnderlined: Binding<Bool>,
 			 checklistActivated: Binding<Bool>,
-			 fontSize: Binding<Double>,
-			 fontSizeString: Binding<String>,
+			 fontSize: Binding<Int>,
 			 selectedRange: Binding<NSRange>,
 			 color: Binding<String>,
 			 formattingCurrentlyChanged: Binding<Bool>,
@@ -105,14 +135,13 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			self._selectedRange = selectedRange
 			self._color = color
 			self._formattingCurrentlyChanged = formattingCurrentlyChanged
-			self._fontSizeString = fontSizeString
 			self.onUpdate = onUpdate
 		}
 		
 		func setAttributes(isBold:  Binding<Bool>,
 						   isItalic:  Binding<Bool>,
 						   isUnderlined: Binding<Bool>,
-						   fontSize: Binding<Double>,
+						   fontSize: Binding<Int>,
 						   color: Binding<String>
 		) {
 			self._isBold = isBold
@@ -173,8 +202,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 				}
 				
 				if value != nil {
-					fontSize = Double(value?.pointSize ?? 12)
-					fontSizeString = String(format: "%.2f", Double(value?.pointSize ?? 12))
+					fontSize = Int(value?.pointSize ?? 12)
 				}
 			}
 			
@@ -212,7 +240,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		
 		func applyStyleToCurrentSelectedTextIfNeed(selectedRange: NSRange, attributedText: NSAttributedString, doesItComeFromTextView: Bool = false, replacementText: String = "") {
 			debugPrint()
-			let font = UIFont.systemFont(ofSize: fontSize)
+			let font = UIFont.systemFont(ofSize: CGFloat(fontSize))
 			
 			var range = selectedRange
 			currentSelectedRange = range
@@ -231,53 +259,54 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			if !isUnderlined {
 				attributedString.removeAttribute(.underlineStyle, range: range)
 			}
-
-			if isBold && isItalic && !isUnderlined {
+			
+			switch(isBold, isItalic, isUnderlined) {
+			case (true, true, false):
 				attributedString.addAttribute(
 					.font,
 					value: font.boldItalics(),
 					range: range
 				)
 				print("bold and italic")
-			} else if isBold && !isItalic && !isUnderlined {
+			case (true, false, false):
 				attributedString.addAttribute(
 					.font,
 					value: font.bold(),
 					range: range
 				)
 				print("bold only")
-			} else if isItalic && !isBold && !isUnderlined {
+			case (false, true, false):
 				attributedString.addAttribute(
 					.font,
 					value: font.italics(),
 					range: range
 				)
 				print("italic only")
-			} else if isUnderlined && isBold && isItalic {
+			case (true, true, true):
 				attributedString.addAttributes([.font: font.boldItalics(),
-									  .underlineStyle: NSUnderlineStyle.single.rawValue],
-									 range: range
+												.underlineStyle: NSUnderlineStyle.single.rawValue],
+											   range: range
 				)
 				print("bold, italic, underlined")
-			} else if isUnderlined && isBold && !isItalic {
+			case (true, false, true):
 				attributedString.addAttributes([.font: font.bold(),
-									  .underlineStyle: NSUnderlineStyle.single.rawValue],
-									 range: range
+												.underlineStyle: NSUnderlineStyle.single.rawValue],
+											   range: range
 				)
 				print("bold and underlined")
-			} else if isUnderlined && !isBold && isItalic {
+			case (false, true, true):
 				attributedString.addAttributes([.font: font.italics(),
-									  .underlineStyle: NSUnderlineStyle.single.rawValue],
-									 range: range
+												.underlineStyle: NSUnderlineStyle.single.rawValue],
+											   range: range
 				)
 				print("italic and underlined")
-			} else if isUnderlined && !isBold && !isItalic {
+			case (false, false, true):
 				attributedString.addAttributes([.font: font,
-									  .underlineStyle: NSUnderlineStyle.single.rawValue],
-									 range: range
+												.underlineStyle: NSUnderlineStyle.single.rawValue],
+											   range: range
 				)
 				print("underlined only")
-			} else {
+			default :
 				attributedString.addAttribute(
 					.font,
 					value: font,
@@ -285,7 +314,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 				)
 				print("standard")
 			}
-			
+
 			switch color {
 				case "standard":
 					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
@@ -432,7 +461,6 @@ extension UIFont {
 }
 
 extension NSAttributedString {
-	
 	convenience init(data: Data, documentType: DocumentType, encoding: String.Encoding = .utf8) throws {
 		try self.init(attributedString: .init(data: data, options: [.documentType: documentType, .characterEncoding: encoding.rawValue], documentAttributes: nil))
 	}

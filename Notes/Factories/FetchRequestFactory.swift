@@ -14,5 +14,6 @@ final class FetchRequestFactory {
 			sortDescriptors: [],
 			predicate: NSPredicate(format: "user.username = %@", username)
 		)
+
 	}
 }

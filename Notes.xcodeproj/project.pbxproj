@@ -138,6 +138,7 @@
 		501E50152AF526FA00522448 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
+				509A99FD2B4ECA1900CB1C00 /* DataManager */,
 				5DE32C412B48421200382C49 /* UIKitWrapper */,
 				5DE32C3E2B483FF000382C49 /* Factories */,
 				5DE32C3B2B483FAC00382C49 /* Features */,
@@ -145,7 +146,6 @@
 				503CE1DA2B10DB33004C7097 /* ViewModifier */,
 				501E50162AF526FA00522448 /* NotesApp.swift */,
 				501E501A2AF526FB00522448 /* Assets.xcassets */,
-				501E501F2AF526FB00522448 /* Persistence.swift */,
 				501E50212AF526FB00522448 /* Notes.xcdatamodeld */,
 				501E501C2AF526FB00522448 /* Preview Content */,
 			);
@@ -212,6 +212,14 @@
 				50FF4BF62AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift */,
 			);
 			path = WriteEdite;
+			sourceTree = "<group>";
+		};
+		509A99FD2B4ECA1900CB1C00 /* DataManager */ = {
+			isa = PBXGroup;
+			children = (
+				501E501F2AF526FB00522448 /* Persistence.swift */,
+			);
+			path = DataManager;
 			sourceTree = "<group>";
 		};
 		5DE32C3B2B483FAC00382C49 /* Features */ = {

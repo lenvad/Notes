@@ -9,6 +9,10 @@ import Foundation
 import SwiftUI
 
 final class ContentViewModel: ObservableObject {
+	enum ScreenEvent {
+		case signIn
+	}
+	
     @Published var usernameInput: String = ""
     @Published var passwordInput: String = ""
     @Published var errorMessage = ""
@@ -16,10 +20,6 @@ final class ContentViewModel: ObservableObject {
     @Published var passwordInvalid = false
     @Published var isLinkActive = false
         
-	enum ScreenEvent {
-		case signIn
-	}
-	
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .signIn:

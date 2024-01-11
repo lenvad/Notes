@@ -9,6 +9,10 @@ import Foundation
 import SwiftUI
 
 final class SignUpViewModel: ObservableObject {
+	enum ScreenEvent {
+		case addUserWhenButtonClicked
+	}
+	
     @Published var usernameInput: String = ""
     @Published var emailInput: String = ""
     @Published var passwordInput: String = ""
@@ -25,10 +29,6 @@ final class SignUpViewModel: ObservableObject {
         isUserAdded = false
         fetchAllUsers()
     }
-    
-	enum ScreenEvent {
-		case addUserWhenButtonClicked
-	}
 	
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
