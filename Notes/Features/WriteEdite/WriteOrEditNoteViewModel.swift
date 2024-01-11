@@ -55,7 +55,12 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	var username: String
 	var note: Note?
 	
+	private var persistenceController : PersistenceController
+	private var userDataManager: UserDataManager
+	
 	init(username: String, note: Note? = nil) {
+		self.persistenceController = PersistenceController.shared
+		self.userDataManager = UserDataManager(persistenceController: persistenceController)
 		self.username = username
 		self.note = note
 	}
@@ -107,7 +112,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	}
 	
 	func fetchUserByUsername(inputUsername: String) -> User? {
-		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)
+		let user = userDataManager.fetchUsersByUsername(username: inputUsername)
 		return user
 	}
 	

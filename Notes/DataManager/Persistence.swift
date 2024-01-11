@@ -65,7 +65,7 @@ struct PersistenceController {
     }
 	
 	//Core Data Saving support
-	func save() {
+	func save(container: NSPersistentContainer) {
 		let context = container.viewContext
 		if context.hasChanges {
 			do {
@@ -78,16 +78,6 @@ struct PersistenceController {
 		}
 	}
 	
-	func createUser(username: String, email: String, password: String, id: Int32) {
-		let user = User(context: container.viewContext)
-		user.username = username
-		user.email = email
-		user.id = id
-		user.userId = UUID()
-		user.password = password
-		save()
-	}
-	
 	func createNote(title: String, timestamp: Date, id: Int32, user: User) -> Note {
 		let note = Note(context: container.viewContext)
 		note.id = id
@@ -95,20 +85,11 @@ struct PersistenceController {
 		note.title = title
 		note.user = user
 		user.addToNote(note)
-		save()
+		save(container: container)
 		return note
 	}
 	
-	func fetchAllUsers() -> [User] {
-		let request: NSFetchRequest<User> = User.fetchRequest()
-		var fetchedUsers: [User] = []
-		do {
-			fetchedUsers = try container.viewContext.fetch(request)
-		} catch let error {
-			print("Error fetching singers \(error)")
-		}
-		return fetchedUsers
-	}
+
 	
 	func fetchAllNotes() -> [Note] {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
@@ -121,32 +102,7 @@ struct PersistenceController {
 		return fetchedNotes
 	}
 	
-	func fetchUsersByUsername(username: String) -> User? {
-		let request: NSFetchRequest<User> = User.fetchRequest()
-		request.predicate = NSPredicate(format: "username = %@", username)
-		var fetchedUser: User?
-		do {
-			fetchedUser = try container.viewContext.fetch(request).first
-		} catch let error {
-			print("Error fetching users \(error)")
-		}
-		return fetchedUser
-	}
 
-	func fetchUsersByUsernameAndPassword(username: String, password: String) -> User? {
-		let request: NSFetchRequest<User> = User.fetchRequest()
-		let predicate1 = NSPredicate(format: "username = %@", username)
-		let predicate2 = NSPredicate(format: "password = %@", password)
-		let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate1, predicate2])
-		request.predicate = compound
-		var fetchedUser: User?
-		do {
-			fetchedUser = try container.viewContext.fetch(request).first
-		} catch let error {
-			print("Error fetching users \(error)")
-		}
-		return fetchedUser
-	}
 	
 	func fetchNotesByUser(user: User) -> [Note] {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
@@ -175,6 +131,21 @@ struct PersistenceController {
 	}
 	
 	
+	func fetchUsersByUsernameAndPassword(username: String, password: String) -> User? {
+		let request: NSFetchRequest<User> = User.fetchRequest()
+		let predicate1 = NSPredicate(format: "username = %@", username)
+		let predicate2 = NSPredicate(format: "password = %@", password)
+		let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate1, predicate2])
+		request.predicate = compound
+		var fetchedUser: User?
+		do {
+			fetchedUser = try container.viewContext.fetch(request).first
+		} catch let error {
+			print("Error fetching users \(error)")
+		}
+		return fetchedUser
+	}
+	
 	func updateNote(title: String, timestamp: Date, id: Int32, data: Data, user: User) -> Note {
 		let context = container.viewContext
 		let note: Note!
@@ -198,20 +169,15 @@ struct PersistenceController {
 		note.user = user
 		user.addToNote(note)
 		
-		save()
-		
+		save(container: container)
+
 		return note
 	}
 	
-	func deleteUser(user: User) {
-		let context = container.viewContext
-		context.delete(user)
-		save()
-	}
-	
+
 	func deleteNote(note: Note) {
 		let context = container.viewContext
 		context.delete(note)
-		save()
+		save(container: container)
 	}
 }

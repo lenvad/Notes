@@ -27,6 +27,9 @@
 		503CE1E22B10DD39004C7097 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 503CE1E42B10DD39004C7097 /* Localizable.strings */; };
 		503CE1E62B10DEA1004C7097 /* ViewExtensionForModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CE1E52B10DEA1004C7097 /* ViewExtensionForModifiers.swift */; };
 		503CE1E82B10E10F004C7097 /* ErrorMessageText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CE1E72B10E10F004C7097 /* ErrorMessageText.swift */; };
+		50AD49CA2B4FE9AD008BF09E /* ContentViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49C92B4FE9AD008BF09E /* ContentViewModelTests.swift */; };
+		50AD49CE2B4FEA4B008BF09E /* SignUpViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49CD2B4FEA4B008BF09E /* SignUpViewModelTests.swift */; };
+		50AD49D22B4FF247008BF09E /* UserDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49D12B4FF247008BF09E /* UserDataManager.swift */; };
 		50FF4BED2AFD22BB000A6E25 /* NotesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */; };
 		50FF4BEF2AFD27C9000A6E25 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */; };
 		50FF4BF12AFD2911000A6E25 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */; };
@@ -77,6 +80,9 @@
 		503CE1E32B10DD39004C7097 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		503CE1E52B10DEA1004C7097 /* ViewExtensionForModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensionForModifiers.swift; sourceTree = "<group>"; };
 		503CE1E72B10E10F004C7097 /* ErrorMessageText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessageText.swift; sourceTree = "<group>"; };
+		50AD49C92B4FE9AD008BF09E /* ContentViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModelTests.swift; sourceTree = "<group>"; };
+		50AD49CD2B4FEA4B008BF09E /* SignUpViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModelTests.swift; sourceTree = "<group>"; };
+		50AD49D12B4FF247008BF09E /* UserDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataManager.swift; sourceTree = "<group>"; };
 		50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListView.swift; sourceTree = "<group>"; };
 		50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
@@ -164,6 +170,8 @@
 			isa = PBXGroup;
 			children = (
 				501E502C2AF526FB00522448 /* NotesTests.swift */,
+				50AD49C92B4FE9AD008BF09E /* ContentViewModelTests.swift */,
+				50AD49CD2B4FEA4B008BF09E /* SignUpViewModelTests.swift */,
 			);
 			path = NotesTests;
 			sourceTree = "<group>";
@@ -218,6 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				501E501F2AF526FB00522448 /* Persistence.swift */,
+				50AD49D12B4FF247008BF09E /* UserDataManager.swift */,
 			);
 			path = DataManager;
 			sourceTree = "<group>";
@@ -417,6 +426,7 @@
 				50FF4BF72AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift in Sources */,
 				501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */,
 				503CE1DC2B10DB69004C7097 /* SignUpButtonText.swift in Sources */,
+				50AD49D22B4FF247008BF09E /* UserDataManager.swift in Sources */,
 				503990812B18B90100E5E97D /* UITextViewRepresentable.swift in Sources */,
 				503CE1E62B10DEA1004C7097 /* ViewExtensionForModifiers.swift in Sources */,
 			);
@@ -426,6 +436,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50AD49CA2B4FE9AD008BF09E /* ContentViewModelTests.swift in Sources */,
+				50AD49CE2B4FEA4B008BF09E /* SignUpViewModelTests.swift in Sources */,
 				501E502D2AF526FB00522448 /* NotesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
