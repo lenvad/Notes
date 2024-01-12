@@ -42,57 +42,43 @@ final class SignUpViewModel: ObservableObject {
 	}
 	
     func addUser() {
-        if(uniqueUsernameChecker() && passwordChecker()) {
+		switch(uniqueUsernameChecker(),passwordChecker()) {
+		case (true, true):
 			userDataManager.createUser(username: usernameInput,
-                                                     email: emailInput,
-                                                     password: passwordInput,
-                                                     id: generateRandomNumber(min: min, max: max))
-            errorMessage = ""
-            isUserAdded = true
+									   email: emailInput,
+									   password: passwordInput,
+									   id: generateRandomNumber(min: min, max: max))
+			errorMessage = ""
+			isUserAdded = true
 			usernameInvalid = false
 			passwordInvalid = false
-		}
-		else if (!uniqueUsernameChecker() && !passwordChecker()) {
+		case (false, false):
 			errorMessage = 	"""
- username already token
- email invalid
- invalid password please use at least:
-  - one upper case letter
-  - one lower case letter
-  - one digit
-  - 8 characters
- """
+							username already token
+							invalid password please use at least:
+							- one upper case letter
+							- one lower case letter
+							- one digit
+							- 8 characters
+							"""
 			usernameInvalid = true
 			passwordInvalid = true
-		}
-		else if (!uniqueUsernameChecker() && !passwordChecker()) {
+		case (true, false):
 			errorMessage = 	"""
- username already token
- invalid password please use at least:
-  - one upper case letter
-  - one lower case letter
-  - one digit
-  - 8 characters
- """
-			usernameInvalid = true
+							invalid password please use at least:
+							- one upper case letter
+							- one lower case letter
+							- one digit
+							- 8 characters
+							"""
 			passwordInvalid = true
-		}
-		else if (!uniqueUsernameChecker()){
+			usernameInvalid = false
+		case (false, true):
 			errorMessage = "username already token"
 			usernameInvalid = true
 			passwordInvalid = false
 		}
-		else if(!passwordChecker()) {
-			errorMessage = 	"""
- invalid password please use at least:
-  - one upper case letter
-  - one lower case letter
-  - one digit
-  - 8 characters
- """
-			passwordInvalid = true
-			usernameInvalid = false
-		}
+
     }
     
 	func passwordChecker() -> Bool {
