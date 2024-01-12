@@ -9,44 +9,47 @@ import Foundation
 import CoreData
 
 struct NoteDataManager {
-	private let container: NSPersistentContainer
-	private var persistenceController : PersistenceController
-	
-	init(container: NSPersistentContainer, persistenceController: PersistenceController) {
-		self.container = container
+	private let persistenceController: PersistenceController
+	var dbContext: NSManagedObjectContext {
+		persistenceController.container.viewContext
+	}
+
+	init(persistenceController: PersistenceController) {
 		self.persistenceController = persistenceController
 	}
 	
-	
-	func createNote(title: String, timestamp: Date, id: Int32, user: User) -> Note {
-		let note = Note(context: container.viewContext)
-		note.id = id
+	// TODO: this is no needed
+	func createNote(title: String, timestamp: Date, id: Int32, data: Data, user: User) -> Note {
+		let note = Note(context: dbContext)
+		note.id = id // TODO: Remove this attribute from the DB
 		note.timestamp = timestamp
 		note.title = title
 		note.user = user
 		user.addToNote(note)
-		persistenceController.save(container: container)
+		persistenceController.save()
 		return note
 	}
 	
 	func fetchAllNotes() -> [Note] {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
-		var fetchedNotes: [Note] = []
+		let fetchedNotes: [Note]
 		do {
-			fetchedNotes = try container.viewContext.fetch(request)
+			fetchedNotes = try dbContext.fetch(request)
 		} catch let error {
 			print("Error fetching singers \(error)")
+			fetchedNotes = []
 		}
 		return fetchedNotes
 	}
 	
+	// TODO: this method seems not necessary
 	func fetchNotesByUser(user: User) -> [Note] {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
 		request.predicate = NSPredicate(format: "user = %@", user)
 		request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
 		var fetchedNotes: [Note] = []
 		do {
-			fetchedNotes = try container.viewContext.fetch(request)
+			fetchedNotes = try dbContext.fetch(request)
 		} catch let error {
 			print("Error fetching notes \(error)")
 		}
@@ -55,33 +58,30 @@ struct NoteDataManager {
 	
 	func fetchNotesById(id: Int32) -> Note? {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
-		request.predicate = NSPredicate(format: "id = %@", id as Int32)
+		request.predicate = NSPredicate(format: "id = %d", id as Int32)
 		request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
 		var fetchedNote: Note?
 		do {
-			fetchedNote = try container.viewContext.fetch(request).first
+			fetchedNote = try dbContext.fetch(request).first
 		} catch let error {
 			print("Error fetching notes \(error)")
 		}
 		return fetchedNote
 	}
 	
-	func updateNote(title: String, timestamp: Date, id: Int32, data: Data, user: User) -> Note {
-		let context = container.viewContext
+	func updateOrCreateNote(title: String, timestamp: Date, id: Int32, data: Data, user: User) -> Note {
 		let note: Note!
 		
-		let fetchNote: NSFetchRequest<Note> = Note.fetchRequest()
-		fetchNote.predicate = NSPredicate(format: "id = %i", id)
-		
-		let results = try? context.fetch(fetchNote)
-		
-		if results?.count == 0 {
-			// here you are inserting
-			note = Note(context: context)
-		} else {
+		let existingNote = fetchNotesById(id: id)
+
+		if let existingNote {
 			// here you are updating
-			note = (results?.first)
+			note = existingNote
+		} else {
+			// here you are inserting
+			note = Note(context: dbContext)
 		}
+
 		note.id = id
 		note.timestamp = timestamp
 		note.title = title
@@ -89,14 +89,13 @@ struct NoteDataManager {
 		note.user = user
 		user.addToNote(note)
 		
-		persistenceController.save(container: container)
+		persistenceController.save()
 		
 		return note
 	}
 	
-	func deleteNote(note: Note) {
-		let context = container.viewContext
-		context.delete(note)
-		persistenceController.save(container: container)
+	func deleteNote(_ note: Note) {
+		dbContext.delete(note)
+		persistenceController.save()
 	}
 }

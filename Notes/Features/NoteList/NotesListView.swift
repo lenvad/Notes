@@ -23,7 +23,11 @@ struct NotesListView: View {
 				ToolbarItem(placement: .bottomBar ) {
 					NavigationLink(
 						destination: WriteOrEditNoteView(
-							viewModel: WriteOrEditNoteViewModel(username: viewModel.username)
+							viewModel: WriteOrEditNoteViewModel(
+								username: viewModel.username,
+								userDataManager: UserDataManager(persistenceController: .shared),
+								noteDataManager: NoteDataManager(persistenceController: .shared)
+							)
 						).navigationBarBackButtonHidden(true)
 					) {
 						Image(systemName: "plus.circle.fill")
@@ -50,7 +54,15 @@ struct NotesListView: View {
 	
 	private func generateNoteItem(note: Note) -> some View {
 		return HStack {
-			NavigationLink(destination: WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: viewModel.username, note: note)).navigationBarBackButtonHidden(true)
+			NavigationLink(
+				destination: WriteOrEditNoteView(
+					viewModel: WriteOrEditNoteViewModel(
+						username: viewModel.username,
+						userDataManager: UserDataManager(persistenceController: .shared),
+						noteDataManager: NoteDataManager(persistenceController: .shared),
+						note: note
+					)
+				).navigationBarBackButtonHidden(true)
 			) {
 				Text(note.title ?? "Untitled")
 					.foregroundColor(Color("AccentColor"))

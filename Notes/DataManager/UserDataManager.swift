@@ -9,66 +9,63 @@ import Foundation
 import CoreData
 
 struct UserDataManager {
-	private let container: NSPersistentContainer
-	private var persistenceController : PersistenceController
-	
-	init(container: NSPersistentContainer, persistenceController: PersistenceController) {
-		self.container = container
+	private let persistenceController: PersistenceController
+	var dbContext: NSManagedObjectContext {
+		persistenceController.container.viewContext
+	}
+
+	init(persistenceController: PersistenceController) {
 		self.persistenceController = persistenceController
 	}
 	
 	func createUser(username: String, email: String, password: String, id: Int32) {
-		let user = User(context: container.viewContext)
+		let user = User(context: dbContext)
 		user.username = username
 		user.email = email
-		user.id = id
-		user.userId = UUID()
+		user.id = id // TODO: remove this attribute
+		user.userId = UUID() // TODO: remove this attribute
 		user.password = password
-		persistenceController.save(container: container)
+		persistenceController.save()
 	}
 	
 	func fetchAllUsers() -> [User] {
 		let request: NSFetchRequest<User> = User.fetchRequest()
-		var fetchedUsers: [User] = []
+		let fetchedUsers: [User]
 		do {
-			fetchedUsers = try container.viewContext.fetch(request)
+			fetchedUsers = try dbContext.fetch(request)
 		} catch let error {
 			print("Error fetching singers \(error)")
+			fetchedUsers = []
 		}
 		return fetchedUsers
 	}
 	
-	func fetchUsersByUsername(username: String) -> User? {
+	func fetchUsersByUsername(_ username: String) -> User? {
 		let request: NSFetchRequest<User> = User.fetchRequest()
 		request.predicate = NSPredicate(format: "username = %@", username)
-		var fetchedUser: User?
+		let fetchedUser: User?
 		do {
-			fetchedUser = try container.viewContext.fetch(request).first
+			fetchedUser = try dbContext.fetch(request).first
 		} catch let error {
 			print("Error fetching users \(error)")
+			fetchedUser = nil
 		}
 		return fetchedUser
 	}
 	
 	func fetchUsersByUsernameAndPassword(username: String, password: String) -> User? {
 		let request: NSFetchRequest<User> = User.fetchRequest()
-		let predicate1 = NSPredicate(format: "username = %@", username)
-		let predicate2 = NSPredicate(format: "password = %@", password)
-		let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate1, predicate2])
+		let predicateByUsername = NSPredicate(format: "username = %@", username)
+		let predicatedByPassword = NSPredicate(format: "password = %@", password)
+		let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [predicateByUsername, predicatedByPassword])
 		request.predicate = compound
-		var fetchedUser: User?
-		do {
-			fetchedUser = try container.viewContext.fetch(request).first
-		} catch let error {
-			print("Error fetching users \(error)")
-		}
+		let fetchedUser: User? = (try? dbContext.fetch(request))?.first
 		return fetchedUser
 	}
 	
 	func deleteUser(user: User) {
-		let context = container.viewContext
-		context.delete(user)
-		persistenceController.save(container: container)
+		dbContext.delete(user)
+		persistenceController.save()
 	}
 }
 

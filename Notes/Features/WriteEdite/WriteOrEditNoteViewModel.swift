@@ -10,61 +10,64 @@ import Combine
 
 final class WriteOrEditNoteViewModel: ObservableObject {
 	enum ScreenEvent {
-	case onAppearance
-	case addOrUpdateNote
-	case toolbarButtons(event: ToolKinds)
-	case fontSizeChanged
+		case onAppearance
+		case addOrUpdateNote
+		case toolbarButtons(event: ToolKinds)
+		case fontSizeChanged
 	}
 
 	enum ToolKinds {
-	case bold
-	case italic
-	case underlined
-	case checklist
-	}
-	
-	enum Colors {
-	case standard
-	case red
-	case blue
-	case green
-	case yellow
-	case pink
-	case purple
-	case orange
+		case bold
+		case italic
+		case underlined
+		case checklist
 	}
 
-	var noteText: NSAttributedString = NSAttributedString(string: "")
+	enum Colors: String, CaseIterable {
+		case standard
+		case green
+		case red
+		case blue
+		case yellow
+		case pink
+		case purple
+		case orange
+	}
+
 	@Published var isBold: Bool = false
 	@Published var isItalic: Bool = false
-	@MainActor @Published var isUnderlined: Bool = false
-	@MainActor @Published var checklistActivated: Bool = false
-	@MainActor @Published var formattingCurrentlyChanged: Bool = false
+	@Published var isUnderlined: Bool = false
+	@Published var checklistActivated: Bool = false
+	@Published var formattingCurrentlyChanged: Bool = false
 	@Published var selectedColor = "standard"
-	//@MainActor @Published var fontSizeDouble: Double = 12.0
-	
-	@Published var errorMessage = ""
 	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
-	@Published var colorList: [String] = ["standard", "red", "blue", "green", "yellow", "pink", "purple", "orange"]
-	@Published var fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
 	@Published var contentDisabled = true
 	@Published var fontSize: Int = 12
+	@Published var errorMessage = ""
+	//@MainActor @Published var fontSizeDouble: Double = 12.0
 	
+	var noteText: NSAttributedString = NSAttributedString(string: "")
+	let colorList: [String] = Colors.allCases.map { $0.rawValue }
+	let fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
+
 	var counter: Int32 = 0
 	var isLinkActive = false
 	var username: String
 	var note: Note?
 	
-	private var persistenceController : PersistenceController
-	private var userDataManager: UserDataManager
-	private var noteDataManager: NoteDataManager
-	
-	init(username: String, note: Note? = nil) {
-		self.persistenceController = PersistenceController.shared
-		self.userDataManager = UserDataManager(container: persistenceController.container, persistenceController: persistenceController)
-		self.noteDataManager = NoteDataManager(container: persistenceController.container, persistenceController: persistenceController)
+	private let userDataManager: UserDataManager
+	private let noteDataManager: NoteDataManager
+
+	init(username: String, userDataManager: UserDataManager, noteDataManager: NoteDataManager, note: Note? = nil) {
+		self.userDataManager = userDataManager
+		self.noteDataManager = noteDataManager
 		self.username = username
 		self.note = note
+
+
+		DispatchQueue.global(qos: .background).async {
+			self.contentDisabled = false
+		}
 	}
 	
 	@MainActor func onScreenEvent(_ event: ScreenEvent) {
@@ -113,7 +116,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	}
 	
 	func fetchUserByUsername(inputUsername: String) -> User? {
-		let user = userDataManager.fetchUsersByUsername(username: inputUsername)
+		let user = userDataManager.fetchUsersByUsername(inputUsername)
 		return user
 	}
 	
@@ -128,8 +131,8 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 				counter += 1
 			}
 			
-			note = noteDataManager.updateNote(title: inputTitle, timestamp: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
-			
+			note = noteDataManager.updateOrCreateNote(title: inputTitle, timestamp: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
+
 			isLinkActive = true
 			
 		} catch {

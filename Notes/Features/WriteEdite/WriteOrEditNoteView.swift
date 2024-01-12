@@ -156,6 +156,12 @@ struct WriteOrEditNoteView: View {
 
 struct WriteOrEditNoteView_Previews: PreviewProvider {
 	static var previews: some View {
-		WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: "l"))
+		WriteOrEditNoteView(
+			viewModel: WriteOrEditNoteViewModel(
+				username: "l",
+				userDataManager: UserDataManager(persistenceController: .shared),
+				noteDataManager: NoteDataManager(persistenceController: .shared)
+			)
+		)
 	}
 }
