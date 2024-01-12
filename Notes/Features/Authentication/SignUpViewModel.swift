@@ -26,11 +26,11 @@ final class SignUpViewModel: ObservableObject {
     var max: Int32 = 1000
 	
 	private var persistenceController : PersistenceController
-	private var userDataManager: UserDataManager
+	//private var userDataManager: UserDataManager
 	
 	init() {
 		self.persistenceController = PersistenceController.shared
-		self.userDataManager = UserDataManager(persistenceController: persistenceController)
+		//self.userDataManager = UserDataManager(persistenceController: persistenceController)
 		fetchAllUsers()
 	}
 	
@@ -43,7 +43,7 @@ final class SignUpViewModel: ObservableObject {
 	
     func addUser() {
         if(uniqueUsernameChecker() && passwordChecker()) {
-			userDataManager.createUser(username: usernameInput,
+			persistenceController.createUser(username: usernameInput,
                                                      email: emailInput,
                                                      password: passwordInput,
                                                      id: generateRandomNumber(min: min, max: max))
@@ -137,6 +137,6 @@ final class SignUpViewModel: ObservableObject {
     }
     
     func fetchAllUsers() {
-        users = userDataManager.fetchAllUsers()
+        users = persistenceController.fetchAllUsers()
     }
 }

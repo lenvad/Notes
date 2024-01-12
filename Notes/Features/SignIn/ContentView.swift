@@ -33,7 +33,7 @@ struct ContentView: View {
 								.font(.headline)
 								.foregroundColor(.white)
 								.padding()
-								.background(Color("AccentColor"))
+								.background(Color.accentColor)
 								.cornerRadius(15.0)
 						}.frame(alignment: .bottom)
 							.background(
@@ -59,11 +59,10 @@ struct ContentView: View {
 				.disabled(viewModel.isLinkActive)
 				.padding()
 				
-					if viewModel.isLinkActive {
-						ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
-							.background(viewModel.isLinkActive ? .black.opacity(0.3):.clear)
-					}
-				
+				if viewModel.isLinkActive {
+					ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+						.background(viewModel.isLinkActive ? .black.opacity(0.3):.clear)
+				}
 			}
 		}
 	}

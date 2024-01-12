@@ -56,11 +56,11 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	var note: Note?
 	
 	private var persistenceController : PersistenceController
-	private var userDataManager: UserDataManager
+	//private var userDataManager: UserDataManager
 	
 	init(username: String, note: Note? = nil) {
 		self.persistenceController = PersistenceController.shared
-		self.userDataManager = UserDataManager(persistenceController: persistenceController)
+		//self.userDataManager = UserDataManager(persistenceController: persistenceController)
 		self.username = username
 		self.note = note
 	}
@@ -70,7 +70,6 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 			case .onAppearance:
 				counter = getBiggestId() ?? 0
 				if (note != nil ) {
-
 					decodeAndSetNote()
 					contentDisabled = true
 				} else {
@@ -112,7 +111,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	}
 	
 	func fetchUserByUsername(inputUsername: String) -> User? {
-		let user = userDataManager.fetchUsersByUsername(username: inputUsername)
+		let user = persistenceController.fetchUsersByUsername(username: inputUsername)
 		return user
 	}
 	
@@ -141,7 +140,6 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		let biggestNum = notes.max{ i, j in i.id < j.id }
 		return biggestNum?.id
 	}
-	
 
 	@MainActor func decodeAndSetNote() {
 		do {

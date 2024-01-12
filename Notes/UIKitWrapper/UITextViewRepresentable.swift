@@ -77,29 +77,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			case pink
 			case purple
 			case orange
-			
-			func getCurrentColerAsEnumColor(selectedColor: String) -> Colors {
-				switch selectedColor {
-					case "standard":
-						return .standard
-					case "red":
-						return .red
-					case "orange":
-						return .orange
-					case "yellow":
-						return .yellow
-					case "green":
-						return .green
-					case "blue":
-						return .blue
-					case "pink":
-						return .pink
-					case "purple":
-						return .purple
-					default:
-						return .standard
-				}
-			}
 		}
 		
 		@Binding var text: NSAttributedString
@@ -162,6 +139,35 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			print()
 		}
 		
+		func getCurrentColerAsEnumColor(selectedColor: String) -> Colors {
+			switch selectedColor {
+				case "standard":
+					return .standard
+				case "red":
+					return .red
+				case "orange":
+					return .orange
+				case "yellow":
+					return .yellow
+				case "green":
+					return .green
+				case "blue":
+					return .blue
+				case "pink":
+					return .pink
+				case "purple":
+					return .purple
+				case "gray":
+					return .standard
+				case "magenta":
+					return .pink
+				case "yellow orange":
+					return .yellow
+				default:
+					return .standard
+			}
+		}
+		
 		func getAllAttributesFromRangeAndSelectThem(selectedRange: NSRange, attributedText: NSAttributedString) {
 			//Create Empty Dictionaries for storing results
 			var attributedFontRanges = [UIFont?]()
@@ -215,22 +221,24 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			attributedColorRanges.forEach { value in
 				let fontColor = value?.accessibilityName
 				
-				switch fontColor {
-					case "black":
+				let colorSet = getCurrentColerAsEnumColor(selectedColor: fontColor ?? "gray")
+				
+				switch colorSet {
+					case .standard:
 						color = "standard"
-					case "magenta":
+					case .pink:
 						color = "pink"
-					case "dark cyan blue":
+					case .blue:
 						color = "blue"
-					case "dark red":
+					case .red:
 						color = "red"
-					case "dark green":
+					case .green:
 						color = "green"
-					case "dark purple":
+					case .purple:
 						color = "purple"
-					case "vibrant yellow":
+					case .yellow:
 						color = "yellow"
-					case "orange":
+					case .orange:
 						color = "orange"
 					default:
 						color = "standard"
@@ -315,43 +323,45 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					print("standard")
 			}
 			
-			switch color {
-				case "standard":
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.standardFont),
-												  range: range)
-				case "red":
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.redFont),
-												  range: range)
-				case "orange":
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.orangeFont),
-												  range: range)
-				case "yellow":
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.yellowFont),
-												  range: range)
-				case "green":
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.greenFont),
-												  range: range)
-				case "blue":
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.blueFont),
-												  range: range)
-				case "pink":
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.pink),
-												  range: range)
-				case "purple":
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.purpleFont),
-												  range: range)
-				default:
-					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
-												  value: UIColor(.standardFont) ,
-												  range: range)
+			let colorSet = getCurrentColerAsEnumColor(selectedColor: color)
+			
+			switch colorSet {
+			case .standard:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.standardFont,
+											  range: range)
+			case .red:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.redFont,
+											  range: range)
+			case .orange:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.orangeFont,
+											  range: range)
+			case .yellow:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.yellowFont,
+											  range: range)
+			case .green:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.greenFont,
+											  range: range)
+			case .blue:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.blueFont,
+											  range: range)
+			case .pink:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.pinkFont,
+											  range: range)
+			case .purple:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.purpleFont,
+											  range: range)
+			default:
+				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+											  value: UIColor.standardFont ,
+											  range: range)
 			}
 			
 			//get range of current line and make it to string
