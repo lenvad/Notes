@@ -21,11 +21,11 @@ final class ContentViewModel: ObservableObject {
     @Published var isLinkActive = false
         
 	private var persistenceController : PersistenceController
-	//private var userDataManager: UserDataManager
+	private var userDataManager: UserDataManager
 	
 	init() {
 		self.persistenceController = PersistenceController.shared
-		//self.userDataManager = UserDataManager(persistenceController: persistenceController)
+		self.userDataManager = UserDataManager(container: persistenceController.container, persistenceController: persistenceController)
 	}
 	
 	func onScreenEvent(_ event: ScreenEvent) {
@@ -36,7 +36,7 @@ final class ContentViewModel: ObservableObject {
 	}
 	
     func valiateInput() {
-		let user = persistenceController.fetchUsersByUsernameAndPassword(username: usernameInput, password: passwordInput)
+		let user = userDataManager.fetchUsersByUsernameAndPassword(username: usernameInput, password: passwordInput)
 		
         if user != nil {
             isLinkActive = true

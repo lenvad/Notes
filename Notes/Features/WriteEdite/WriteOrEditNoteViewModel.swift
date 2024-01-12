@@ -56,11 +56,13 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	var note: Note?
 	
 	private var persistenceController : PersistenceController
-	//private var userDataManager: UserDataManager
+	private var userDataManager: UserDataManager
+	private var noteDataManager: NoteDataManager
 	
 	init(username: String, note: Note? = nil) {
 		self.persistenceController = PersistenceController.shared
-		//self.userDataManager = UserDataManager(persistenceController: persistenceController)
+		self.userDataManager = UserDataManager(container: persistenceController.container, persistenceController: persistenceController)
+		self.noteDataManager = NoteDataManager(container: persistenceController.container, persistenceController: persistenceController)
 		self.username = username
 		self.note = note
 	}
@@ -111,7 +113,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	}
 	
 	func fetchUserByUsername(inputUsername: String) -> User? {
-		let user = persistenceController.fetchUsersByUsername(username: inputUsername)
+		let user = userDataManager.fetchUsersByUsername(username: inputUsername)
 		return user
 	}
 	
@@ -126,7 +128,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 				counter += 1
 			}
 			
-			note = PersistenceController.shared.updateNote(title: inputTitle, timestamp: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
+			note = noteDataManager.updateNote(title: inputTitle, timestamp: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
 			
 			isLinkActive = true
 			
@@ -136,7 +138,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	}
 	
 	func getBiggestId() -> Int32? {
-		let notes: [Note] = PersistenceController.shared.fetchAllNotes()
+		let notes: [Note] = noteDataManager.fetchAllNotes()
 		let biggestNum = notes.max{ i, j in i.id < j.id }
 		return biggestNum?.id
 	}

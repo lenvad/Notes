@@ -30,6 +30,7 @@ final class SignUpViewModelTests: XCTestCase {
 		viewModel.usernameInput = "Test"
 		viewModel.emailInput = "testMail"
 		viewModel.passwordInput = "Aa111111"
+		viewModel.persistenceController = PersistenceController()
 		viewModel.onScreenEvent(.addUserWhenButtonClicked)
 		
 		

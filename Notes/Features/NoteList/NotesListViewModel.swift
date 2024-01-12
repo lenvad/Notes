@@ -17,7 +17,14 @@ final class NotesListViewModel: ObservableObject {
     let dateFormatter: DateFormatter
 	var username: String
 	
+	private var persistenceController : PersistenceController
+	private var noteDataManager: NoteDataManager
+	
+	
 	init(username: String) {
+		self.persistenceController = PersistenceController.shared
+		self.noteDataManager = NoteDataManager(container: persistenceController.container, persistenceController: persistenceController)
+		
 		self.username = username
 		
         dateFormatter = DateFormatter()
@@ -33,6 +40,6 @@ final class NotesListViewModel: ObservableObject {
 	}
 	
     func deleteNote(inputNote: Note) {
-		PersistenceController.shared.deleteNote(note: inputNote)
+		noteDataManager.deleteNote(note: inputNote)
     }
 }

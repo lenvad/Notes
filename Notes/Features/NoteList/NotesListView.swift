@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NotesListView: View {
 	@StateObject var viewModel: NotesListViewModel
-	@FetchRequest(sortDescriptors: [SortDescriptor(\Note.noteId, order: .forward)]) var notesList: FetchedResults<Note>
+	@FetchRequest(sortDescriptors: [SortDescriptor(\Note.noteId, order: .reverse)]) var notesList: FetchedResults<Note>
 
 	var body: some View {
 		NavigationView {
