@@ -16,6 +16,11 @@ final class ContentViewModelTests: XCTestCase {
 		viewModel.usernameInput = "TestUser"
 		viewModel.passwordInput = "Aa111111"
 
+		XCTAssertFalse(viewModel.passwordInvalid)
+		XCTAssertFalse(viewModel.usernameInvalid)
+		XCTAssertFalse(viewModel.isLinkActive)
+		XCTAssertEqual(viewModel.errorMessage, "")
+		
 		viewModel.onScreenEvent(.signIn)
 
 		XCTAssertFalse(viewModel.passwordInvalid)
@@ -24,12 +29,17 @@ final class ContentViewModelTests: XCTestCase {
 		XCTAssertEqual(viewModel.errorMessage, "")
 	}
 	
-	func test_signIn_with_existingUsername_falsePassword() throws {
+	func test_signIn_with_existingUsername_falsePassword() {
 		let viewModel = makeSut()
 
 		viewModel.usernameInput = "TestUser"
 		viewModel.passwordInput = "1234"
 		
+		XCTAssertFalse(viewModel.passwordInvalid)
+		XCTAssertFalse(viewModel.usernameInvalid)
+		XCTAssertFalse(viewModel.isLinkActive)
+		XCTAssertEqual(viewModel.errorMessage, "")
+		
 		viewModel.onScreenEvent(.signIn)
 		
 		XCTAssertTrue(viewModel.passwordInvalid)
@@ -38,12 +48,17 @@ final class ContentViewModelTests: XCTestCase {
 		XCTAssertEqual(viewModel.errorMessage, "no such user found or your password is wrong")
 	}
 	
-	func test_signIn_with_notExistingUsername_rightPassword() throws {
+	func test_signIn_with_notExistingUsername_rightPassword() {
 		let viewModel = makeSut()
 
 		viewModel.usernameInput = "TestUser1"
 		viewModel.passwordInput = "Aa111111"
 		
+		XCTAssertFalse(viewModel.passwordInvalid)
+		XCTAssertFalse(viewModel.usernameInvalid)
+		XCTAssertFalse(viewModel.isLinkActive)
+		XCTAssertEqual(viewModel.errorMessage, "")
+		
 		viewModel.onScreenEvent(.signIn)
 		
 		XCTAssertTrue(viewModel.passwordInvalid)
@@ -52,11 +67,16 @@ final class ContentViewModelTests: XCTestCase {
 		XCTAssertEqual(viewModel.errorMessage, "no such user found or your password is wrong")
 	}
 	
-	func test_signIn_with_notExistingUsername_falsePassword() throws {
+	func test_signIn_with_notExistingUsername_falsePassword() {
 		let viewModel = makeSut()
 
 		viewModel.usernameInput = "TestUser1"
 		viewModel.passwordInput = "1234"
+		
+		XCTAssertFalse(viewModel.passwordInvalid)
+		XCTAssertFalse(viewModel.usernameInvalid)
+		XCTAssertFalse(viewModel.isLinkActive)
+		XCTAssertEqual(viewModel.errorMessage, "")
 		
 		viewModel.onScreenEvent(.signIn)
 

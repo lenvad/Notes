@@ -16,16 +16,45 @@ final class WriteOrEditNoteViewModelTest: XCTestCase {
 		viewModel.onScreenEvent(.onAppearance)
 		XCTAssertFalse(viewModel.contentDisabled)
 		
-		viewModel.noteText = NSAttributedString(string: "hello world, test input")
+		let text = "hello world, test input\nText Content: blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n"
+		viewModel.noteText = NSAttributedString(string: "hello world, test input\nText Content: blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n")
 		viewModel.onScreenEvent(.addOrUpdateNote)
 		
 		let note = viewModel.noteDataManager.fetchNotesById(id: (viewModel.note?.id)!)
+		print(note?.id)
+		
+		let noteAsData = try NSKeyedArchiver.archivedData(withRootObject: viewModel.noteText, requiringSecureCoding: false) // noteText is NSAttributedString
+
+		XCTAssertNotNil(note)
+		XCTAssertEqual(note?.title, "hello world, test input")
+		XCTAssertEqual(note?.noteData, noteAsData)
+	}
+	
+	func test_updateNote_fromUser() throws {
+		let viewModel = makeSut()
+		
+		viewModel.onScreenEvent(.onAppearance)
+		XCTAssertFalse(viewModel.contentDisabled)
+		
+		let noteForUpdate = viewModel.noteDataManager.fetchNotesById(id: 1)
+		viewModel.note = noteForUpdate
+
+		let text = "hello world, test input\nText Content: blalaalabjalbjljlalblablabjalblbjljlalblablabjalbla\nblalaalabjalbjljlalblablabjalbla\n\n\nblalaalabjalbjljlalblablabjalbla\nalblablabjalbla"
+		viewModel.noteText = NSAttributedString(string: text)
+		viewModel.onScreenEvent(.addOrUpdateNote)
+		
+		let note = viewModel.noteDataManager.fetchNotesById(id: (viewModel.note?.id)!)
+		
+		let noteAsData = try NSKeyedArchiver.archivedData(withRootObject: viewModel.noteText, requiringSecureCoding: false) // noteText is NSAttributedString
+
+		XCTAssertNotNil(note)
+		XCTAssertEqual(note?.title, "hello world, test input")
+		XCTAssertEqual(note?.noteData, noteAsData)
 	}
 	
 	private func makeSut() -> WriteOrEditNoteViewModel {
-		let persistenceController = PersistenceController()
 		let sut = WriteOrEditNoteViewModel(
-			username: "TestUser", persistenceController: persistenceController,
+			username: "TestUser", persistenceController: PersistenceController(),
 			note: nil
 		)
 		

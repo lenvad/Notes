@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct WriteOrEditNoteView: View {
-	@StateObject let viewModel: WriteOrEditNoteViewModel
+	@StateObject var viewModel: WriteOrEditNoteViewModel
 
     var body: some View {
         NavigationView {
