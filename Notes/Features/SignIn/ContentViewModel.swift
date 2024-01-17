@@ -25,7 +25,7 @@ final class ContentViewModel: ObservableObject {
 	
 	init() {
 		self.persistenceController = PersistenceController.shared
-		self.userDataManager = UserDataManager(container: persistenceController.container, persistenceController: persistenceController)
+		self.userDataManager = UserDataManager(persistenceController: persistenceController)
 	}
 	
 	func onScreenEvent(_ event: ScreenEvent) {

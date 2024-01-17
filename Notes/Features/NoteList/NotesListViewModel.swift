@@ -23,7 +23,7 @@ final class NotesListViewModel: ObservableObject {
 	
 	init(username: String) {
 		self.persistenceController = PersistenceController.shared
-		self.noteDataManager = NoteDataManager(container: persistenceController.container, persistenceController: persistenceController)
+		self.noteDataManager = NoteDataManager(persistenceController: persistenceController)
 		
 		self.username = username
 		
@@ -35,11 +35,7 @@ final class NotesListViewModel: ObservableObject {
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 		case .deleteNoteWhenSwipe(let note):
-			deleteNote(inputNote: note)
+			noteDataManager.deleteNote(note)
 		}
 	}
-	
-    func deleteNote(inputNote: Note) {
-		noteDataManager.deleteNote(note: inputNote)
-    }
 }

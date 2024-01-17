@@ -16,8 +16,8 @@ extension Note {
         return NSFetchRequest<Note>(entityName: "Note")
     }
 
-    @NSManaged public var id: Int32
-    @NSManaged public var noteId: UUID?
+    @NSManaged public var id: Int32 // remove this
+    @NSManaged public var noteId: UUID? // TODO: keep that one. Further, it must not be optional
     @NSManaged public var timestamp: Date
     @NSManaged public var title: String?
     @NSManaged public var noteData: Data?
