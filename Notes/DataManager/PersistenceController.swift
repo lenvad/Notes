@@ -57,13 +57,12 @@ extension PersistenceController {
 			let newUser = User(context: viewContext)
 			newUser.username = "alex"
 			newUser.password = "1234"
-			newUser.id = 1
 			newUser.email = "alex@mail.com"
 
 			let newNote = Note(context: viewContext)
 			newNote.title = "title"
 			newNote.noteData = "content".data(using: .utf8)
-			newNote.timestamp = Date.now
+			newNote.modifiedDate = Date.now
 			newNote.id = 1
 			newNote.user = newUser
 		}

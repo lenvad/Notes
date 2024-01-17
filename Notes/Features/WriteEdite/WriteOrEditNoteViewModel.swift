@@ -44,33 +44,31 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	@Published var contentDisabled = true
 	@Published var fontSize: Int = 12
 	@Published var errorMessage = ""
-	//@MainActor @Published var fontSizeDouble: Double = 12.0
 	
 	var noteText: NSAttributedString = NSAttributedString(string: "")
+	var counter: Int32 = 0
+	var isLinkActive = false
+	var note: Note?
+	
+	let username: String
 	let colorList: [String] = Colors.allCases.map { $0.rawValue }
 	let fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
 
-	var counter: Int32 = 0
-	var isLinkActive = false
-	var username: String
-	var note: Note?
-	
-	private let userDataManager: UserDataManager
-	private let noteDataManager: NoteDataManager
+	let userDataManager: UserDataManager
+	let noteDataManager: NoteDataManager
 
-	init(username: String, userDataManager: UserDataManager, noteDataManager: NoteDataManager, note: Note? = nil) {
-		self.userDataManager = userDataManager
-		self.noteDataManager = noteDataManager
+	init(username: String, persistenceController: PersistenceController, note: Note? = nil) {
+		self.userDataManager = UserDataManager(persistenceController: persistenceController)
+		self.noteDataManager = NoteDataManager(persistenceController: persistenceController)
 		self.username = username
 		self.note = note
-
 
 		DispatchQueue.global(qos: .background).async {
 			self.contentDisabled = false
 		}
 	}
 	
-	@MainActor func onScreenEvent(_ event: ScreenEvent) {
+	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .onAppearance:
 				counter = getBiggestId() ?? 0
@@ -94,7 +92,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		}
 	}
 	
-	@MainActor func toolbarButtons(_ event: ToolKinds) {
+	func toolbarButtons(_ event: ToolKinds) {
 		switch event {
 			case .bold:
 				isBold = switchBool(boolValue: &isBold)
@@ -120,7 +118,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		return user
 	}
 	
-	@MainActor func addOrUpdateNote(inputUser: User) {
+	func addOrUpdateNote(inputUser: User) {
 		do {
 			let data = try NSKeyedArchiver.archivedData(withRootObject: noteText, requiringSecureCoding: false) // noteText is NSAttributedString
 			
@@ -131,7 +129,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 				counter += 1
 			}
 			
-			note = noteDataManager.updateOrCreateNote(title: inputTitle, timestamp: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
+			note = noteDataManager.updateOrCreateNote(title: inputTitle, modifiedDate: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
 
 			isLinkActive = true
 			
@@ -146,7 +144,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		return biggestNum?.id
 	}
 
-	@MainActor func decodeAndSetNote() {
+	func decodeAndSetNote() {
 		do {
 			let unarchiver = try NSKeyedUnarchiver(forReadingFrom: note?.noteData ?? Data("error".utf8))
 			unarchiver.requiresSecureCoding = false

@@ -12,6 +12,7 @@ import XCTest
 final class ContentViewModelTests: XCTestCase {
 	func test_signIn_with_existingUsername_rightPassword() {
 		let viewModel = makeSut()
+		
 		viewModel.usernameInput = "TestUser"
 		viewModel.passwordInput = "Aa111111"
 
@@ -66,20 +67,11 @@ final class ContentViewModelTests: XCTestCase {
 	}
 
 	private func makeSut() -> ContentViewModel {
-		let sut = ContentViewModel()
+		let sut = ContentViewModel(persistenceController: PersistenceController())
 
 		// track for memory leak
 		trackForMemoryLeaks(object: sut)
 
 		return sut
-	}
-}
-
-extension XCTestCase {
-	/// Use this method from the local scope of test function. Using it from tearDown() could lead into unwanted results.
-	func trackForMemoryLeaks(object: AnyObject, file: StaticString = #file, line: UInt = #line) {
-		addTeardownBlock { [weak object] in
-			XCTAssertNil(object, "Instance should have been deallocated. Potential memory leak", file: file, line: line)
-		}
 	}
 }

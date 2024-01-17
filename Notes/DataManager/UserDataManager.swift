@@ -18,12 +18,10 @@ struct UserDataManager {
 		self.persistenceController = persistenceController
 	}
 	
-	func createUser(username: String, email: String, password: String, id: Int32) {
+	func createUser(username: String, email: String, password: String) {
 		let user = User(context: dbContext)
 		user.username = username
 		user.email = email
-		user.id = id // TODO: remove this attribute
-		user.userId = UUID() // TODO: remove this attribute
 		user.password = password
 		persistenceController.save()
 	}

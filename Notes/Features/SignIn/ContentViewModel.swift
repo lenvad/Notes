@@ -20,11 +20,9 @@ final class ContentViewModel: ObservableObject {
     @Published var passwordInvalid = false
     @Published var isLinkActive = false
         
-	private var persistenceController : PersistenceController
-	private var userDataManager: UserDataManager
+	private let userDataManager: UserDataManager
 	
-	init() {
-		self.persistenceController = PersistenceController.shared
+	init(persistenceController: PersistenceController) {
 		self.userDataManager = UserDataManager(persistenceController: persistenceController)
 	}
 	

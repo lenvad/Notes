@@ -25,8 +25,7 @@ struct NotesListView: View {
 						destination: WriteOrEditNoteView(
 							viewModel: WriteOrEditNoteViewModel(
 								username: viewModel.username,
-								userDataManager: UserDataManager(persistenceController: .shared),
-								noteDataManager: NoteDataManager(persistenceController: .shared)
+								persistenceController: .shared
 							)
 						).navigationBarBackButtonHidden(true)
 					) {
@@ -58,8 +57,7 @@ struct NotesListView: View {
 				destination: WriteOrEditNoteView(
 					viewModel: WriteOrEditNoteViewModel(
 						username: viewModel.username,
-						userDataManager: UserDataManager(persistenceController: .shared),
-						noteDataManager: NoteDataManager(persistenceController: .shared),
+						persistenceController: .shared,
 						note: note
 					)
 				).navigationBarBackButtonHidden(true)
@@ -67,7 +65,7 @@ struct NotesListView: View {
 				Text(note.title ?? "Untitled")
 					.foregroundColor(Color("AccentColor"))
 				Spacer()
-				Text("\(note.timestamp, formatter: viewModel.dateFormatter)")
+				Text("\(note.modifiedDate, formatter: viewModel.dateFormatter)")
 					.foregroundColor(.secondary)
 					.font(.system(size: 10))
 			}.padding(10)
@@ -86,7 +84,7 @@ struct NotesListView: View {
 struct NotesListView_Previews: PreviewProvider {
 	static var previews: some View {
 		NotesListView(
-			viewModel: NotesListViewModel(username: "l"),
+			viewModel: NotesListViewModel(username: "l", persistenceController: .preview),
 			notesList: FetchRequest(
 				entity: Note.entity(),
 				sortDescriptors: [],

@@ -19,13 +19,13 @@ struct NoteDataManager {
 	}
 	
 	// TODO: this is no needed
-	func createNote(title: String, timestamp: Date, id: Int32, data: Data, user: User) -> Note {
+	func createNote(title: String, modifiedDate: Date, id: Int32, data: Data, user: User) -> Note {
 		let note = Note(context: dbContext)
-		note.id = id // TODO: Remove this attribute from the DB
-		note.timestamp = timestamp
+		note.id = id
+		note.modifiedDate = modifiedDate
 		note.title = title
 		note.user = user
-		user.addToNote(note)
+		user.addToNotes(note)
 		persistenceController.save()
 		return note
 	}
@@ -46,7 +46,7 @@ struct NoteDataManager {
 	func fetchNotesByUser(user: User) -> [Note] {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
 		request.predicate = NSPredicate(format: "user = %@", user)
-		request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+		request.sortDescriptors = [NSSortDescriptor(key: "modifiedDate", ascending: false)]
 		var fetchedNotes: [Note] = []
 		do {
 			fetchedNotes = try dbContext.fetch(request)
@@ -59,7 +59,7 @@ struct NoteDataManager {
 	func fetchNotesById(id: Int32) -> Note? {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
 		request.predicate = NSPredicate(format: "id = %d", id as Int32)
-		request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+		request.sortDescriptors = [NSSortDescriptor(key: "modifiedDate", ascending: false)]
 		var fetchedNote: Note?
 		do {
 			fetchedNote = try dbContext.fetch(request).first
@@ -69,7 +69,7 @@ struct NoteDataManager {
 		return fetchedNote
 	}
 	
-	func updateOrCreateNote(title: String, timestamp: Date, id: Int32, data: Data, user: User) -> Note {
+	func updateOrCreateNote(title: String, modifiedDate: Date, id: Int32, data: Data, user: User) -> Note {
 		let note: Note!
 		
 		let existingNote = fetchNotesById(id: id)
@@ -83,11 +83,11 @@ struct NoteDataManager {
 		}
 
 		note.id = id
-		note.timestamp = timestamp
+		note.modifiedDate = modifiedDate
 		note.title = title
 		note.noteData = data
 		note.user = user
-		user.addToNote(note)
+		user.addToNotes(note)
 		
 		persistenceController.save()
 		

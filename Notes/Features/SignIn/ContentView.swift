@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-	@StateObject var viewModel = ContentViewModel()
+	@StateObject var viewModel = ContentViewModel(persistenceController: PersistenceController.shared)
 	
 	var body: some View {
 		NavigationView() {
@@ -40,7 +40,7 @@ struct ContentView: View {
 								NavigationLink(
 									"",
 									destination: NotesListView(
-										viewModel: NotesListViewModel(username: viewModel.usernameInput),
+										viewModel: NotesListViewModel(username: viewModel.usernameInput, persistenceController: PersistenceController.shared),
 										notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.usernameInput)
 									).navigationBarBackButtonHidden(true),
 									isActive: $viewModel.isLinkActive).opacity(0).disabled(true)

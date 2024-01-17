@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct WriteOrEditNoteView: View {
-	@StateObject var viewModel: WriteOrEditNoteViewModel
+	@StateObject let viewModel: WriteOrEditNoteViewModel
 
     var body: some View {
         NavigationView {
@@ -52,7 +52,7 @@ struct WriteOrEditNoteView: View {
 				ToolbarItem(placement: .navigationBarLeading) {
 					NavigationLink(
 						destination: NotesListView(
-							viewModel: NotesListViewModel(username: viewModel.username),
+							viewModel: NotesListViewModel(username: viewModel.username, persistenceController: .shared),
 							notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.username)
 						).navigationBarBackButtonHidden(true)
 					) {
@@ -159,8 +159,7 @@ struct WriteOrEditNoteView_Previews: PreviewProvider {
 		WriteOrEditNoteView(
 			viewModel: WriteOrEditNoteViewModel(
 				username: "l",
-				userDataManager: UserDataManager(persistenceController: .shared),
-				noteDataManager: NoteDataManager(persistenceController: .shared)
+				persistenceController: .shared
 			)
 		)
 	}

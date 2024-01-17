@@ -22,16 +22,11 @@ final class SignUpViewModel: ObservableObject {
 	@Published var passwordInvalid = false
 
     var users: [User] = []
-    var min: Int32 = 1
-    var max: Int32 = 1000
 	
-	var persistenceController : PersistenceController
-	var userDataManager: UserDataManager
+	let userDataManager: UserDataManager
 	
-	init() {
-		self.persistenceController = PersistenceController.shared
+	init(persistenceController: PersistenceController) {
 		self.userDataManager = UserDataManager(persistenceController: persistenceController)
-		fetchAllUsers()
 	}
 	
 	func onScreenEvent(_ event: ScreenEvent) {
@@ -46,8 +41,7 @@ final class SignUpViewModel: ObservableObject {
 		case (true, true):
 			userDataManager.createUser(username: usernameInput,
 									   email: emailInput,
-									   password: passwordInput,
-									   id: generateRandomNumber(min: min, max: max))
+									   password: passwordInput)
 			errorMessage = ""
 			isUserAdded = true
 			usernameInvalid = false
@@ -101,25 +95,7 @@ final class SignUpViewModel: ObservableObject {
         if !allUsernames.contains(usernameInput) {
             return true
         }
-
         return false
-    }
-	
-    func generateRandomNumber(min: Int32, max: Int32) -> Int32 {
-        var idNumbers: [Int] = []
-        var num: Int32
-        
-        fetchAllUsers()
-		
-        for user in users {
-            idNumbers.append(Int(user.id))
-        }
-        
-        repeat {
-            num = Int32.random(in: min..<max)
-        } while idNumbers.contains(Int(num))
-        
-        return num
     }
     
     func fetchAllUsers() {

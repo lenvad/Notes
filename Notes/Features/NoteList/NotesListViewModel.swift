@@ -15,14 +15,11 @@ final class NotesListViewModel: ObservableObject {
 	}
 	
     let dateFormatter: DateFormatter
-	var username: String
+	let username: String
 	
-	private var persistenceController : PersistenceController
 	private var noteDataManager: NoteDataManager
 	
-	
-	init(username: String) {
-		self.persistenceController = PersistenceController.shared
+	init(username: String, persistenceController: PersistenceController) {
 		self.noteDataManager = NoteDataManager(persistenceController: persistenceController)
 		
 		self.username = username

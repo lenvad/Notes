@@ -1,8 +1,8 @@
 //
 //  Note+CoreDataProperties.swift
-//  Notes
+//  NotesTests
 //
-//  Created by Lena Vadakkel on 08.12.23.
+//  Created by Lena Vadakkel on 17.01.2024.
 //
 //
 
@@ -16,11 +16,11 @@ extension Note {
         return NSFetchRequest<Note>(entityName: "Note")
     }
 
-    @NSManaged public var id: Int32 // remove this
-    @NSManaged public var noteId: UUID? // TODO: keep that one. Further, it must not be optional
-    @NSManaged public var timestamp: Date
-    @NSManaged public var title: String?
+    @NSManaged public var id: Int32
     @NSManaged public var noteData: Data?
+    @NSManaged public var noteId: UUID
+    @NSManaged public var modifiedDate: Date
+    @NSManaged public var title: String?
     @NSManaged public var user: User?
 
 }

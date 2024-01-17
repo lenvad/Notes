@@ -31,11 +31,13 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	func updateUIView(_ uiView: UITextView, context: Context) {
+		print("checklist 1: \(checklistActivated)")
 		context.coordinator.setAttributes(isBold: $isBold,
 										  isItalic: $isItalic,
 										  isUnderlined: $isUnderlined,
 										  fontSize: $fontSize,
-										  color: $color)
+										  color: $color,
+										  checklistActivated: $checklistActivated)
 		
 		uiView.attributedText = text
 		uiView.selectedRange = selectedRange
@@ -119,13 +121,15 @@ struct UITextViewRepresentable: UIViewRepresentable {
 						   isItalic:  Binding<Bool>,
 						   isUnderlined: Binding<Bool>,
 						   fontSize: Binding<Int>,
-						   color: Binding<String>
+						   color: Binding<String>,
+						   checklistActivated: Binding<Bool>
 		) {
 			self._isBold = isBold
 			self._isItalic = isItalic
 			self._isUnderlined = isUnderlined
 			self._fontSize = fontSize
 			self._color = color
+			self._checklistActivated = checklistActivated
 		}
 		
 		func debugPrint() {
@@ -136,6 +140,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			print("underlined: \(isUnderlined)")
 			print("color: \(color)")
 			print("fontsize: \(fontSize)")
+			print("checklist: \(checklistActivated)")
 			print()
 		}
 		
