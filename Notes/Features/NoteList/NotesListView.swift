@@ -10,44 +10,49 @@ import SwiftUI
 struct NotesListView: View {
 	@StateObject var viewModel: NotesListViewModel
 	@FetchRequest(sortDescriptors: [SortDescriptor(\Note.noteId, order: .reverse)]) var notesList: FetchedResults<Note>
-
+	
 	var body: some View {
 		NavigationView {
-			List {
-				ForEach(notesList, id: \.self, content:  { note in
-					generateNoteItem(note: note)
-				})
-				.listRowBackground((Color.orangeMain).opacity(0.4))
-			}
-			.toolbar {
-				ToolbarItem(placement: .bottomBar ) {
-					NavigationLink(
-						destination: WriteOrEditNoteView(
-							viewModel: WriteOrEditNoteViewModel(
-								username: viewModel.username,
-								persistenceController: .shared
-							)
-						).navigationBarBackButtonHidden(true)
-					) {
-						Image(systemName: "plus.circle.fill")
-							.foregroundColor(Color("AccentColor"))
-							.font(.system(size: 35))
-							.shadow(color: .gray, radius: 5)
-					}.frame(maxWidth: .infinity, alignment: .center)
-				}
+			VStack {
+				Text(viewModel.errorMessage)
+					.errorMessageText(errorMessage: viewModel.errorMessage)
 				
-				ToolbarItem(placement: .topBarLeading) {
-					NavigationLink(
-						destination: ContentView().navigationBarBackButtonHidden(true)
-					) {
-						Text("Logout")
+				List {
+					ForEach(notesList, id: \.self, content:  { note in
+						generateNoteItem(note: note)
+					})
+					.listRowBackground((Color.orangeMain).opacity(0.4))
+				}
+				.toolbar {
+					ToolbarItem(placement: .bottomBar ) {
+						NavigationLink(
+							destination: WriteOrEditNoteView(
+								viewModel: WriteOrEditNoteViewModel(
+									username: viewModel.username,
+									persistenceController: .shared
+								)
+							).navigationBarBackButtonHidden(true)
+						) {
+							Image(systemName: "plus.circle.fill")
+								.foregroundColor(Color("AccentColor"))
+								.font(.system(size: 35))
+								.shadow(color: .gray, radius: 5)
+						}.frame(maxWidth: .infinity, alignment: .center)
+					}
+					
+					ToolbarItem(placement: .topBarLeading) {
+						NavigationLink(
+							destination: ContentView().navigationBarBackButtonHidden(true)
+						) {
+							Text("Logout")
+						}
 					}
 				}
 			}
-		}
-		.onAppear {
-			print("view is appearing")
-			//viewModel.onScreenEvent(.onAppear)
+			.onAppear {
+				print("view is appearing")
+				//viewModel.onScreenEvent(.onAppear)
+			}
 		}
 	}
 	
@@ -93,4 +98,5 @@ struct NotesListView_Previews: PreviewProvider {
 		)
 	}
 }
+
 

@@ -70,15 +70,15 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
-		enum Colors {
-			case standard
-			case red
-			case blue
-			case green
-			case yellow
-			case pink
-			case purple
-			case orange
+		enum Colors: String, CaseIterable {
+			case standard: (String, String) = "standard", "gray"
+			case red = "red"
+			case blue = "blue"
+			case green = "green"
+			case yellow  = "yellow"
+			case pink = ["pink", "magenta"]
+			case purple = "purple"
+			case orange = "orange"
 		}
 		
 		@Binding var text: NSAttributedString

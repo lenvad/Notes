@@ -11,11 +11,12 @@ import CoreData
 
 final class NotesListViewModel: ObservableObject {
 	enum ScreenEvent {
-		case deleteNoteWhenSwipe(note: Note)
+		case deleteNoteWhenSwipe(note: Note?)
 	}
 	
     let dateFormatter: DateFormatter
 	let username: String
+	var errorMessage = ""
 	
 	var noteDataManager: NoteDataManager
 	
@@ -32,7 +33,12 @@ final class NotesListViewModel: ObservableObject {
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 		case .deleteNoteWhenSwipe(let note):
-			noteDataManager.deleteNote(note)
+				if noteDataManager.deleteNote(note) {
+					errorMessage = ""
+				}
+				else {
+					errorMessage = "Could not delete Note. Please log out and try again"
+				}
 		}
 	}
 }

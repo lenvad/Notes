@@ -94,8 +94,12 @@ struct NoteDataManager {
 		return note
 	}
 	
-	func deleteNote(_ note: Note) {
-		dbContext.delete(note)
+	func deleteNote(_ note: Note?) -> Bool {
+		if note == nil {
+			return false
+		}
+		dbContext.delete(note!)
 		persistenceController.save()
+		return true
 	}
 }
