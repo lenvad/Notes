@@ -25,6 +25,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var formattingCurrentlyChanged: Bool
 	let onUpdate: (TextViewEvent) -> Void
 	
+	var tappedCallback: ((CGPoint, Int) -> Void)
+	
 	func makeUIView(context: Context) -> UITextView {
 		textView.delegate = context.coordinator
 		return textView
@@ -71,12 +73,12 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	
 	class Coordinator: NSObject, UITextViewDelegate {
 		enum Colors: String, CaseIterable {
-			case standard: (String, String) = "standard", "gray"
+			case standard = "standard"
 			case red = "red"
 			case blue = "blue"
 			case green = "green"
 			case yellow  = "yellow"
-			case pink = ["pink", "magenta"]
+			case pink = "pink"
 			case purple = "purple"
 			case orange = "orange"
 		}
@@ -144,32 +146,16 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			print()
 		}
 		
-		func getCurrentColerAsEnumColor(selectedColor: String) -> Colors {
+		func getCurrentColerAsValidColor(selectedColor: String) -> String {
 			switch selectedColor {
-				case "standard":
-					return .standard
-				case "red":
-					return .red
-				case "orange":
-					return .orange
-				case "yellow":
-					return .yellow
-				case "green":
-					return .green
-				case "blue":
-					return .blue
-				case "pink":
-					return .pink
-				case "purple":
-					return .purple
 				case "gray":
-					return .standard
+					return "standard"
 				case "magenta":
-					return .pink
+					return "pink"
 				case "yellow orange":
-					return .yellow
+					return "yellow"
 				default:
-					return .standard
+					return "standard"
 			}
 		}
 		
@@ -181,6 +167,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			
 			//Find all attributes in the text.
 			attributedText.enumerateAttributes(in: selectedRange) { attributes, range, stop in
+				print("Attributes: \(attributes)")
 				attributes.forEach { (key, value) in
 					switch key {
 						case NSAttributedString.Key.font:
@@ -226,27 +213,13 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			attributedColorRanges.forEach { value in
 				let fontColor = value?.accessibilityName
 				
-				let colorSet = getCurrentColerAsEnumColor(selectedColor: fontColor ?? "gray")
+				var colorSet: Colors
 				
-				switch colorSet {
-					case .standard:
-						color = "standard"
-					case .pink:
-						color = "pink"
-					case .blue:
-						color = "blue"
-					case .red:
-						color = "red"
-					case .green:
-						color = "green"
-					case .purple:
-						color = "purple"
-					case .yellow:
-						color = "yellow"
-					case .orange:
-						color = "orange"
-					default:
-						color = "standard"
+				if fontColor == "gray" || fontColor == "magenta" || fontColor == "yellow orange" {
+					color = getCurrentColerAsValidColor(selectedColor: fontColor ?? "standard") ?? "standard"
+				} else {
+					color = fontColor ?? "standard"
+
 				}
 			}
 		}
@@ -328,9 +301,9 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					print("standard")
 			}
 			
-			let colorSet = getCurrentColerAsEnumColor(selectedColor: color)
+			//let colorSet = getCurrentColerAsEnumColor(selectedColor: color)
 			
-			switch colorSet {
+			switch Colors(rawValue: color) {
 			case .standard:
 				attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
 											  value: UIColor.standardFont,
