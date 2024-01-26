@@ -34,6 +34,9 @@
 		50AD49D82B517E41008BF09E /* NotesListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49D72B517E41008BF09E /* NotesListViewModelTests.swift */; };
 		50AD49DA2B518473008BF09E /* WriteOrEditNoteViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49D92B518473008BF09E /* WriteOrEditNoteViewModelTest.swift */; };
 		50AD49DD2B57C098008BF09E /* XCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49DC2B57C098008BF09E /* XCTestCase.swift */; };
+		50AD49E02B59797E008BF09E /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49DF2B59797E008BF09E /* UIFont.swift */; };
+		50AD49E22B5979A7008BF09E /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49E12B5979A7008BF09E /* NSAttributedString.swift */; };
+		50AD49E42B5979E0008BF09E /* AttachmentTapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49E32B5979E0008BF09E /* AttachmentTapGestureRecognizer.swift */; };
 		50FF4BED2AFD22BB000A6E25 /* NotesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */; };
 		50FF4BEF2AFD27C9000A6E25 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */; };
 		50FF4BF12AFD2911000A6E25 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */; };
@@ -91,6 +94,9 @@
 		50AD49D72B517E41008BF09E /* NotesListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListViewModelTests.swift; sourceTree = "<group>"; };
 		50AD49D92B518473008BF09E /* WriteOrEditNoteViewModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteOrEditNoteViewModelTest.swift; sourceTree = "<group>"; };
 		50AD49DC2B57C098008BF09E /* XCTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestCase.swift; sourceTree = "<group>"; };
+		50AD49DF2B59797E008BF09E /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
+		50AD49E12B5979A7008BF09E /* NSAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedString.swift; sourceTree = "<group>"; };
+		50AD49E32B5979E0008BF09E /* AttachmentTapGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTapGestureRecognizer.swift; sourceTree = "<group>"; };
 		50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListView.swift; sourceTree = "<group>"; };
 		50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
@@ -251,6 +257,15 @@
 			path = Extension;
 			sourceTree = "<group>";
 		};
+		50AD49DE2B597959008BF09E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				50AD49DF2B59797E008BF09E /* UIFont.swift */,
+				50AD49E12B5979A7008BF09E /* NSAttributedString.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		5DE32C3B2B483FAC00382C49 /* Features */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,7 +306,9 @@
 		5DE32C412B48421200382C49 /* UIKitWrapper */ = {
 			isa = PBXGroup;
 			children = (
+				50AD49DE2B597959008BF09E /* Extensions */,
 				503990802B18B90100E5E97D /* UITextViewRepresentable.swift */,
+				50AD49E32B5979E0008BF09E /* AttachmentTapGestureRecognizer.swift */,
 			);
 			path = UIKitWrapper;
 			sourceTree = "<group>";
@@ -447,7 +464,10 @@
 				50FF4BF72AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift in Sources */,
 				501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */,
 				503CE1DC2B10DB69004C7097 /* SignUpButtonText.swift in Sources */,
+				50AD49E02B59797E008BF09E /* UIFont.swift in Sources */,
 				50AD49D22B4FF247008BF09E /* UserDataManager.swift in Sources */,
+				50AD49E42B5979E0008BF09E /* AttachmentTapGestureRecognizer.swift in Sources */,
+				50AD49E22B5979A7008BF09E /* NSAttributedString.swift in Sources */,
 				503990812B18B90100E5E97D /* UITextViewRepresentable.swift in Sources */,
 				503CE1E62B10DEA1004C7097 /* ViewExtensionForModifiers.swift in Sources */,
 			);

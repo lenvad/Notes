@@ -12,7 +12,7 @@ final class SignUpViewModelTests: XCTestCase {
     func test_addUserWhenButtonClicked_with_rightPasswordValidation_and_uniqueUsername() {
 		let viewModel = makeSut()
 		
-		viewModel.userDataManager.deleteUser(user: viewModel.userDataManager.fetchUsersByUsername("TestUser")!)
+		//viewModel.userDataManager.deleteUser(user: viewModel.userDataManager.fetchUsersByUsername("TestUser")!)
 		
 		viewModel.usernameInput = "TestUser"
 		viewModel.emailInput = "testMail"

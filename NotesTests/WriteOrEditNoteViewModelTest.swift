@@ -16,30 +16,7 @@ final class WriteOrEditNoteViewModelTest: XCTestCase {
 		viewModel.onScreenEvent(.onAppearance)
 		XCTAssertFalse(viewModel.contentDisabled)
 		
-		let text = "hello world, test input\nText Content: blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n"
-		viewModel.noteText = NSAttributedString(string: "hello world, test input\nText Content: blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n")
-		viewModel.onScreenEvent(.addOrUpdateNote)
-		
-		let note = viewModel.noteDataManager.fetchNotesById(id: (viewModel.note?.id)!)
-		print(note?.id)
-		
-		let noteAsData = try NSKeyedArchiver.archivedData(withRootObject: viewModel.noteText, requiringSecureCoding: false) // noteText is NSAttributedString
-
-		XCTAssertNotNil(note)
-		XCTAssertEqual(note?.title, "hello world, test input")
-		XCTAssertEqual(note?.noteData, noteAsData)
-	}
-	
-	func test_updateNote_fromUser() throws {
-		let viewModel = makeSut()
-		
-		viewModel.onScreenEvent(.onAppearance)
-		XCTAssertFalse(viewModel.contentDisabled)
-		
-		let noteForUpdate = viewModel.noteDataManager.fetchNotesById(id: 1)
-		viewModel.note = noteForUpdate
-
-		let text = "hello world, test input\nText Content: blalaalabjalbjljlalblablabjalblbjljlalblablabjalbla\nblalaalabjalbjljlalblablabjalbla\n\n\nblalaalabjalbjljlalblablabjalbla\nalblablabjalbla"
+		let text = "hello world, test input add note to user\nText Content: blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n blalaalabjalbjljlalblablabjalbla\n"
 		viewModel.noteText = NSAttributedString(string: text)
 		viewModel.onScreenEvent(.addOrUpdateNote)
 		
@@ -48,7 +25,31 @@ final class WriteOrEditNoteViewModelTest: XCTestCase {
 		let noteAsData = try NSKeyedArchiver.archivedData(withRootObject: viewModel.noteText, requiringSecureCoding: false) // noteText is NSAttributedString
 
 		XCTAssertNotNil(note)
-		XCTAssertEqual(note?.title, "hello world, test input")
+		XCTAssertEqual(note?.title, "hello world, test input add note to user")
+		XCTAssertEqual(note?.noteData, noteAsData)
+	}
+	
+	func test_updateNote_fromUser() throws {
+		let viewModel = makeSut()
+		
+		viewModel.onScreenEvent(.onAppearance)
+
+		let noteForUpdate = viewModel.noteDataManager.fetchNotesById(id: 14) //TODO: does not change addNew and update should have the same id
+		viewModel.note = noteForUpdate
+		
+		XCTAssertFalse(viewModel.contentDisabled)
+		XCTAssertEqual(viewModel.note?.title, "hello world, test input add note to user")
+
+		let text = "hello world, test input update note to user\nText Content: blalaalabjalbjljlalblablabjalblbjljlalblablabjalbla\nblalaalabjalbjljlalblablabjalbla\n\n\nblalaalabjalbjljlalblablabjalbla\nalblablabjalbla"
+		viewModel.noteText = NSAttributedString(string: text)
+		viewModel.onScreenEvent(.addOrUpdateNote)
+		
+		let note = viewModel.noteDataManager.fetchNotesById(id: (viewModel.note?.id)!)
+		
+		let noteAsData = try NSKeyedArchiver.archivedData(withRootObject: viewModel.noteText, requiringSecureCoding: false) // noteText is NSAttributedString
+
+		XCTAssertNotNil(note)
+		XCTAssertEqual(note?.title, "hello world, test input update note to user")
 		XCTAssertEqual(note?.noteData, noteAsData)
 	}
 	

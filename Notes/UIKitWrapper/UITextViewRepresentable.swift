@@ -25,8 +25,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var formattingCurrentlyChanged: Bool
 	let onUpdate: (TextViewEvent) -> Void
 	
-	var tappedCallback: ((CGPoint, Int) -> Void)
-	
 	func makeUIView(context: Context) -> UITextView {
 		textView.delegate = context.coordinator
 		return textView
@@ -145,7 +143,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			print("checklist: \(checklistActivated)")
 			print()
 		}
-		
+
 		func getCurrentColerAsValidColor(selectedColor: String) -> String {
 			switch selectedColor {
 				case "gray":
@@ -419,50 +417,4 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			onUpdate(.text(newValue))
 		}
 	}
-}
-
-extension UIFont {
-	
-	func withTraits(_ traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
-		
-		// create a new font descriptor with the given traits
-		guard let fd = fontDescriptor.withSymbolicTraits(traits) else {
-			// the given traits couldn't be applied, return self
-			return self
-		}
-		
-		// return a new font with the created font descriptor
-		return UIFont(descriptor: fd, size: pointSize)
-	}
-	
-	func italics() -> UIFont {
-		return withTraits(.traitItalic)
-	}
-	
-	func bold() -> UIFont {
-		return withTraits(.traitBold)
-	}
-	
-	func boldItalics() -> UIFont {
-		return withTraits([ .traitBold, .traitItalic ])
-	}
-}
-
-extension NSAttributedString {
-	convenience init(data: Data, documentType: DocumentType, encoding: String.Encoding = .utf8) throws {
-		try self.init(attributedString: .init(data: data, options: [.documentType: documentType, .characterEncoding: encoding.rawValue], documentAttributes: nil))
-	}
-	
-	func data(_ documentType: DocumentType) -> Data {
-		// Discussion
-		// Raises an rangeException if any part of range lies beyond the end of the receiver’s characters.
-		// Therefore passing a valid range allow us to force unwrap the result
-		try! data(from: .init(location: 0, length: length),
-				  documentAttributes: [.documentType: documentType])
-	}
-	
-	var text: Data { data(.plain) }
-	var html: Data { data(.html)  }
-	var rtf:  Data { data(.rtf)   }
-	var rtfd: Data { data(.rtfd)  }
 }
