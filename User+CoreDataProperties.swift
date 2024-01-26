@@ -1,8 +1,8 @@
 //
 //  User+CoreDataProperties.swift
-//  Notes
+//  NotesTests
 //
-//  Created by Lena Vadakkel on 08.12.23.
+//  Created by Lena Vadakkel on 17.01.2024.
 //
 //
 
@@ -17,46 +17,44 @@ extension User {
     }
 
     @NSManaged public var email: String?
-    @NSManaged public var id: Int32
     @NSManaged public var password: String?
-    @NSManaged public var userId: UUID?
     @NSManaged public var username: String
-    @NSManaged public var note: NSOrderedSet?
+    @NSManaged public var notes: NSOrderedSet?
 
 }
 
-// MARK: Generated accessors for note
+// MARK: Generated accessors for notes
 extension User {
 
-    @objc(insertObject:inNoteAtIndex:)
-    @NSManaged public func insertIntoNote(_ value: Note, at idx: Int)
+    @objc(insertObject:inNotesAtIndex:)
+    @NSManaged public func insertIntoNotes(_ value: Note, at idx: Int)
 
-    @objc(removeObjectFromNoteAtIndex:)
-    @NSManaged public func removeFromNote(at idx: Int)
+    @objc(removeObjectFromNotesAtIndex:)
+    @NSManaged public func removeFromNotes(at idx: Int)
 
-    @objc(insertNote:atIndexes:)
-    @NSManaged public func insertIntoNote(_ values: [Note], at indexes: NSIndexSet)
+    @objc(insertNotes:atIndexes:)
+    @NSManaged public func insertIntoNotes(_ values: [Note], at indexes: NSIndexSet)
 
-    @objc(removeNoteAtIndexes:)
-    @NSManaged public func removeFromNote(at indexes: NSIndexSet)
+    @objc(removeNotesAtIndexes:)
+    @NSManaged public func removeFromNotes(at indexes: NSIndexSet)
 
-    @objc(replaceObjectInNoteAtIndex:withObject:)
-    @NSManaged public func replaceNote(at idx: Int, with value: Note)
+    @objc(replaceObjectInNotesAtIndex:withObject:)
+    @NSManaged public func replaceNotes(at idx: Int, with value: Note)
 
-    @objc(replaceNoteAtIndexes:withNote:)
-    @NSManaged public func replaceNote(at indexes: NSIndexSet, with values: [Note])
+    @objc(replaceNotesAtIndexes:withNotes:)
+    @NSManaged public func replaceNotes(at indexes: NSIndexSet, with values: [Note])
 
-    @objc(addNoteObject:)
-    @NSManaged public func addToNote(_ value: Note)
+    @objc(addNotesObject:)
+    @NSManaged public func addToNotes(_ value: Note)
 
-    @objc(removeNoteObject:)
-    @NSManaged public func removeFromNote(_ value: Note)
+    @objc(removeNotesObject:)
+    @NSManaged public func removeFromNotes(_ value: Note)
 
-    @objc(addNote:)
-    @NSManaged public func addToNote(_ values: NSOrderedSet)
+    @objc(addNotes:)
+    @NSManaged public func addToNotes(_ values: NSOrderedSet)
 
-    @objc(removeNote:)
-    @NSManaged public func removeFromNote(_ values: NSOrderedSet)
+    @objc(removeNotes:)
+    @NSManaged public func removeFromNotes(_ values: NSOrderedSet)
 
 }
 

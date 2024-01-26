@@ -22,13 +22,12 @@ final class SignUpViewModel: ObservableObject {
 	@Published var passwordInvalid = false
 
     var users: [User] = []
-    var min: Int32 = 1
-    var max: Int32 = 1000
-        
-    init() {
-        isUserAdded = false
-        fetchAllUsers()
-    }
+	
+	let userDataManager: UserDataManager
+	
+	init(persistenceController: PersistenceController) {
+		self.userDataManager = UserDataManager(persistenceController: persistenceController)
+	}
 	
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
@@ -38,57 +37,42 @@ final class SignUpViewModel: ObservableObject {
 	}
 	
     func addUser() {
-        if(uniqueUsernameChecker() && passwordChecker()) {
-			PersistenceController.shared.createUser(username: usernameInput,
-                                                     email: emailInput,
-                                                     password: passwordInput,
-                                                     id: generateRandomNumber(min: min, max: max))
-            errorMessage = ""
-            isUserAdded = true
+		switch(uniqueUsernameChecker(),passwordChecker()) {
+		case (true, true):
+			userDataManager.createUser(username: usernameInput,
+									   email: emailInput,
+									   password: passwordInput)
+			errorMessage = ""
+			isUserAdded = true
 			usernameInvalid = false
 			passwordInvalid = false
-		}
-		else if (!uniqueUsernameChecker() && !passwordChecker()) {
+		case (false, false):
 			errorMessage = 	"""
- username already token
- email invalid
- invalid password please use at least:
-  - one upper case letter
-  - one lower case letter
-  - one digit
-  - 8 characters
- """
+							username already token
+							invalid password please use at least:
+							- one upper case letter
+							- one lower case letter
+							- one digit
+							- 8 characters
+							"""
 			usernameInvalid = true
 			passwordInvalid = true
-		}
-		else if (!uniqueUsernameChecker() && !passwordChecker()) {
+		case (true, false):
 			errorMessage = 	"""
- username already token
- invalid password please use at least:
-  - one upper case letter
-  - one lower case letter
-  - one digit
-  - 8 characters
- """
-			usernameInvalid = true
+							invalid password please use at least:
+							- one upper case letter
+							- one lower case letter
+							- one digit
+							- 8 characters
+							"""
 			passwordInvalid = true
-		}
-		else if (!uniqueUsernameChecker()){
+			usernameInvalid = false
+		case (false, true):
 			errorMessage = "username already token"
 			usernameInvalid = true
 			passwordInvalid = false
 		}
-		else if(!passwordChecker()) {
-			errorMessage = 	"""
- invalid password please use at least:
-  - one upper case letter
-  - one lower case letter
-  - one digit
-  - 8 characters
- """
-			passwordInvalid = true
-			usernameInvalid = false
-		}
+
     }
     
 	func passwordChecker() -> Bool {
@@ -105,33 +89,16 @@ final class SignUpViewModel: ObservableObject {
         
         for user in users {
             allUsernames.append(user.username) 
+			print(user.username)
         }
         
         if !allUsernames.contains(usernameInput) {
             return true
         }
-
         return false
-    }
-	
-    func generateRandomNumber(min: Int32, max: Int32) -> Int32 {
-        var idNumbers: [Int] = []
-        var num: Int32
-        
-        fetchAllUsers()
-		
-        for user in users {
-            idNumbers.append(Int(user.id))
-        }
-        
-        repeat {
-            num = Int32.random(in: min..<max)
-        } while idNumbers.contains(Int(num))
-        
-        return num
     }
     
     func fetchAllUsers() {
-        users = PersistenceController.shared.fetchAllUsers()
+        users = userDataManager.fetchAllUsers()
     }
 }

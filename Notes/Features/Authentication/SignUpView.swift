@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SignUpView: View {
-	@StateObject var viewModel = SignUpViewModel()
+	@StateObject var viewModel = SignUpViewModel(persistenceController: PersistenceController.shared)
 	
 	var body: some View {
 		ZStack {
@@ -33,7 +33,7 @@ struct SignUpView: View {
 				.signUpButtonText()
 				.background(
 					NavigationLink("", destination: NotesListView(
-						viewModel: NotesListViewModel(username: viewModel.usernameInput),
+						viewModel: NotesListViewModel(username: viewModel.usernameInput, persistenceController: PersistenceController.shared),
 						notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.usernameInput)
 					).navigationBarBackButtonHidden(true), isActive: $viewModel.isUserAdded)
 					.opacity(0)
