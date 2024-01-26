@@ -10,62 +10,70 @@ import Combine
 
 final class WriteOrEditNoteViewModel: ObservableObject {
 	enum ScreenEvent {
-	case onAppearance
-	case addOrUpdateNote
-	case toolbarButtons(event: ToolKinds)
-	case fontSizeChanged
+		case onAppearance
+		case addOrUpdateNote
+		case toolbarButtons(event: ToolKinds)
+		case fontSizeChanged
 	}
 
 	enum ToolKinds {
-	case bold
-	case italic
-	case underlined
-	case checklist
-	}
-	
-	enum Colors {
-	case standard
-	case red
-	case blue
-	case green
-	case yellow
-	case pink
-	case purple
-	case orange
+		case bold
+		case italic
+		case underlined
+		case checklist
 	}
 
-	var noteText: NSAttributedString = NSAttributedString(string: "")
-	@Published var isBold: Bool = false
-	@Published var isItalic: Bool = false
-	@MainActor @Published var isUnderlined: Bool = false
-	@MainActor @Published var checklistActivated: Bool = false
-	@MainActor @Published var formattingCurrentlyChanged: Bool = false
-	@Published var selectedColor = "standard"
-	//@MainActor @Published var fontSizeDouble: Double = 12.0
-	
-	@Published var errorMessage = ""
-	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
-	@Published var colorList: [String] = ["standard", "red", "blue", "green", "yellow", "pink", "purple", "orange"]
-	@Published var fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
-	@Published var contentDisabled = true
-	@Published var fontSize: Int = 12
-	
-	var counter: Int32 = 0
-	var isLinkActive = false
-	var username: String
-	var note: Note?
-	
-	init(username: String, note: Note? = nil) {
-		self.username = username
-		self.note = note
+	enum Colors: String, CaseIterable {
+		case standard
+		case green
+		case red
+		case blue
+		case yellow
+		case pink
+		case purple
+		case orange
 	}
 	
-	@MainActor func onScreenEvent(_ event: ScreenEvent) {
+	@Published var isBold: Bool = false
+	@Published var isItalic: Bool = false
+	@Published var isUnderlined: Bool = false
+	@Published var checklistActivated: Bool = false
+	@Published var formattingCurrentlyChanged: Bool = false
+	@Published var selectedColor = "standard"
+	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
+	@Published var contentDisabled = true
+	@Published var fontSize: Int = 12
+	@Published var errorMessage = ""
+	
+	var noteText: NSAttributedString = NSAttributedString(string: "")
+	var counter: Int32 = 0
+	var isLinkActive = false
+	var note: Note?
+	
+	let username: String
+	//let listKindsList: [String] = ListKinds.allCases.map { $0.rawValue }
+	let colorList: [String] = Colors.allCases.map { $0.rawValue }
+	let fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
+
+	let userDataManager: UserDataManager
+	let noteDataManager: NoteDataManager
+
+	init(username: String, persistenceController: PersistenceController, note: Note? = nil) {
+		self.userDataManager = UserDataManager(persistenceController: persistenceController)
+		self.noteDataManager = NoteDataManager(persistenceController: persistenceController)
+		self.username = username
+		self.note = note
+
+		DispatchQueue.global(qos: .background).async {
+			self.contentDisabled = false
+		}
+	}
+	
+	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .onAppearance:
 				counter = getBiggestId() ?? 0
 				if (note != nil ) {
-
 					decodeAndSetNote()
 					contentDisabled = true
 				} else {
@@ -85,7 +93,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		}
 	}
 	
-	@MainActor func toolbarButtons(_ event: ToolKinds) {
+	func toolbarButtons(_ event: ToolKinds) {
 		switch event {
 			case .bold:
 				isBold = switchBool(boolValue: &isBold)
@@ -107,11 +115,11 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	}
 	
 	func fetchUserByUsername(inputUsername: String) -> User? {
-		let user = PersistenceController.shared.fetchUsersByUsername(username: inputUsername)
+		let user = userDataManager.fetchUsersByUsername(inputUsername)
 		return user
 	}
 	
-	@MainActor func addOrUpdateNote(inputUser: User) {
+	func addOrUpdateNote(inputUser: User) {
 		do {
 			let data = try NSKeyedArchiver.archivedData(withRootObject: noteText, requiringSecureCoding: false) // noteText is NSAttributedString
 			
@@ -122,8 +130,8 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 				counter += 1
 			}
 			
-			note = PersistenceController.shared.updateNote(title: inputTitle, timestamp: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
-			
+			note = noteDataManager.updateOrCreateNote(title: inputTitle, modifiedDate: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
+
 			isLinkActive = true
 			
 		} catch {
@@ -132,13 +140,12 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	}
 	
 	func getBiggestId() -> Int32? {
-		let notes: [Note] = PersistenceController.shared.fetchAllNotes()
+		let notes: [Note] = noteDataManager.fetchAllNotes()
 		let biggestNum = notes.max{ i, j in i.id < j.id }
 		return biggestNum?.id
 	}
-	
 
-	@MainActor func decodeAndSetNote() {
+	func decodeAndSetNote() {
 		do {
 			let unarchiver = try NSKeyedUnarchiver(forReadingFrom: note?.noteData ?? Data("error".utf8))
 			unarchiver.requiresSecureCoding = false

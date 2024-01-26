@@ -20,6 +20,12 @@ final class ContentViewModel: ObservableObject {
     @Published var passwordInvalid = false
     @Published var isLinkActive = false
         
+	private let userDataManager: UserDataManager
+	
+	init(persistenceController: PersistenceController) {
+		self.userDataManager = UserDataManager(persistenceController: persistenceController)
+	}
+	
 	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .signIn:
@@ -28,7 +34,7 @@ final class ContentViewModel: ObservableObject {
 	}
 	
     func valiateInput() {
-        let user = PersistenceController.shared.fetchUsersByUsernameAndPassword(username: usernameInput, password: passwordInput)
+		let user = userDataManager.fetchUsersByUsernameAndPassword(username: usernameInput, password: passwordInput)
 		
         if user != nil {
             isLinkActive = true

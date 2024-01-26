@@ -52,7 +52,7 @@ struct WriteOrEditNoteView: View {
 				ToolbarItem(placement: .navigationBarLeading) {
 					NavigationLink(
 						destination: NotesListView(
-							viewModel: NotesListViewModel(username: viewModel.username),
+							viewModel: NotesListViewModel(username: viewModel.username, persistenceController: .shared),
 							notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.username)
 						).navigationBarBackButtonHidden(true)
 					) {
@@ -109,7 +109,7 @@ struct WriteOrEditNoteView: View {
 								   action: {
 							viewModel.onScreenEvent(.toolbarButtons(event: .underlined))
 						})
-
+						
 						toolButton(imageName: "checklist",
 								   backgroundColorOn: viewModel.checklistActivated,
 								   fontsize: 15,
@@ -156,6 +156,11 @@ struct WriteOrEditNoteView: View {
 
 struct WriteOrEditNoteView_Previews: PreviewProvider {
 	static var previews: some View {
-		WriteOrEditNoteView(viewModel: WriteOrEditNoteViewModel(username: "l"))
+		WriteOrEditNoteView(
+			viewModel: WriteOrEditNoteViewModel(
+				username: "l",
+				persistenceController: .shared
+			)
+		)
 	}
 }

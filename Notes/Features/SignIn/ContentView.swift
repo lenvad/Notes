@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-	@StateObject var viewModel = ContentViewModel()
+	@StateObject var viewModel = ContentViewModel(persistenceController: PersistenceController.shared)
 	
 	var body: some View {
 		NavigationView() {
@@ -33,17 +33,17 @@ struct ContentView: View {
 								.font(.headline)
 								.foregroundColor(.white)
 								.padding()
-								.background(Color("AccentColor"))
+								.background(Color.accentColor)
 								.cornerRadius(15.0)
 						}.frame(alignment: .bottom)
 							.background(
 								NavigationLink(
 									"",
 									destination: NotesListView(
-										viewModel: NotesListViewModel(username: viewModel.usernameInput),
+										viewModel: NotesListViewModel(username: viewModel.usernameInput, persistenceController: PersistenceController.shared),
 										notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.usernameInput)
 									).navigationBarBackButtonHidden(true),
-									isActive: $viewModel.isLinkActive).opacity(0)
+									isActive: $viewModel.isLinkActive).opacity(0).disabled(true)
 							)
 
 						Spacer()
@@ -59,11 +59,10 @@ struct ContentView: View {
 				.disabled(viewModel.isLinkActive)
 				.padding()
 				
-					if viewModel.isLinkActive {
-						ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
-							.background(viewModel.isLinkActive ? .black.opacity(0.3):.clear)
-					}
-				
+				if viewModel.isLinkActive {
+					ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+						.background(viewModel.isLinkActive ? .black.opacity(0.3):.clear)
+				}
 			}
 		}
 	}
