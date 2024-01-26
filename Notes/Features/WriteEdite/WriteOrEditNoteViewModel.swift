@@ -33,13 +33,22 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		case purple
 		case orange
 	}
-
+	
+	/*
+	enum ListKinds: String, CaseIterable {
+		case check = "checkmark.circle.fill"
+		case round = "circle.fill"
+		case square = "square.fill"
+		case star = "star.fill"
+	}
+*/
 	@Published var isBold: Bool = false
 	@Published var isItalic: Bool = false
 	@Published var isUnderlined: Bool = false
 	@Published var checklistActivated: Bool = false
 	@Published var formattingCurrentlyChanged: Bool = false
 	@Published var selectedColor = "standard"
+	//@Published var selectedList = "circle.fill"
 	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
 	@Published var contentDisabled = true
 	@Published var fontSize: Int = 12
@@ -51,6 +60,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	var note: Note?
 	
 	let username: String
+	//let listKindsList: [String] = ListKinds.allCases.map { $0.rawValue }
 	let colorList: [String] = Colors.allCases.map { $0.rawValue }
 	let fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
 

@@ -174,6 +174,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 							attributedColorRanges.append(value as? UIColor)
 						case NSAttributedString.Key.underlineStyle:
 							hasUnderline = true
+						case NSAttributedString.Key.attachment:
+							displayCheckedCheckBox(range: selectedRange, attributedText: attributedText)
 						default:
 							assert(key == NSAttributedString.Key.paragraphStyle, "Unknown attribute found in the attributed string")
 					}
@@ -390,6 +392,25 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			_selectedRange.wrappedValue = NSRange(location: range.location + 1, length: 0)
 		}
 		
+		func displayCheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
+			//converting UIImage to NSAttributedString
+			let imageAttacament = NSTextAttachment()
+			imageAttacament.image = UIImage(systemName: "checkmark.circle")?.imageWith(newSize: CGSize(width: 14, height: 14))
+			let imageString = NSAttributedString(attachment: imageAttacament)
+			
+			let string = NSMutableAttributedString(attributedString: attributedText)
+			
+			//let rangeOfCurrentLine = string.mutableString.lineRange(for: range)
+			
+			string.replaceCharacters(in: range, with: imageString)
+			//string.insert(imageString, at: rangeOfCurrentLine.location)
+			
+			checklistActivated = false
+			
+			updateText(string)
+			_selectedRange.wrappedValue = NSRange(location: range.location + 1, length: 0)
+		}
+		
 		func textViewDidChange(_ textView: UITextView) {
 			// UIKit -> SwiftUI
 			print("did change text to \(textView.text)")
@@ -416,5 +437,16 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			_text.wrappedValue = newValue
 			onUpdate(.text(newValue))
 		}
+	}
+}
+
+
+extension UIImage {
+	func imageWith(newSize: CGSize) -> UIImage {
+		let image = UIGraphicsImageRenderer(size: newSize).image { _ in
+			draw(in: CGRect(origin: .zero, size: newSize))
+		}
+		
+		return image.withRenderingMode(renderingMode)
 	}
 }
