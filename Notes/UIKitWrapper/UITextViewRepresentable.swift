@@ -49,7 +49,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			coordinator.displayUncheckedCheckBox(range: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
 		
-		if (formattingCurrentlyChanged && selectedRange.length >= 1) {
+		if formattingCurrentlyChanged && selectedRange.length >= 1 {
 			print("1")
 			coordinator.applyStyleToCurrentSelectedTextIfNeed(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
@@ -135,7 +135,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		func debugPrint() {
 			print()
 			print("\(self)")
-			print("bold: \(self.isBold)")
+			print("bold: \(isBold)")
 			print("italic: \(isItalic)")
 			print("underlined: \(isUnderlined)")
 			print("color: \(color)")
