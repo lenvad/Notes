@@ -116,16 +116,7 @@ struct WriteOrEditNoteView: View {
 								   action: {
 							viewModel.onScreenEvent(.toolbarButtons(event: .checklist))
 						})
-						/*
-						Picker("List", selection: $viewModel.selectedList) {
-							ForEach(viewModel.listKindsList, id: \.self) { value in
-								Image(systemName: value).tag(value)
-							}
-						}.onChange(of: viewModel.selectedColor) {
-							viewModel.formattingCurrentlyChanged = true
-						}
-						*/
-						
+
 						Picker("Color", selection: $viewModel.selectedColor) {
 							ForEach(viewModel.colorList, id: \.self) { value in
 								Text(value).tag(value)
