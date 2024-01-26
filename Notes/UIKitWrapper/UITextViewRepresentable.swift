@@ -44,9 +44,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		
 		let coordinator = context.coordinator
 		coordinator.debugPrint()
-		
-		coordinator.NSAttributedStringAttachmentTapped(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
-		
+				
 		if checklistActivated {
 			coordinator.displayUncheckedCheckBox(range: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
