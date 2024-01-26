@@ -45,6 +45,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		let coordinator = context.coordinator
 		coordinator.debugPrint()
 		
+		coordinator.NSAttributedStringAttachmentTapped(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
+		
 		if checklistActivated {
 			coordinator.displayUncheckedCheckBox(range: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
@@ -157,6 +159,16 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			}
 		}
 		
+		func NSAttributedStringAttachmentTapped(selectedRange: NSRange, attributedText: NSAttributedString) {
+			let string = NSMutableAttributedString(attributedString: attributedText)
+			let rangeOfCurrentLine = string.mutableString.lineRange(for: selectedRange)
+
+			attributedText.enumerateAttribute(.attachment, in: selectedRange) { attributes, range, _ in
+				print(attributes)
+				displayCheckedCheckBox(range: selectedRange, attributedText: attributedText)
+			}
+		}
+		
 		func getAllAttributesFromRangeAndSelectThem(selectedRange: NSRange, attributedText: NSAttributedString) {
 			//Create Empty Dictionaries for storing results
 			var attributedFontRanges = [UIFont?]()
@@ -164,7 +176,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			var hasUnderline = false
 			
 			//Find all attributes in the text.
-			attributedText.enumerateAttributes(in: selectedRange) { attributes, range, stop in
+			attributedText.enumerateAttributes(in: selectedRange) { attributes, range, _ in
 				print("Attributes: \(attributes)")
 				attributes.forEach { (key, value) in
 					switch key {
@@ -175,6 +187,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 						case NSAttributedString.Key.underlineStyle:
 							hasUnderline = true
 						case NSAttributedString.Key.attachment:
+							print(value)
 							displayCheckedCheckBox(range: selectedRange, attributedText: attributedText)
 						default:
 							assert(key == NSAttributedString.Key.paragraphStyle, "Unknown attribute found in the attributed string")
@@ -219,7 +232,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					color = getCurrentColerAsValidColor(selectedColor: fontColor ?? "standard") ?? "standard"
 				} else {
 					color = fontColor ?? "standard"
-
 				}
 			}
 		}
@@ -400,9 +412,9 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			
 			let string = NSMutableAttributedString(attributedString: attributedText)
 			
-			//let rangeOfCurrentLine = string.mutableString.lineRange(for: range)
+			let rangeOfCurrentLine = string.mutableString.lineRange(for: range)
 			
-			string.replaceCharacters(in: range, with: imageString)
+			string.replaceCharacters(in: NSRange(location: rangeOfCurrentLine.location, length: 1), with: imageString)
 			//string.insert(imageString, at: rangeOfCurrentLine.location)
 			
 			checklistActivated = false
