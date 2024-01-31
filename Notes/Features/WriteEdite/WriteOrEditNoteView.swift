@@ -18,7 +18,7 @@ struct WriteOrEditNoteView: View {
 				}
 				
 				Divider().padding(.top)
-				
+
 				UITextViewRepresentable(
 					text: viewModel.noteText,
 					isBold: $viewModel.isBold,
@@ -44,6 +44,9 @@ struct WriteOrEditNoteView: View {
 				)
 					.autocorrectionDisabled()
 					.disabled(viewModel.contentDisabled)
+					.background(
+						Text(viewModel.isSelected ? "" : "")
+					)
                 if !viewModel.contentDisabled {
 					Divider().padding(.bottom)
                 }

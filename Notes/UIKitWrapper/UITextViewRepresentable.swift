@@ -13,9 +13,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		case isItalic(Bool)
 	}
 	
-	let textView = UITextView()
 	@State var text: NSAttributedString
-	@Binding var isBold: Bool
+	let isBold: Bool
 	@Binding var isItalic: Bool
 	@Binding var isUnderlined: Bool
 	@Binding var checklistActivated: Bool
@@ -24,9 +23,12 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var color: String
 	@Binding var formattingCurrentlyChanged: Bool
 	let onUpdate: (TextViewEvent) -> Void
-	
+	let tapGesture = AttachmentTapGestureRecognizer()
+
 	func makeUIView(context: Context) -> UITextView {
+		let textView = UITextView()
 		textView.delegate = context.coordinator
+		textView.addGestureRecognizer(tapGesture)
 		return textView
 	}
 	
@@ -358,9 +360,13 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			let stringOfCurrentLine = attributedStringOfCurrentLine.string
 			
 			//make a UIImage and convert it to String
-			let imageAttacament = NSTextAttachment()
-			imageAttacament.image = UIImage(systemName: "circlebadge")
-			let attributedStringImage = NSAttributedString(attachment: imageAttacament)
+			let allAttachments = [NSTextAttachment(), NSTextAttachment(), NSTextAttachment(), NSTextAttachment()]
+
+			let imageAttachment = NSTextAttachment()
+
+			imageAttachment.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
+			imageAttachment.image = UIImage(systemName: "circlebadge")
+			let attributedStringImage = NSAttributedString(attachment: imageAttachment)
 			let stringImage = attributedStringImage.string
 			
 			updateText(attributedString)
@@ -387,6 +393,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		func displayUncheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
 			//converting UIImage to NSAttributedString
 			let imageAttacament = NSTextAttachment()
+			imageAttacament.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
 			imageAttacament.image = UIImage(systemName: "circlebadge")
 			let imageString = NSAttributedString(attachment: imageAttacament)
 			
@@ -458,5 +465,66 @@ extension UIImage {
 		}
 		
 		return image.withRenderingMode(renderingMode)
+	}
+}
+
+import UIKit
+import UIKit.UIGestureRecognizerSubclass
+/// Recognizes a tap on an attachment, on a UITextView.
+/// The UITextView normally only informs its delegate of a tap on an attachment if the text view is not editable, or a long tap is used.
+/// If you want an editable text view, where you can short cap an attachment, you have a problem.
+/// This gesture recognizer can be added to the text view, and will add requirments in order to recognize before any built-in recognizers.
+class AttachmentTapGestureRecognizer: UITapGestureRecognizer {
+
+	typealias TappedAttachment = (attachment: NSTextAttachment, characterIndex: Int)
+
+	private(set) var tappedState: TappedAttachment?
+
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+		tappedState = nil
+
+		guard let textView = view as? UITextView else {
+			state = .failed
+			return
+		}
+
+		if let touch = touches.first {
+			tappedState = evaluateTouch(touch, on: textView)
+		}
+
+		if tappedState != nil {
+			// UITapGestureRecognizer can accurately differentiate discrete taps from scrolling
+			// Therefore, let the super view evaluate the correct state.
+			super.touchesBegan(touches, with: event)
+
+		} else {
+			// User didn't initiate a touch (tap or otherwise) on an attachment.
+			// Force the gesture to fail.
+			state = .failed
+		}
+	}
+
+	/// Tests to see if the user has tapped on a text attachment in the target text view.
+	private func evaluateTouch(_ touch: UITouch, on textView: UITextView) -> TappedAttachment? {
+		let point = touch.location(in: textView)
+		let glyphIndex: Int? = textView.layoutManager.glyphIndex(for: point, in: textView.textContainer, fractionOfDistanceThroughGlyph: nil)
+		let index: Int? = textView.layoutManager.characterIndexForGlyph(at: glyphIndex ?? 0)
+		guard let characterIndex = index, characterIndex < textView.textStorage.length else {
+			return nil
+		}
+		guard NSTextAttachment.character == (textView.textStorage.string as NSString).character(at: characterIndex) else {
+			return nil
+		}
+		guard let attachment = textView.textStorage.attribute(.attachment, at: characterIndex, effectiveRange: nil) as? NSTextAttachment else {
+			return nil
+		}
+
+		if attachment.image == UIImage(systemName: "checkmark.circle") {
+			attachment.image = UIImage(systemName: "circlebadge")
+		} else {
+			attachment.image = UIImage(systemName: "checkmark.circle")
+		}
+
+		return (attachment, characterIndex)
 	}
 }

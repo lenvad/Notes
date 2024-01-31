@@ -64,7 +64,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		self.username = username
 		self.note = note
 
-		DispatchQueue.global(qos: .background).async {
+		DispatchQueue.main.async {
 			self.contentDisabled = false
 		}
 	}
