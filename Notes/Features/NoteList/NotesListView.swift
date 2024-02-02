@@ -23,6 +23,8 @@ struct NotesListView: View {
 					})
 					.listRowBackground((Color.orangeMain).opacity(0.4))
 				}
+				.scrollContentBackground(.hidden)
+				.background(.backgroundColorList)
 				.toolbar {
 					ToolbarItem(placement: .bottomBar ) {
 						NavigationLink(
