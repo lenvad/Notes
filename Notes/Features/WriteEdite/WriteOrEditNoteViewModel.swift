@@ -34,16 +34,17 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		case orange
 	}
 	
-	@Published var isBold: Bool = false
-	@Published var isItalic: Bool = false
-	@Published var isUnderlined: Bool = false
-	@Published var checklistActivated: Bool = false
-	@Published var formattingCurrentlyChanged: Bool = false
-	@Published var selectedColor = "standard"
-	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
+	@MainActor @Published var isBold: Bool = false
+	@MainActor @Published var isItalic: Bool = false
+	@MainActor @Published var isUnderlined: Bool = false
+	@MainActor @Published var checklistActivated: Bool = false
+	@MainActor @Published var formattingCurrentlyChanged: Bool = false
+	@MainActor @Published var selectedColor = "standard"
+	@MainActor @Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
+	@MainActor @Published var fontSize: Int = 12
+	@MainActor @Published var errorMessage = ""
 	@Published var contentDisabled = true
-	@Published var fontSize: Int = 12
-	@Published var errorMessage = ""
+	var isSelected: Bool = false
 	
 	var noteText: NSAttributedString = NSAttributedString(string: "")
 	var counter: Int32 = 0
@@ -63,13 +64,13 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		self.noteDataManager = NoteDataManager(persistenceController: persistenceController)
 		self.username = username
 		self.note = note
-
+		
 		DispatchQueue.main.async {
 			self.contentDisabled = false
 		}
 	}
 	
-	func onScreenEvent(_ event: ScreenEvent) {
+	@MainActor func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .onAppearance:
 				counter = getBiggestId() ?? 0
@@ -93,7 +94,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		}
 	}
 	
-	func toolbarButtons(_ event: ToolKinds) {
+	@MainActor func toolbarButtons(_ event: ToolKinds) {
 		switch event {
 			case .bold:
 				isBold = switchBool(boolValue: &isBold)
@@ -145,7 +146,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		return biggestNum?.id
 	}
 
-	func decodeAndSetNote() {
+	@MainActor func decodeAndSetNote() {
 		do {
 			let unarchiver = try NSKeyedUnarchiver(forReadingFrom: note?.noteData ?? Data("error".utf8))
 			unarchiver.requiresSecureCoding = false
