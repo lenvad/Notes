@@ -8,7 +8,8 @@ import SwiftUI
 
 struct WriteOrEditNoteView: View {
 	@StateObject var viewModel: WriteOrEditNoteViewModel
-
+	@State private var searchText: String = ""
+	
     var body: some View {
         NavigationView {
             VStack {
@@ -48,9 +49,56 @@ struct WriteOrEditNoteView: View {
 						Text(viewModel.isSelected ? "" : "")
 					)
                 if !viewModel.contentDisabled {
-					Divider().padding(.bottom)
+					Divider()
                 }
             }
+			.keyboardToolbar(view: {
+				HStack {
+					toolButton(imageName: "bold",
+							   backgroundColorOn: viewModel.isBold,
+							   fontsize: 19,
+							   action: {
+						viewModel.onScreenEvent(.toolbarButtons(event: .bold))
+					})
+					
+					toolButton(imageName: "italic",
+							   backgroundColorOn: viewModel.isItalic,
+							   fontsize: 19,
+							   action: {
+						viewModel.onScreenEvent(.toolbarButtons(event: .italic))
+					})
+					
+					toolButton(imageName: "underline",
+							   backgroundColorOn: viewModel.isUnderlined,
+							   fontsize: 17,
+							   action: {
+						viewModel.onScreenEvent(.toolbarButtons(event: .underlined))
+					})
+					
+					toolButton(imageName: "checklist",
+							   backgroundColorOn: viewModel.checklistActivated,
+							   fontsize: 15,
+							   action: {
+						viewModel.onScreenEvent(.toolbarButtons(event: .checklist))
+					})
+					
+					Picker("Color", selection: $viewModel.selectedColor) {
+						ForEach(viewModel.colorList, id: \.self) { value in
+							Text(value).tag(value)
+						}
+					}.onChange(of: viewModel.selectedColor) {
+						viewModel.formattingCurrentlyChanged = true
+					}
+					
+					Picker("FontSize", selection: $viewModel.fontSize) {
+						ForEach(viewModel.fontSizeList, id: \.self) { value in
+							Text("\(value)").tag(value)
+						}
+					}.onChange(of: viewModel.fontSize) {
+						viewModel.formattingCurrentlyChanged = true
+					}
+				}
+			})
 			.toolbar(content: {
 				ToolbarItem(placement: .navigationBarLeading) {
 					NavigationLink(
@@ -90,52 +138,6 @@ struct WriteOrEditNoteView: View {
 						}).padding(.trailing)
 							.padding(.top, 0)
 					}
-
-					ToolbarItemGroup(placement: .bottomBar) {
-						toolButton(imageName: "bold",
-								   backgroundColorOn: viewModel.isBold,
-								   fontsize: 19,
-								   action: {
-							viewModel.onScreenEvent(.toolbarButtons(event: .bold))
-						})
-
-						toolButton(imageName: "italic",
-								   backgroundColorOn: viewModel.isItalic,
-								   fontsize: 19,
-								   action: {
-							viewModel.onScreenEvent(.toolbarButtons(event: .italic))
-						})
-
-						toolButton(imageName: "underline",
-								   backgroundColorOn: viewModel.isUnderlined,
-								   fontsize: 17,
-								   action: {
-							viewModel.onScreenEvent(.toolbarButtons(event: .underlined))
-						})
-						
-						toolButton(imageName: "checklist",
-								   backgroundColorOn: viewModel.checklistActivated,
-								   fontsize: 15,
-								   action: {
-							viewModel.onScreenEvent(.toolbarButtons(event: .checklist))
-						})
-
-						Picker("Color", selection: $viewModel.selectedColor) {
-							ForEach(viewModel.colorList, id: \.self) { value in
-								Text(value).tag(value)
-							}
-						}.onChange(of: viewModel.selectedColor) {
-							viewModel.formattingCurrentlyChanged = true
-						}
-						
-						Picker("FontSize", selection: $viewModel.fontSize) {
-							ForEach(viewModel.fontSizeList, id: \.self) { value in
-								Text("\(value)").tag(value)
-							}
-						}.onChange(of: viewModel.fontSize) {
-							viewModel.formattingCurrentlyChanged = true
-						}
-					}
 				}
 			})
 		}.onAppear {
@@ -162,8 +164,49 @@ struct WriteOrEditNoteView_Previews: PreviewProvider {
 		WriteOrEditNoteView(
 			viewModel: WriteOrEditNoteViewModel(
 				username: "l",
-				persistenceController: .shared
+				persistenceController: .preview
 			)
 		)
+	}
+}
+
+
+
+struct KeyboardToolbar<ToolbarView: View>: ViewModifier {
+	@State var  height: CGFloat = 0
+	private let toolbarView: ToolbarView
+	@State var showContent = false
+	init(@ViewBuilder toolbar: () -> ToolbarView) {
+		self.toolbarView = toolbar()
+	}
+	
+	func body(content: Content) -> some View {
+		ZStack(alignment: .bottom) {
+			VStack {
+				GeometryReader { geometry in
+					VStack {
+						content
+					}
+					.frame(width: geometry.size.width, height: geometry.size.height - height)
+				}
+				toolbarView
+					.background(
+						GeometryReader { proxy in
+							Color.clear
+								.onChange(of: proxy.size.height, perform: { newValue in
+									height = newValue
+								})
+						}
+					)
+			}
+		}
+		
+		.frame(maxWidth: .infinity, maxHeight: .infinity)
+	}
+}
+
+extension View {
+	func keyboardToolbar<ToolbarView>(@ViewBuilder view:  @escaping  () -> ToolbarView) -> some View where ToolbarView: View {
+		modifier(KeyboardToolbar(toolbar: view))
 	}
 }

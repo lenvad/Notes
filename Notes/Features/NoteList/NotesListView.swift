@@ -16,7 +16,6 @@ struct NotesListView: View {
 			VStack {
 				Text(viewModel.errorMessage)
 					.errorMessageText(errorMessage: viewModel.errorMessage)
-				
 				List {
 					ForEach(notesList, id: \.self, content:  { note in
 						generateNoteItem(note: note)

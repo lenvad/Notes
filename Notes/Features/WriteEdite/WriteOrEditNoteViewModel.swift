@@ -52,7 +52,6 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	var note: Note?
 	
 	let username: String
-	//let listKindsList: [String] = ListKinds.allCases.map { $0.rawValue }
 	let colorList: [String] = Colors.allCases.map { $0.rawValue }
 	let fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
 
@@ -68,6 +67,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		DispatchQueue.main.async {
 			self.contentDisabled = false
 		}
+		/**/
 	}
 	
 	@MainActor func onScreenEvent(_ event: ScreenEvent) {
