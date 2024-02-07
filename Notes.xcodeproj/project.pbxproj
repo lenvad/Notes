@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		50146FC52B738733006BB10D /* KeyboardToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50146FC42B738733006BB10D /* KeyboardToolbar.swift */; };
 		501E50172AF526FA00522448 /* NotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E50162AF526FA00522448 /* NotesApp.swift */; };
 		501E50192AF526FA00522448 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E50182AF526FA00522448 /* ContentView.swift */; };
 		501E501B2AF526FB00522448 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 501E501A2AF526FB00522448 /* Assets.xcassets */; };
@@ -64,6 +65,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		50146FC42B738733006BB10D /* KeyboardToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardToolbar.swift; sourceTree = "<group>"; };
 		501E50132AF526FA00522448 /* Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		501E50162AF526FA00522448 /* NotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesApp.swift; sourceTree = "<group>"; };
 		501E50182AF526FA00522448 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 			children = (
 				50FF4BF42AFE7BC7000A6E25 /* WriteOrEditNoteView.swift */,
 				50FF4BF62AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift */,
+				50146FC42B738733006BB10D /* KeyboardToolbar.swift */,
 			);
 			path = WriteEdite;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 				503CE1DC2B10DB69004C7097 /* SignUpButtonText.swift in Sources */,
 				50AD49E02B59797E008BF09E /* UIFont.swift in Sources */,
 				50AD49D22B4FF247008BF09E /* UserDataManager.swift in Sources */,
+				50146FC52B738733006BB10D /* KeyboardToolbar.swift in Sources */,
 				507A75D22B6A71F70000036F /* AttachmentTapGestureRecognizer.swift in Sources */,
 				50AD49E22B5979A7008BF09E /* NSAttributedString.swift in Sources */,
 				503990812B18B90100E5E97D /* UITextViewRepresentable.swift in Sources */,

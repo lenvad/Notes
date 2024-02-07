@@ -19,4 +19,8 @@ extension View {
 	func errorMessageText(errorMessage: String) -> some View {
 		modifier(ErrorMessageText(errorMessage: errorMessage))
 	}
+	
+	func keyboardToolbar<ToolbarView>(@ViewBuilder view:  @escaping  () -> ToolbarView) -> some View where ToolbarView: View {
+		modifier(KeyboardToolbar(toolbar: view))
+	}
 }
