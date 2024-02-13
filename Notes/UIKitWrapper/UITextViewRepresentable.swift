@@ -33,7 +33,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	func updateUIView(_ uiView: UITextView, context: Context) {
-		print("checklist 1: \(checklistActivated)")
 		context.coordinator.setAttributes(isBold: $isBold,
 										  isItalic: $isItalic,
 										  isUnderlined: $isUnderlined,
@@ -52,7 +51,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		}
 		
 		if formattingCurrentlyChanged && selectedRange.length >= 1 {
-			print("1")
 			coordinator.applyStyleToCurrentSelectedTextIfNeed(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
 	}
@@ -146,7 +144,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			print()
 		}
 
-		func getCurrentColerAsValidColor(selectedColor: String) -> String {
+		func getCurrentColorAsValidColor(selectedColor: String) -> String {
 			switch selectedColor {
 				case "gray":
 					return "standard"
@@ -156,16 +154,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					return "yellow"
 				default:
 					return "standard"
-			}
-		}
-		
-		func NSAttributedStringAttachmentTapped(selectedRange: NSRange, attributedText: NSAttributedString) {
-			let string = NSMutableAttributedString(attributedString: attributedText)
-			let rangeOfCurrentLine = string.mutableString.lineRange(for: selectedRange)
-
-			attributedText.enumerateAttribute(.attachment, in: selectedRange) { attributes, range, _ in
-				print(attributes)
-				displayCheckedCheckBox(range: selectedRange, attributedText: attributedText)
 			}
 		}
 		
@@ -187,8 +175,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 						case NSAttributedString.Key.underlineStyle:
 							hasUnderline = true
 						case NSAttributedString.Key.attachment:
-							print(value)
-							displayCheckedCheckBox(range: selectedRange, attributedText: attributedText)
+							break
 						default:
 							assert(key == NSAttributedString.Key.paragraphStyle, "Unknown attribute found in the attributed string")
 					}
@@ -225,11 +212,9 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			
 			attributedColorRanges.forEach { value in
 				let fontColor = value?.accessibilityName
-				
-				var colorSet: Colors
-				
+								
 				if fontColor == "gray" || fontColor == "magenta" || fontColor == "yellow orange" {
-					color = getCurrentColerAsValidColor(selectedColor: fontColor ?? "standard") ?? "standard"
+					color = getCurrentColorAsValidColor(selectedColor: fontColor ?? "standard") 
 				} else {
 					color = fontColor ?? "standard"
 				}
@@ -359,23 +344,21 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			let attributedStringOfCurrentLine = attributedString.attributedSubstring(from: rangeOfCurrentLine)
 			let stringOfCurrentLine = attributedStringOfCurrentLine.string
 			
-			//make a UIImage and convert it to String
-			let allAttachments = [NSTextAttachment(), NSTextAttachment(), NSTextAttachment(), NSTextAttachment()]
-
 			let imageAttachment = NSTextAttachment()
 
 			imageAttachment.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
-			imageAttachment.image = UIImage(systemName: "circlebadge")
+			imageAttachment.image = UIImage(systemName: "circlebadge")?.imageWith(newSize: CGSize(width: 14, height: 14))//.withTintColor(.gray)
 			let attributedStringImage = NSAttributedString(attachment: imageAttachment)
 			let stringImage = attributedStringImage.string
 			
 			updateText(attributedString)
-			print("2")
 			
 			if doesItComeFromTextView {
 				if stringOfCurrentLine.contains(stringImage) && replacementText == "\n" {
 					attributedString.insert(attributedStringImage, at: range.location + 1)
-					
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+												  value: UIColor.gray,
+												  range: NSRange(location: range.location, length: 1))
 					updateText(attributedString)
 					
 					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count + 1, length: 0)
@@ -383,45 +366,24 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
 				}
 			} else {
-				print("2")
 				_selectedRange.wrappedValue = range
-				print("NS Range: \(NSRange(location: range.location + text.length, length: 0))")
 			}
 			formattingCurrentlyChanged = false
 		}
 		
 		func displayUncheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
 			//converting UIImage to NSAttributedString
-			let imageAttacament = NSTextAttachment()
-			imageAttacament.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
-			imageAttacament.image = UIImage(systemName: "circlebadge")
-			let imageString = NSAttributedString(attachment: imageAttacament)
+			let imageAttachament = NSTextAttachment()
+			imageAttachament.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
+			imageAttachament.image = UIImage(systemName: "circlebadge")?.imageWith(newSize: CGSize(width: 14, height: 14)).withTintColor(.gray)
+			let imageString = NSAttributedString(attachment: imageAttachament)
 			
 			let string = NSMutableAttributedString(attributedString: attributedText)
 			
 			let rangeOfCurrentLine = string.mutableString.lineRange(for: range)
 			
 			string.insert(imageString, at: rangeOfCurrentLine.location)
-			
-			checklistActivated = false
-			
-			updateText(string)
-			_selectedRange.wrappedValue = NSRange(location: range.location + 1, length: 0)
-		}
-		
-		func displayCheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
-			//converting UIImage to NSAttributedString
-			let imageAttacament = NSTextAttachment()
-			imageAttacament.image = UIImage(systemName: "checkmark.circle")?.imageWith(newSize: CGSize(width: 14, height: 14))
-			let imageString = NSAttributedString(attachment: imageAttacament)
-			
-			let string = NSMutableAttributedString(attributedString: attributedText)
-			
-			let rangeOfCurrentLine = string.mutableString.lineRange(for: range)
-			
-			string.replaceCharacters(in: NSRange(location: rangeOfCurrentLine.location, length: 1), with: imageString)
-			//string.insert(imageString, at: rangeOfCurrentLine.location)
-			
+
 			checklistActivated = false
 			
 			updateText(string)
@@ -431,7 +393,9 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		func textViewDidChange(_ textView: UITextView) {
 			// UIKit -> SwiftUI
 			print("did change text to \(textView.text)")
-			// _text.wrappedValue = textView.attributedText
+			if textView.attributedText != _text.wrappedValue {
+				_text.wrappedValue = textView.attributedText
+			}
 		}
 		
 		func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

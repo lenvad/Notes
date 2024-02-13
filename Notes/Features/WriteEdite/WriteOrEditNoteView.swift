@@ -13,13 +13,17 @@ struct WriteOrEditNoteView: View {
     var body: some View {
         NavigationView {
             VStack {
+				//for debug purposes, see if it makes a difference with the text when the view is updating
+				//conclusion: does not make any difference
+				Text(viewModel.isSelected ? "1" : "2")//.hidden()
+
 				if viewModel.errorMessage != "" {
 					Text(viewModel.errorMessage)
 						.errorMessageText(errorMessage: viewModel.errorMessage)
 				}
 				
 				Divider().padding(.top)
-
+				
 				UITextViewRepresentable(
 					text: viewModel.noteText,
 					isBold: $viewModel.isBold,
@@ -43,15 +47,15 @@ struct WriteOrEditNoteView: View {
 						}
 					}
 				)
-					.autocorrectionDisabled()
-					.disabled(viewModel.contentDisabled)
-					.background(
-						Text(viewModel.isSelected ? "" : "")
-					)
+				.autocorrectionDisabled()
+				.disabled(viewModel.contentDisabled)
+				
                 if !viewModel.contentDisabled {
 					Divider()
                 }
-            }
+			}.onChange(of: viewModel.noteText, {
+				viewModel.isSelected = viewModel.switchBool(boolValue: &viewModel.isSelected)
+			})
 			.keyboardToolbar(view: {
 				HStack {
 					toolButton(imageName: "bold",
@@ -88,7 +92,7 @@ struct WriteOrEditNoteView: View {
 						}
 					}.onChange(of: viewModel.selectedColor) {
 						viewModel.formattingCurrentlyChanged = true
-					}
+					}.padding(2)
 					
 					Picker("FontSize", selection: $viewModel.fontSize) {
 						ForEach(viewModel.fontSizeList, id: \.self) { value in
@@ -96,8 +100,8 @@ struct WriteOrEditNoteView: View {
 						}
 					}.onChange(of: viewModel.fontSize) {
 						viewModel.formattingCurrentlyChanged = true
-					}
-				}
+					}.padding(2)
+				}.padding(.bottom, 2)
 			})
 			.toolbar(content: {
 				ToolbarItem(placement: .navigationBarLeading) {
@@ -145,17 +149,22 @@ struct WriteOrEditNoteView: View {
         }
     }
     
-	private func toolButton(imageName: String, backgroundColorOn: Bool, fontsize: Double, action: @escaping () -> Void) -> some View {
+	private func toolButton(
+		imageName: String,
+		backgroundColorOn: Bool,
+		fontsize: Double,
+		action: @escaping () -> Void
+	) -> some View {
         return Button(action: {
             action()
         }, label: {
             Image(systemName: imageName).font(.system(size: fontsize))
 				.padding(5)
 				.overlay(RoundedRectangle(cornerRadius: 5.0)
-					.fill(backgroundColorOn ? Color(.orangeMain).opacity(0.3):.clear)
+					.fill(backgroundColorOn ? Color.orangeMain.opacity(0.3):.clear)
 					.frame(width: 35, height: 35)
 				)
-		})
+		}).padding(2)
     }
 }
 
