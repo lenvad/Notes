@@ -34,15 +34,15 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		case orange
 	}
 	
-	@MainActor @Published var isBold: Bool = false
-	@MainActor @Published var isItalic: Bool = false
-	@MainActor @Published var isUnderlined: Bool = false
-	@MainActor @Published var checklistActivated: Bool = false
-	@MainActor @Published var formattingCurrentlyChanged: Bool = false
-	@MainActor @Published var selectedColor = "standard"
-	@MainActor @Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
-	@MainActor @Published var fontSize: Int = 12
-	@MainActor @Published var errorMessage = ""
+	@Published var isBold: Bool = false
+	@Published var isItalic: Bool = false
+	@Published var isUnderlined: Bool = false
+	@Published var checklistActivated: Bool = false
+	@Published var formattingCurrentlyChanged: Bool = false
+	@Published var selectedColor = "standard"
+	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
+	@Published var fontSize: Int = 12
+	@Published var errorMessage = ""
 	@Published var contentDisabled = true
 	var isSelected: Bool = false
 	
@@ -63,14 +63,14 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		self.noteDataManager = NoteDataManager(persistenceController: persistenceController)
 		self.username = username
 		self.note = note
-		
-		DispatchQueue.main.async {
+		/*
+		DispatchQueue.global(qos: .background).async {
 			self.contentDisabled = false
 		}
-		/**/
+		 */
 	}
 	
-	@MainActor func onScreenEvent(_ event: ScreenEvent) {
+	func onScreenEvent(_ event: ScreenEvent) {
 		switch event {
 			case .onAppearance:
 				counter = getBiggestId() ?? 0
@@ -94,7 +94,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		}
 	}
 	
-	@MainActor func toolbarButtons(_ event: ToolKinds) {
+	func toolbarButtons(_ event: ToolKinds) {
 		switch event {
 			case .bold:
 				isBold = switchBool(boolValue: &isBold)
@@ -132,7 +132,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 			}
 			
 			note = noteDataManager.updateOrCreateNote(title: inputTitle, modifiedDate: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
-
+			
 			isLinkActive = true
 			
 		} catch {
@@ -145,8 +145,8 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		let biggestNum = notes.max{ i, j in i.id < j.id }
 		return biggestNum?.id
 	}
-
-	@MainActor func decodeAndSetNote() {
+	
+	func decodeAndSetNote() {
 		do {
 			let unarchiver = try NSKeyedUnarchiver(forReadingFrom: note?.noteData ?? Data("error".utf8))
 			unarchiver.requiresSecureCoding = false

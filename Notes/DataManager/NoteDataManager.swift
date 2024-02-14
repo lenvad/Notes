@@ -18,18 +18,6 @@ struct NoteDataManager {
 		self.persistenceController = persistenceController
 	}
 	
-	// TODO: this is no needed
-	func createNote(title: String, modifiedDate: Date, id: Int32, data: Data, user: User) -> Note {
-		let note = Note(context: dbContext)
-		note.id = id
-		note.modifiedDate = modifiedDate
-		note.title = title
-		note.user = user
-		user.addToNotes(note)
-		persistenceController.save()
-		return note
-	}
-	
 	func fetchAllNotes() -> [Note] {
 		let request: NSFetchRequest<Note> = Note.fetchRequest()
 		let fetchedNotes: [Note]
@@ -38,20 +26,6 @@ struct NoteDataManager {
 		} catch let error {
 			print("Error fetching singers \(error)")
 			fetchedNotes = []
-		}
-		return fetchedNotes
-	}
-	
-	// TODO: this method seems not necessary
-	func fetchNotesByUser(user: User) -> [Note] {
-		let request: NSFetchRequest<Note> = Note.fetchRequest()
-		request.predicate = NSPredicate(format: "user = %@", user)
-		request.sortDescriptors = [NSSortDescriptor(key: "modifiedDate", ascending: false)]
-		var fetchedNotes: [Note] = []
-		do {
-			fetchedNotes = try dbContext.fetch(request)
-		} catch let error {
-			print("Error fetching notes \(error)")
 		}
 		return fetchedNotes
 	}

@@ -52,7 +52,6 @@ final class NotesListViewModelTests: XCTestCase {
 			username: "TestUser",
 			persistenceController: PersistenceController()
 		)
-		
 		// track for memory leak
 		trackForMemoryLeaks(object: sut)
 		

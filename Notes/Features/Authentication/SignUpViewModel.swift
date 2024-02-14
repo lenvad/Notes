@@ -37,7 +37,7 @@ final class SignUpViewModel: ObservableObject {
 	}
 	
     func addUser() {
-		switch(uniqueUsernameChecker(),passwordChecker()) {
+		switch(uniqueUsernameChecker(), passwordChecker()) {
 		case (true, true):
 			userDataManager.createUser(username: usernameInput,
 									   email: emailInput,
