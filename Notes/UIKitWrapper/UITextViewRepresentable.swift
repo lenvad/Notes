@@ -11,31 +11,33 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		case text(NSAttributedString)
 		case isBold(Bool)
 		case isItalic(Bool)
+        case selectionChanged(NSRange)
 	}
 	
-	@State var text: NSAttributedString
-	@Binding var isBold: Bool
-	@Binding var isItalic: Bool
-	@Binding var isUnderlined: Bool
+	private(set) var text: NSAttributedString
+    private(set) var isBold: Bool
+    private(set) var isItalic: Bool
+    private(set) var isUnderlined: Bool
 	@Binding var checklistActivated: Bool
 	@Binding var fontSize: Int
-	@Binding var selectedRange: NSRange
+    private(set) var selectedRange: NSRange
 	@Binding var color: String
 	@Binding var formattingCurrentlyChanged: Bool
 	let onUpdate: (TextViewEvent) -> Void
 	let tapGesture = AttachmentTapGestureRecognizer()
 
+    let textView = UITextView()
+
 	func makeUIView(context: Context) -> UITextView {
-		let textView = UITextView()
 		textView.delegate = context.coordinator
 		//textView.addGestureRecognizer(tapGesture)
 		return textView
 	}
 	
 	func updateUIView(_ uiView: UITextView, context: Context) {
-		context.coordinator.setAttributes(isBold: $isBold,
-										  isItalic: $isItalic,
-										  isUnderlined: $isUnderlined,
+		context.coordinator.setAttributes(isBold: isBold,
+										  isItalic: isItalic,
+										  isUnderlined: isUnderlined,
 										  fontSize: $fontSize,
 										  color: $color,
 										  checklistActivated: $checklistActivated)
@@ -56,17 +58,20 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	func makeCoordinator() -> Coordinator {
-		Coordinator(text: $text,
-					isBold: $isBold,
-					isItalic: $isItalic,
-					isUnderlined: $isUnderlined,
+		Coordinator(text: text,
+					isBold: isBold,
+					isItalic: isItalic,
+					isUnderlined: isUnderlined,
 					checklistActivated: $checklistActivated,
 					fontSize: $fontSize,
-					selectedRange: $selectedRange,
+					selectedRange: selectedRange,
 					color: $color,
-					formattingCurrentlyChanged: $formattingCurrentlyChanged,
-					onUpdate: onUpdate
-		)
+                    formattingCurrentlyChanged: $formattingCurrentlyChanged) { textEvent in
+            if case .text(let newAttributedText) = textEvent {
+                textView.attributedText = newAttributedText
+            }
+            onUpdate(textEvent)
+        }
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
@@ -81,52 +86,52 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			case orange = "orange"
 		}
 		
-		@Binding var text: NSAttributedString
-		@Binding var isBold: Bool
-		@Binding var isItalic: Bool
-		@Binding var isUnderlined: Bool
+		private(set) var text: NSAttributedString
+        private(set) var isBold: Bool
+        private(set) var isItalic: Bool
+        private(set) var isUnderlined: Bool
 		@Binding var checklistActivated: Bool
 		@Binding var fontSize: Int
-		@Binding var selectedRange: NSRange
+        private(set) var selectedRange: NSRange
 		@Binding var color: String
 		@Binding var formattingCurrentlyChanged: Bool
 		let onUpdate: (TextViewEvent) -> Void
 		
 		private var currentSelectedRange: NSRange?
 		
-		init(text: Binding<NSAttributedString>,
-			 isBold:  Binding<Bool>,
-			 isItalic:  Binding<Bool>,
-			 isUnderlined: Binding<Bool>,
+		init(text: NSAttributedString,
+			 isBold: Bool,
+			 isItalic: Bool,
+			 isUnderlined: Bool,
 			 checklistActivated: Binding<Bool>,
 			 fontSize: Binding<Int>,
-			 selectedRange: Binding<NSRange>,
+			 selectedRange: NSRange,
 			 color: Binding<String>,
 			 formattingCurrentlyChanged: Binding<Bool>,
 			 onUpdate: @escaping (TextViewEvent) -> Void
 		) {
-			self._text = text
-			self._isBold = isBold
-			self._isItalic = isItalic
-			self._isUnderlined = isUnderlined
+			self.text = text
+			self.isBold = isBold
+			self.isItalic = isItalic
+			self.isUnderlined = isUnderlined
 			self._checklistActivated = checklistActivated
 			self._fontSize = fontSize
-			self._selectedRange = selectedRange
+			self.selectedRange = selectedRange
 			self._color = color
 			self._formattingCurrentlyChanged = formattingCurrentlyChanged
 			self.onUpdate = onUpdate
 		}
 		
-		func setAttributes(isBold:  Binding<Bool>,
-						   isItalic:  Binding<Bool>,
-						   isUnderlined: Binding<Bool>,
+		func setAttributes(isBold: Bool,
+						   isItalic: Bool,
+						   isUnderlined: Bool,
 						   fontSize: Binding<Int>,
 						   color: Binding<String>,
 						   checklistActivated: Binding<Bool>
 		) {
-			self._isBold = isBold
-			self._isItalic = isItalic
-			self._isUnderlined = isUnderlined
+			self.isBold = isBold
+			self.isItalic = isItalic
+			self.isUnderlined = isUnderlined
 			self._fontSize = fontSize
 			self._color = color
 			self._checklistActivated = checklistActivated
@@ -361,12 +366,16 @@ struct UITextViewRepresentable: UIViewRepresentable {
 												  range: NSRange(location: range.location, length: 1))
 					updateText(attributedString)
 					
-					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count + 1, length: 0)
+                    updateSelection(
+                        NSRange(location: range.location + replacementText.count + 1, length: 0)
+                    )
 				} else {
-					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
+                    updateSelection(
+                        NSRange(location: range.location + replacementText.count, length: 0)
+                    )
 				}
 			} else {
-				_selectedRange.wrappedValue = range
+                updateSelection(range)
 			}
 			formattingCurrentlyChanged = false
 		}
@@ -387,14 +396,14 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			checklistActivated = false
 			
 			updateText(string)
-			_selectedRange.wrappedValue = NSRange(location: range.location + 1, length: 0)
+			selectedRange = NSRange(location: range.location + 1, length: 0)
 		}
 		
 		func textViewDidChange(_ textView: UITextView) {
 			// UIKit -> SwiftUI
 			print("did change text to \(textView.text)")
-			if textView.attributedText != _text.wrappedValue {
-				_text.wrappedValue = textView.attributedText
+			if textView.attributedText != text {
+				text = textView.attributedText
 			}
 		}
 		
@@ -405,8 +414,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		
 		func textViewDidChangeSelection(_ textView: UITextView) {
 			let range = textView.selectedRange
-			if _selectedRange.wrappedValue != range {
-				_selectedRange.wrappedValue =  range
+			if selectedRange != range {
+                updateSelection(range)
 			}
 			
 			if range.length >= 1 {
@@ -415,9 +424,14 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		}
 		
 		private func updateText(_ newValue: NSAttributedString) {
-			_text.wrappedValue = newValue
+			text = newValue
 			onUpdate(.text(newValue))
 		}
+
+        private func updateSelection(_ newSelection: NSRange) {
+            selectedRange = newSelection
+            onUpdate(.selectionChanged(newSelection))
+        }
 	}
 }
 

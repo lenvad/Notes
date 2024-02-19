@@ -26,12 +26,12 @@ struct WriteOrEditNoteView: View {
 				
 				UITextViewRepresentable(
 					text: viewModel.noteText,
-					isBold: $viewModel.isBold,
-					isItalic: $viewModel.isItalic,
-					isUnderlined: $viewModel.isUnderlined,
+					isBold: viewModel.isBold,
+					isItalic: viewModel.isItalic,
+					isUnderlined: viewModel.isUnderlined,
 					checklistActivated: $viewModel.checklistActivated,
 					fontSize: $viewModel.fontSize,
-					selectedRange: $viewModel.selectedRange, 
+					selectedRange: viewModel.selectedRange,
 					color: $viewModel.selectedColor,
 					formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged,
 					onUpdate: { event in
@@ -44,6 +44,8 @@ struct WriteOrEditNoteView: View {
 						case .isItalic(let newValue):
 								break
 							//viewModel.isItalic = newValue
+						case .selectionChanged(let newSelection):
+							viewModel.selectedRange = newSelection
 						}
 					}
 				)
