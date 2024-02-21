@@ -10,6 +10,8 @@ import XCTest
 @testable import Notes
 
 final class WriteOrEditNoteViewModelTest: XCTestCase {
+	static var noteId: Int32 = 1
+	
 	func test_addNewNote_toUser() throws {
 		let viewModel = makeSut()
 		
@@ -21,6 +23,7 @@ final class WriteOrEditNoteViewModelTest: XCTestCase {
 		viewModel.onScreenEvent(.addOrUpdateNote)
 		
 		let note = viewModel.noteDataManager.fetchNotesById(id: (viewModel.note?.id)!)
+		WriteOrEditNoteViewModelTest.noteId = note?.id ?? 1
 		
 		let noteAsData = try NSKeyedArchiver.archivedData(withRootObject: viewModel.noteText, requiringSecureCoding: false) // noteText is NSAttributedString
 
@@ -34,7 +37,7 @@ final class WriteOrEditNoteViewModelTest: XCTestCase {
 		
 		viewModel.onScreenEvent(.onAppearance)
 
-		let noteForUpdate = viewModel.noteDataManager.fetchNotesById(id: 14) //TODO: does not change addNew and update should have the same id
+		let noteForUpdate = viewModel.noteDataManager.fetchNotesById(id: WriteOrEditNoteViewModelTest.noteId) 
 		viewModel.note = noteForUpdate
 		
 		XCTAssertFalse(viewModel.contentDisabled)

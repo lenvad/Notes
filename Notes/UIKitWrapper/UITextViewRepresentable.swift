@@ -3,10 +3,12 @@
 //
 //  Created by Lena Vadakkel on 30.11.23.
 //
+import Foundation
 import Combine
 import SwiftUI
 
 struct UITextViewRepresentable: UIViewRepresentable {
+
 	enum TextViewEvent {
 		case text(NSAttributedString)
 		case isBold(Bool)
@@ -14,7 +16,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	@State var text: NSAttributedString
-	let isBold: Bool
+	@Binding var isBold: Bool
 	@Binding var isItalic: Bool
 	@Binding var isUnderlined: Bool
 	@Binding var checklistActivated: Bool
@@ -22,18 +24,18 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var selectedRange: NSRange
 	@Binding var color: String
 	@Binding var formattingCurrentlyChanged: Bool
+		
 	let onUpdate: (TextViewEvent) -> Void
 	let tapGesture = AttachmentTapGestureRecognizer()
 
 	func makeUIView(context: Context) -> UITextView {
 		let textView = UITextView()
 		textView.delegate = context.coordinator
-		textView.addGestureRecognizer(tapGesture)
+		//textView.addGestureRecognizer(tapGesture)
 		return textView
 	}
 	
 	func updateUIView(_ uiView: UITextView, context: Context) {
-		print("checklist 1: \(checklistActivated)")
 		context.coordinator.setAttributes(isBold: $isBold,
 										  isItalic: $isItalic,
 										  isUnderlined: $isUnderlined,
@@ -51,9 +53,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			coordinator.displayUncheckedCheckBox(range: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
 		
-		if formattingCurrentlyChanged && selectedRange.length >= 1 {
-			print("1")
-			coordinator.applyStyleToCurrentSelectedTextIfNeed(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
+		if formattingCurrentlyChanged && selectedRange.length >= 1  {
+			coordinator.applyStyleToCurrentSelectedTextIfNeeded(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
 	}
 	
@@ -67,8 +68,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					selectedRange: $selectedRange,
 					color: $color,
 					formattingCurrentlyChanged: $formattingCurrentlyChanged,
-					onUpdate: onUpdate
-		)
+					onUpdate: onUpdate)
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
@@ -92,6 +92,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		@Binding var selectedRange: NSRange
 		@Binding var color: String
 		@Binding var formattingCurrentlyChanged: Bool
+
 		let onUpdate: (TextViewEvent) -> Void
 		
 		private var currentSelectedRange: NSRange?
@@ -146,7 +147,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			print()
 		}
 
-		func getCurrentColerAsValidColor(selectedColor: String) -> String {
+		func getCurrentColorAsValidColor(selectedColor: String) -> String {
 			switch selectedColor {
 				case "gray":
 					return "standard"
@@ -156,16 +157,6 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					return "yellow"
 				default:
 					return "standard"
-			}
-		}
-		
-		func NSAttributedStringAttachmentTapped(selectedRange: NSRange, attributedText: NSAttributedString) {
-			let string = NSMutableAttributedString(attributedString: attributedText)
-			let rangeOfCurrentLine = string.mutableString.lineRange(for: selectedRange)
-
-			attributedText.enumerateAttribute(.attachment, in: selectedRange) { attributes, range, _ in
-				print(attributes)
-				displayCheckedCheckBox(range: selectedRange, attributedText: attributedText)
 			}
 		}
 		
@@ -187,8 +178,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 						case NSAttributedString.Key.underlineStyle:
 							hasUnderline = true
 						case NSAttributedString.Key.attachment:
-							print(value)
-							displayCheckedCheckBox(range: selectedRange, attributedText: attributedText)
+							break
 						default:
 							assert(key == NSAttributedString.Key.paragraphStyle, "Unknown attribute found in the attributed string")
 					}
@@ -225,18 +215,21 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			
 			attributedColorRanges.forEach { value in
 				let fontColor = value?.accessibilityName
-				
-				var colorSet: Colors
-				
+								
 				if fontColor == "gray" || fontColor == "magenta" || fontColor == "yellow orange" {
-					color = getCurrentColerAsValidColor(selectedColor: fontColor ?? "standard") ?? "standard"
+					color = getCurrentColorAsValidColor(selectedColor: fontColor ?? "standard") 
 				} else {
 					color = fontColor ?? "standard"
 				}
 			}
 		}
 		
-		func applyStyleToCurrentSelectedTextIfNeed(selectedRange: NSRange, attributedText: NSAttributedString, doesItComeFromTextView: Bool = false, replacementText: String = "") {
+		func applyStyleToCurrentSelectedTextIfNeeded(
+			selectedRange: NSRange,
+			attributedText: NSAttributedString,
+			doesItComeFromTextView: Bool = false,
+			replacementText: String = ""
+		) {
 			debugPrint()
 			let font = UIFont.systemFont(ofSize: CGFloat(fontSize))
 			
@@ -359,23 +352,18 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			let attributedStringOfCurrentLine = attributedString.attributedSubstring(from: rangeOfCurrentLine)
 			let stringOfCurrentLine = attributedStringOfCurrentLine.string
 			
-			//make a UIImage and convert it to String
-			let allAttachments = [NSTextAttachment(), NSTextAttachment(), NSTextAttachment(), NSTextAttachment()]
-
 			let imageAttachment = NSTextAttachment()
-
-			imageAttachment.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
-			imageAttachment.image = UIImage(systemName: "circlebadge")
-			let attributedStringImage = NSAttributedString(attachment: imageAttachment)
+			let attributedStringImage = makeUncheckedCheckBox()
 			let stringImage = attributedStringImage.string
 			
 			updateText(attributedString)
-			print("2")
 			
 			if doesItComeFromTextView {
 				if stringOfCurrentLine.contains(stringImage) && replacementText == "\n" {
 					attributedString.insert(attributedStringImage, at: range.location + 1)
-					
+					attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
+												  value: UIColor.gray,
+												  range: NSRange(location: range.location, length: 1))
 					updateText(attributedString)
 					
 					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count + 1, length: 0)
@@ -383,45 +371,27 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
 				}
 			} else {
-				print("2")
 				_selectedRange.wrappedValue = range
-				print("NS Range: \(NSRange(location: range.location + text.length, length: 0))")
 			}
 			formattingCurrentlyChanged = false
 		}
 		
-		func displayUncheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
+		func makeUncheckedCheckBox() -> NSAttributedString {
 			//converting UIImage to NSAttributedString
-			let imageAttacament = NSTextAttachment()
-			imageAttacament.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
-			imageAttacament.image = UIImage(systemName: "circlebadge")
-			let imageString = NSAttributedString(attachment: imageAttacament)
+			let imageAttachament = NSTextAttachment()
+			imageAttachament.image = UIImage(systemName: "circlebadge")?.imageWidth(newSize: CGSize(width: 14, height: 14))
+			return NSAttributedString(attachment: imageAttachament)
+		}
+		
+		func displayUncheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
+			let imageString = makeUncheckedCheckBox()
 			
 			let string = NSMutableAttributedString(attributedString: attributedText)
 			
 			let rangeOfCurrentLine = string.mutableString.lineRange(for: range)
 			
 			string.insert(imageString, at: rangeOfCurrentLine.location)
-			
-			checklistActivated = false
-			
-			updateText(string)
-			_selectedRange.wrappedValue = NSRange(location: range.location + 1, length: 0)
-		}
-		
-		func displayCheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
-			//converting UIImage to NSAttributedString
-			let imageAttacament = NSTextAttachment()
-			imageAttacament.image = UIImage(systemName: "checkmark.circle")?.imageWith(newSize: CGSize(width: 14, height: 14))
-			let imageString = NSAttributedString(attachment: imageAttacament)
-			
-			let string = NSMutableAttributedString(attributedString: attributedText)
-			
-			let rangeOfCurrentLine = string.mutableString.lineRange(for: range)
-			
-			string.replaceCharacters(in: NSRange(location: rangeOfCurrentLine.location, length: 1), with: imageString)
-			//string.insert(imageString, at: rangeOfCurrentLine.location)
-			
+
 			checklistActivated = false
 			
 			updateText(string)
@@ -431,11 +401,13 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		func textViewDidChange(_ textView: UITextView) {
 			// UIKit -> SwiftUI
 			print("did change text to \(textView.text)")
-			// _text.wrappedValue = textView.attributedText
+			if textView.attributedText != _text.wrappedValue {
+				_text.wrappedValue = textView.attributedText
+			}
 		}
 		
 		func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-			applyStyleToCurrentSelectedTextIfNeed(selectedRange: range, attributedText: textView.attributedText, doesItComeFromTextView: true, replacementText: text)
+			applyStyleToCurrentSelectedTextIfNeeded(selectedRange: range, attributedText: textView.attributedText, doesItComeFromTextView: true, replacementText: text)
 			return false
 		}
 		
@@ -454,77 +426,5 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			_text.wrappedValue = newValue
 			onUpdate(.text(newValue))
 		}
-	}
-}
-
-
-extension UIImage {
-	func imageWith(newSize: CGSize) -> UIImage {
-		let image = UIGraphicsImageRenderer(size: newSize).image { _ in
-			draw(in: CGRect(origin: .zero, size: newSize))
-		}
-		
-		return image.withRenderingMode(renderingMode)
-	}
-}
-
-import UIKit
-import UIKit.UIGestureRecognizerSubclass
-/// Recognizes a tap on an attachment, on a UITextView.
-/// The UITextView normally only informs its delegate of a tap on an attachment if the text view is not editable, or a long tap is used.
-/// If you want an editable text view, where you can short cap an attachment, you have a problem.
-/// This gesture recognizer can be added to the text view, and will add requirments in order to recognize before any built-in recognizers.
-class AttachmentTapGestureRecognizer: UITapGestureRecognizer {
-
-	typealias TappedAttachment = (attachment: NSTextAttachment, characterIndex: Int)
-
-	private(set) var tappedState: TappedAttachment?
-
-	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-		tappedState = nil
-
-		guard let textView = view as? UITextView else {
-			state = .failed
-			return
-		}
-
-		if let touch = touches.first {
-			tappedState = evaluateTouch(touch, on: textView)
-		}
-
-		if tappedState != nil {
-			// UITapGestureRecognizer can accurately differentiate discrete taps from scrolling
-			// Therefore, let the super view evaluate the correct state.
-			super.touchesBegan(touches, with: event)
-
-		} else {
-			// User didn't initiate a touch (tap or otherwise) on an attachment.
-			// Force the gesture to fail.
-			state = .failed
-		}
-	}
-
-	/// Tests to see if the user has tapped on a text attachment in the target text view.
-	private func evaluateTouch(_ touch: UITouch, on textView: UITextView) -> TappedAttachment? {
-		let point = touch.location(in: textView)
-		let glyphIndex: Int? = textView.layoutManager.glyphIndex(for: point, in: textView.textContainer, fractionOfDistanceThroughGlyph: nil)
-		let index: Int? = textView.layoutManager.characterIndexForGlyph(at: glyphIndex ?? 0)
-		guard let characterIndex = index, characterIndex < textView.textStorage.length else {
-			return nil
-		}
-		guard NSTextAttachment.character == (textView.textStorage.string as NSString).character(at: characterIndex) else {
-			return nil
-		}
-		guard let attachment = textView.textStorage.attribute(.attachment, at: characterIndex, effectiveRange: nil) as? NSTextAttachment else {
-			return nil
-		}
-
-		if attachment.image == UIImage(systemName: "checkmark.circle") {
-			attachment.image = UIImage(systemName: "circlebadge")
-		} else {
-			attachment.image = UIImage(systemName: "checkmark.circle")
-		}
-
-		return (attachment, characterIndex)
 	}
 }

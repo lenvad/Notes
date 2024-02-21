@@ -41,9 +41,10 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	@Published var formattingCurrentlyChanged: Bool = false
 	@Published var selectedColor = "standard"
 	@Published var selectedRange: NSRange = NSRange(location: 0, length: 0)
-	@Published var contentDisabled = true
 	@Published var fontSize: Int = 12
 	@Published var errorMessage = ""
+	@Published var contentDisabled = true
+	var isSelected: Bool = false
 	
 	var noteText: NSAttributedString = NSAttributedString(string: "")
 	var counter: Int32 = 0
@@ -51,7 +52,6 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	var note: Note?
 	
 	let username: String
-	//let listKindsList: [String] = ListKinds.allCases.map { $0.rawValue }
 	let colorList: [String] = Colors.allCases.map { $0.rawValue }
 	let fontSizeList: [Int] = [8, 10, 12, 14, 16, 18, 20, 24, 26, 30, 32, 36]
 
@@ -63,10 +63,11 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		self.noteDataManager = NoteDataManager(persistenceController: persistenceController)
 		self.username = username
 		self.note = note
-
-		DispatchQueue.main.async {
+		
+		DispatchQueue.global(qos: .background).async {
 			self.contentDisabled = false
 		}
+		 
 	}
 	
 	func onScreenEvent(_ event: ScreenEvent) {
@@ -131,7 +132,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 			}
 			
 			note = noteDataManager.updateOrCreateNote(title: inputTitle, modifiedDate: inputTimestamp, id: note?.id ?? counter, data: inputdata, user: inputUser)
-
+			
 			isLinkActive = true
 			
 		} catch {
@@ -144,7 +145,7 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		let biggestNum = notes.max{ i, j in i.id < j.id }
 		return biggestNum?.id
 	}
-
+	
 	func decodeAndSetNote() {
 		do {
 			let unarchiver = try NSKeyedUnarchiver(forReadingFrom: note?.noteData ?? Data("error".utf8))

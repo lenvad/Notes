@@ -16,13 +16,14 @@ struct NotesListView: View {
 			VStack {
 				Text(viewModel.errorMessage)
 					.errorMessageText(errorMessage: viewModel.errorMessage)
-				
 				List {
 					ForEach(notesList, id: \.self, content:  { note in
 						generateNoteItem(note: note)
 					})
 					.listRowBackground((Color.orangeMain).opacity(0.4))
 				}
+				.scrollContentBackground(.hidden)
+				.background(.backgroundColorList)
 				.toolbar {
 					ToolbarItem(placement: .bottomBar ) {
 						NavigationLink(
