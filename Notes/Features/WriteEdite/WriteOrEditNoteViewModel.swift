@@ -44,7 +44,6 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 	@Published var fontSize: Int = 12
 	@Published var errorMessage = ""
 	@Published var contentDisabled = true
-	var isSelected: Bool = false
 	
 	var noteText: NSAttributedString = NSAttributedString(string: "")
 	var counter: Int32 = 0

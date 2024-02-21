@@ -13,35 +13,42 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		case text(NSAttributedString)
 		case isBold(Bool)
 		case isItalic(Bool)
+		case isUnderlined(Bool)
+		case color(String)
+		case fontSize(Int)
+		case checklistActivated(Bool)
+		case formattingCurrentlyChanged(Bool)
+        case selectionChanged(NSRange)
 	}
 	
-	@State var text: NSAttributedString
-	@Binding var isBold: Bool
-	@Binding var isItalic: Bool
-	@Binding var isUnderlined: Bool
-	@Binding var checklistActivated: Bool
-	@Binding var fontSize: Int
-	@Binding var selectedRange: NSRange
-	@Binding var color: String
-	@Binding var formattingCurrentlyChanged: Bool
+	private(set) var text: NSAttributedString
+    private(set) var isBold: Bool
+    private(set) var isItalic: Bool
+    private(set) var isUnderlined: Bool
+	private(set) var checklistActivated: Bool
+	private(set) var fontSize: Int
+    private(set) var selectedRange: NSRange
+	private(set) var color: String
+	private(set) var formattingCurrentlyChanged: Bool
 		
 	let onUpdate: (TextViewEvent) -> Void
 	let tapGesture = AttachmentTapGestureRecognizer()
 
+    let textView = UITextView()
+
 	func makeUIView(context: Context) -> UITextView {
-		let textView = UITextView()
 		textView.delegate = context.coordinator
 		//textView.addGestureRecognizer(tapGesture)
 		return textView
 	}
 	
 	func updateUIView(_ uiView: UITextView, context: Context) {
-		context.coordinator.setAttributes(isBold: $isBold,
-										  isItalic: $isItalic,
-										  isUnderlined: $isUnderlined,
-										  fontSize: $fontSize,
-										  color: $color,
-										  checklistActivated: $checklistActivated)
+		context.coordinator.setAttributes(isBold: isBold,
+										  isItalic: isItalic,
+										  isUnderlined: isUnderlined,
+										  fontSize: fontSize,
+										  color: color,
+										  checklistActivated: checklistActivated)
 		
 		uiView.attributedText = text
 		uiView.selectedRange = selectedRange
@@ -59,16 +66,20 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	}
 	
 	func makeCoordinator() -> Coordinator {
-		Coordinator(text: $text,
-					isBold: $isBold,
-					isItalic: $isItalic,
-					isUnderlined: $isUnderlined,
-					checklistActivated: $checklistActivated,
-					fontSize: $fontSize,
-					selectedRange: $selectedRange,
-					color: $color,
-					formattingCurrentlyChanged: $formattingCurrentlyChanged,
-					onUpdate: onUpdate)
+		Coordinator(text: text,
+					isBold: isBold,
+					isItalic: isItalic,
+					isUnderlined: isUnderlined,
+					checklistActivated: checklistActivated,
+					fontSize: fontSize,
+					selectedRange: selectedRange,
+					color: color,
+					formattingCurrentlyChanged: formattingCurrentlyChanged) { textEvent in
+			if case .text(let newAttributedText) = textEvent {
+				textView.attributedText = newAttributedText
+			}
+			onUpdate(textEvent)
+		}
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
@@ -81,58 +92,81 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			case pink = "pink"
 			case purple = "purple"
 			case orange = "orange"
+			
+			static func fromString(_ value: String) -> String {
+				for color in Colors.allCases {
+					if value.contains(color.rawValue) {
+						return color.rawValue
+					}
+				}
+				return getCurrentColorAsValidColor(selectedColor: value)
+			}
+			
+			static func getCurrentColorAsValidColor(selectedColor: String) -> String {
+				if selectedColor.contains("gray") {
+					return self.standard.rawValue
+				} else if selectedColor.contains("magenta") {
+					return self.pink.rawValue
+				} else if selectedColor.contains("brown") {
+					return self.orange.rawValue
+				} else if selectedColor.contains("black") {
+					return self.standard.rawValue
+				} else {
+					return self.standard.rawValue
+				}
+			}
 		}
 		
-		@Binding var text: NSAttributedString
-		@Binding var isBold: Bool
-		@Binding var isItalic: Bool
-		@Binding var isUnderlined: Bool
-		@Binding var checklistActivated: Bool
-		@Binding var fontSize: Int
-		@Binding var selectedRange: NSRange
-		@Binding var color: String
-		@Binding var formattingCurrentlyChanged: Bool
+		private(set) var text: NSAttributedString
+        private(set) var isBold: Bool
+        private(set) var isItalic: Bool
+        private(set) var isUnderlined: Bool
+		private(set) var checklistActivated: Bool
+		private(set) var fontSize: Int
+        private(set) var selectedRange: NSRange
+		private(set) var color: String
+		private(set) var formattingCurrentlyChanged: Bool
 
 		let onUpdate: (TextViewEvent) -> Void
 		
 		private var currentSelectedRange: NSRange?
 		
-		init(text: Binding<NSAttributedString>,
-			 isBold:  Binding<Bool>,
-			 isItalic:  Binding<Bool>,
-			 isUnderlined: Binding<Bool>,
-			 checklistActivated: Binding<Bool>,
-			 fontSize: Binding<Int>,
-			 selectedRange: Binding<NSRange>,
-			 color: Binding<String>,
-			 formattingCurrentlyChanged: Binding<Bool>,
+		init(text: NSAttributedString,
+			 isBold: Bool,
+			 isItalic: Bool,
+			 isUnderlined: Bool,
+			 checklistActivated: Bool,
+			 fontSize: Int,
+			 selectedRange: NSRange,
+			 color: String,
+			 formattingCurrentlyChanged: Bool,
 			 onUpdate: @escaping (TextViewEvent) -> Void
 		) {
-			self._text = text
-			self._isBold = isBold
-			self._isItalic = isItalic
-			self._isUnderlined = isUnderlined
-			self._checklistActivated = checklistActivated
-			self._fontSize = fontSize
-			self._selectedRange = selectedRange
-			self._color = color
-			self._formattingCurrentlyChanged = formattingCurrentlyChanged
+			self.text = text
+			self.isBold = isBold
+			self.isItalic = isItalic
+			self.isUnderlined = isUnderlined
+			self.checklistActivated = checklistActivated
+			self.fontSize = fontSize
+			self.selectedRange = selectedRange
+			self.color = color
+			self.formattingCurrentlyChanged = formattingCurrentlyChanged
 			self.onUpdate = onUpdate
 		}
 		
-		func setAttributes(isBold:  Binding<Bool>,
-						   isItalic:  Binding<Bool>,
-						   isUnderlined: Binding<Bool>,
-						   fontSize: Binding<Int>,
-						   color: Binding<String>,
-						   checklistActivated: Binding<Bool>
+		func setAttributes(isBold: Bool,
+						   isItalic: Bool,
+						   isUnderlined: Bool,
+						   fontSize: Int,
+						   color: String,
+						   checklistActivated: Bool
 		) {
-			self._isBold = isBold
-			self._isItalic = isItalic
-			self._isUnderlined = isUnderlined
-			self._fontSize = fontSize
-			self._color = color
-			self._checklistActivated = checklistActivated
+			self.isBold = isBold
+			self.isItalic = isItalic
+			self.isUnderlined = isUnderlined
+			self.fontSize = fontSize
+			self.color = color
+			self.checklistActivated = checklistActivated
 		}
 		
 		func debugPrint() {
@@ -147,18 +181,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			print()
 		}
 
-		func getCurrentColorAsValidColor(selectedColor: String) -> String {
-			switch selectedColor {
-				case "gray":
-					return "standard"
-				case "magenta":
-					return "pink"
-				case "yellow orange":
-					return "yellow"
-				default:
-					return "standard"
-			}
-		}
+
 		
 		func getAllAttributesFromRangeAndSelectThem(selectedRange: NSRange, attributedText: NSAttributedString) {
 			//Create Empty Dictionaries for storing results
@@ -188,39 +211,31 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			attributedFontRanges.forEach { value in
 				let fontStyle = "\(value)"
 				if fontStyle.contains("italic") {
-					isItalic = true
+					updateItalic(true)
 				} else {
-					isItalic = false
+					updateItalic(false)
 				}
-				//onUpdate(.isItalic(isItalic))
 				
 				if fontStyle.contains("bold") {
-					isBold = true
-					//onUpdate(.isBold(isBold))
+					updateBold(true)
 				} else {
-					isBold = false
-					//onUpdate(.isBold(isBold))
+					updateBold(false)
 				}
 				
 				if value != nil {
-					fontSize = Int(value?.pointSize ?? 12)
+					updateFontSize(Int(value?.pointSize ?? 12))
 				}
 			}
 			
 			if hasUnderline {
-				isUnderlined = true
+				updateUnderline(true)
 			} else {
-				isUnderlined = false
+				updateUnderline(false)
 			}
 			
 			attributedColorRanges.forEach { value in
 				let fontColor = value?.accessibilityName
-								
-				if fontColor == "gray" || fontColor == "magenta" || fontColor == "yellow orange" {
-					color = getCurrentColorAsValidColor(selectedColor: fontColor ?? "standard") 
-				} else {
-					color = fontColor ?? "standard"
-				}
+				updateColor(Colors.fromString(fontColor ?? "standard") )
 			}
 		}
 		
@@ -234,7 +249,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			let font = UIFont.systemFont(ofSize: CGFloat(fontSize))
 			
 			var range = selectedRange
-			currentSelectedRange = range
+			
 			let attributedString = NSMutableAttributedString(attributedString: attributedText)
 			
 			if doesItComeFromTextView {
@@ -366,14 +381,19 @@ struct UITextViewRepresentable: UIViewRepresentable {
 												  range: NSRange(location: range.location, length: 1))
 					updateText(attributedString)
 					
-					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count + 1, length: 0)
+                    updateSelection(
+                        NSRange(location: range.location + replacementText.count + 1, length: 0)
+                    )
 				} else {
-					_selectedRange.wrappedValue = NSRange(location: range.location + replacementText.count, length: 0)
+                    updateSelection(
+                        NSRange(location: range.location + replacementText.count, length: 0)
+                    )
 				}
 			} else {
-				_selectedRange.wrappedValue = range
+                updateSelection(range)
 			}
-			formattingCurrentlyChanged = false
+
+			updateformattingChanged(formattingCurrentlyChanged)
 		}
 		
 		func makeUncheckedCheckBox() -> NSAttributedString {
@@ -392,17 +412,17 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			
 			string.insert(imageString, at: rangeOfCurrentLine.location)
 
-			checklistActivated = false
+			updateChecklist(false)
 			
 			updateText(string)
-			_selectedRange.wrappedValue = NSRange(location: range.location + 1, length: 0)
+			updateSelection(NSRange(location: range.location + 1, length: 0))
 		}
 		
 		func textViewDidChange(_ textView: UITextView) {
 			// UIKit -> SwiftUI
 			print("did change text to \(textView.text)")
-			if textView.attributedText != _text.wrappedValue {
-				_text.wrappedValue = textView.attributedText
+			if textView.attributedText != text {
+				text = textView.attributedText
 			}
 		}
 		
@@ -413,8 +433,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		
 		func textViewDidChangeSelection(_ textView: UITextView) {
 			let range = textView.selectedRange
-			if _selectedRange.wrappedValue != range {
-				_selectedRange.wrappedValue =  range
+			if selectedRange != range {
+                updateSelection(range)
 			}
 			
 			if range.length >= 1 {
@@ -423,8 +443,48 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		}
 		
 		private func updateText(_ newValue: NSAttributedString) {
-			_text.wrappedValue = newValue
+			text = newValue
 			onUpdate(.text(newValue))
 		}
+
+        private func updateSelection(_ newSelection: NSRange) {
+            selectedRange = newSelection
+            onUpdate(.selectionChanged(newSelection))
+        }
+		
+        private func updateBold(_ newBoolValue: Bool) {
+            isBold = newBoolValue
+			onUpdate(.isBold(newBoolValue))
+        }
+		
+        private func updateItalic(_ newBoolValue: Bool) {
+            isItalic = newBoolValue
+			onUpdate(.isItalic(newBoolValue))
+        }
+		
+        private func updateUnderline(_ newBoolValue: Bool) {
+            isUnderlined = newBoolValue
+			onUpdate(.isUnderlined(newBoolValue))
+        }
+		
+		private func updateChecklist(_ newBoolValue: Bool) {
+            checklistActivated = newBoolValue
+			onUpdate(.checklistActivated(newBoolValue))
+        }
+		
+        private func updateformattingChanged(_ newBoolValue: Bool) {
+            formattingCurrentlyChanged = newBoolValue
+			onUpdate(.formattingCurrentlyChanged(newBoolValue))
+        }
+		
+        private func updateColor(_ newColorValue: String) {
+            color = newColorValue
+			onUpdate(.color(newColorValue))
+        }
+		
+        private func updateFontSize(_ newFontSizeValue: Int) {
+            fontSize = newFontSizeValue
+			onUpdate(.fontSize(newFontSizeValue))
+        }
 	}
 }

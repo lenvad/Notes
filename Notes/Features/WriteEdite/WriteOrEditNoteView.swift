@@ -11,13 +11,9 @@ struct WriteOrEditNoteView: View {
 	@StateObject var viewModel: WriteOrEditNoteViewModel
 	@State private var searchText: String = ""
 	
-    var body: some View {
-        NavigationView {
-            VStack {
-				//for debug purposes, see if it makes a difference with the text when the view is updating
-				//conclusion: does not make any difference
-				Text(viewModel.isSelected ? "1" : "2")//.hidden()
-
+	var body: some View {
+		NavigationView {
+			VStack {
 				if viewModel.errorMessage != "" {
 					Text(viewModel.errorMessage)
 						.errorMessageText(errorMessage: viewModel.errorMessage)
@@ -27,82 +23,88 @@ struct WriteOrEditNoteView: View {
 				
 				UITextViewRepresentable(
 					text: viewModel.noteText,
-					isBold: $viewModel.isBold,
-					isItalic: $viewModel.isItalic,
-					isUnderlined: $viewModel.isUnderlined,
-					checklistActivated: $viewModel.checklistActivated,
-					fontSize: $viewModel.fontSize,
-					selectedRange: $viewModel.selectedRange, 
-					color: $viewModel.selectedColor,
-					formattingCurrentlyChanged: $viewModel.formattingCurrentlyChanged,
+					isBold: viewModel.isBold,
+					isItalic: viewModel.isItalic,
+					isUnderlined: viewModel.isUnderlined,
+					checklistActivated: viewModel.checklistActivated,
+					fontSize: viewModel.fontSize,
+					selectedRange: viewModel.selectedRange,
+					color: viewModel.selectedColor,
+					formattingCurrentlyChanged: viewModel.formattingCurrentlyChanged,
 					onUpdate: { event in
 						switch event {
-						case .text(let newValue):
-							viewModel.noteText = newValue
-						case .isBold(let newValue):
-								break
-							//viewModel.isBold = newValue
-						case .isItalic(let newValue):
-								break
-							//viewModel.isItalic = newValue
+							case .text(let newValue):
+								viewModel.noteText = newValue
+							case .isBold(let newValue):
+								viewModel.isBold = newValue
+							case .isItalic(let newValue):
+								viewModel.isItalic = newValue
+							case .selectionChanged(let newSelection):
+								viewModel.selectedRange = newSelection
+							case .isUnderlined(let newValue):
+								viewModel.isUnderlined = newValue
+							case .color(let newValue):
+								viewModel.selectedColor = newValue
+							case .fontSize(let newValue):
+								viewModel.fontSize = newValue
+							case .checklistActivated(let newValue):
+								viewModel.checklistActivated = newValue
+							case .formattingCurrentlyChanged(let newValue):
+								viewModel.formattingCurrentlyChanged = newValue
 						}
 					}
 				)
 				.autocorrectionDisabled()
 				.disabled(viewModel.contentDisabled)
-				
-                if !viewModel.contentDisabled {
+			}.keyboardToolbar(view: {
+				if !viewModel.contentDisabled {
 					Divider()
-                }
-			}.onChange(of: viewModel.noteText, {
-				viewModel.isSelected = viewModel.switchBool(boolValue: &viewModel.isSelected)
-			})
-			.keyboardToolbar(view: {
-				HStack {
-					toolButton(imageName: "bold",
-							   backgroundColorOn: viewModel.isBold,
-							   fontsize: 19,
-							   action: {
-						viewModel.onScreenEvent(.toolbarButtons(event: .bold))
-					})
-					
-					toolButton(imageName: "italic",
-							   backgroundColorOn: viewModel.isItalic,
-							   fontsize: 19,
-							   action: {
-						viewModel.onScreenEvent(.toolbarButtons(event: .italic))
-					})
-					
-					toolButton(imageName: "underline",
-							   backgroundColorOn: viewModel.isUnderlined,
-							   fontsize: 17,
-							   action: {
-						viewModel.onScreenEvent(.toolbarButtons(event: .underlined))
-					})
-					
-					toolButton(imageName: "checklist",
-							   backgroundColorOn: viewModel.checklistActivated,
-							   fontsize: 15,
-							   action: {
-						viewModel.onScreenEvent(.toolbarButtons(event: .checklist))
-					})
-					
-					Picker("Color", selection: $viewModel.selectedColor) {
-						ForEach(viewModel.colorList, id: \.self) { value in
-							Text(value).tag(value)
-						}
-					}.onChange(of: viewModel.selectedColor) {
-						viewModel.formattingCurrentlyChanged = true
-					}.padding(2)
-					
-					Picker("FontSize", selection: $viewModel.fontSize) {
-						ForEach(viewModel.fontSizeList, id: \.self) { value in
-							Text("\(value)").tag(value)
-						}
-					}.onChange(of: viewModel.fontSize) {
-						viewModel.formattingCurrentlyChanged = true
-					}.padding(2)
-				}.padding(.bottom, 2)
+					HStack {
+						toolButton(imageName: "bold",
+								   backgroundColorOn: viewModel.isBold,
+								   fontsize: 19,
+								   action: {
+							viewModel.onScreenEvent(.toolbarButtons(event: .bold))
+						})
+						
+						toolButton(imageName: "italic",
+								   backgroundColorOn: viewModel.isItalic,
+								   fontsize: 19,
+								   action: {
+							viewModel.onScreenEvent(.toolbarButtons(event: .italic))
+						})
+						
+						toolButton(imageName: "underline",
+								   backgroundColorOn: viewModel.isUnderlined,
+								   fontsize: 17,
+								   action: {
+							viewModel.onScreenEvent(.toolbarButtons(event: .underlined))
+						})
+						
+						toolButton(imageName: "checklist",
+								   backgroundColorOn: viewModel.checklistActivated,
+								   fontsize: 15,
+								   action: {
+							viewModel.onScreenEvent(.toolbarButtons(event: .checklist))
+						})
+						
+						Picker("Color", selection: $viewModel.selectedColor) {
+							ForEach(viewModel.colorList, id: \.self) { value in
+								Text(value).tag(value)
+							}
+						}.onChange(of: viewModel.selectedColor) {
+							viewModel.formattingCurrentlyChanged = true
+						}.padding(2)
+						
+						Picker("FontSize", selection: $viewModel.fontSize) {
+							ForEach(viewModel.fontSizeList, id: \.self) { value in
+								Text("\(value)").tag(value)
+							}
+						}.onChange(of: viewModel.fontSize) {
+							viewModel.formattingCurrentlyChanged = true
+						}.padding(2)
+					}.padding(.bottom, 2)
+				}
 			})
 			.toolbar(content: {
 				ToolbarItem(placement: .navigationBarLeading) {
@@ -117,7 +119,7 @@ struct WriteOrEditNoteView: View {
 							Text("Back")
 						}
 					}
-
+					
 				}
 				
 				if viewModel.contentDisabled {
@@ -133,7 +135,7 @@ struct WriteOrEditNoteView: View {
 						.frame(maxWidth: .infinity, alignment: .trailing)
 					}
 				}
-
+				
 				if !viewModel.contentDisabled {
 					ToolbarItem(placement: .navigationBarTrailing) {
 						Button(action: {
@@ -146,27 +148,27 @@ struct WriteOrEditNoteView: View {
 				}
 			})
 		}.onAppear {
-            viewModel.onScreenEvent(.onAppearance)
-        }
-    }
-    
+			viewModel.onScreenEvent(.onAppearance)
+		}
+	}
+	
 	private func toolButton(
 		imageName: String,
 		backgroundColorOn: Bool,
 		fontsize: Double,
 		action: @escaping () -> Void
 	) -> some View {
-        return Button(action: {
-            action()
-        }, label: {
-            Image(systemName: imageName).font(.system(size: fontsize))
+		return Button(action: {
+			action()
+		}, label: {
+			Image(systemName: imageName).font(.system(size: fontsize))
 				.padding(5)
 				.overlay(RoundedRectangle(cornerRadius: 5.0)
 					.fill(backgroundColorOn ? Color.orangeMain.opacity(0.3):.clear)
 					.frame(width: 35, height: 35)
 				)
 		}).padding(2)
-    }
+	}
 }
 
 struct WriteOrEditNoteView_Previews: PreviewProvider {
