@@ -3,10 +3,12 @@
 //
 //  Created by Lena Vadakkel on 30.11.23.
 //
+import Foundation
 import Combine
 import SwiftUI
 
 struct UITextViewRepresentable: UIViewRepresentable {
+
 	enum TextViewEvent {
 		case text(NSAttributedString)
 		case isBold(Bool)
@@ -22,6 +24,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 	@Binding var selectedRange: NSRange
 	@Binding var color: String
 	@Binding var formattingCurrentlyChanged: Bool
+		
 	let onUpdate: (TextViewEvent) -> Void
 	let tapGesture = AttachmentTapGestureRecognizer()
 
@@ -50,8 +53,8 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			coordinator.displayUncheckedCheckBox(range: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
 		
-		if formattingCurrentlyChanged && selectedRange.length >= 1 {
-			coordinator.applyStyleToCurrentSelectedTextIfNeed(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
+		if formattingCurrentlyChanged && selectedRange.length >= 1  {
+			coordinator.applyStyleToCurrentSelectedTextIfNeeded(selectedRange: uiView.selectedRange, attributedText: uiView.attributedText)
 		}
 	}
 	
@@ -65,8 +68,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 					selectedRange: $selectedRange,
 					color: $color,
 					formattingCurrentlyChanged: $formattingCurrentlyChanged,
-					onUpdate: onUpdate
-		)
+					onUpdate: onUpdate)
 	}
 	
 	class Coordinator: NSObject, UITextViewDelegate {
@@ -90,6 +92,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		@Binding var selectedRange: NSRange
 		@Binding var color: String
 		@Binding var formattingCurrentlyChanged: Bool
+
 		let onUpdate: (TextViewEvent) -> Void
 		
 		private var currentSelectedRange: NSRange?
@@ -221,7 +224,12 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			}
 		}
 		
-		func applyStyleToCurrentSelectedTextIfNeed(selectedRange: NSRange, attributedText: NSAttributedString, doesItComeFromTextView: Bool = false, replacementText: String = "") {
+		func applyStyleToCurrentSelectedTextIfNeeded(
+			selectedRange: NSRange,
+			attributedText: NSAttributedString,
+			doesItComeFromTextView: Bool = false,
+			replacementText: String = ""
+		) {
 			debugPrint()
 			let font = UIFont.systemFont(ofSize: CGFloat(fontSize))
 			
@@ -345,10 +353,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			let stringOfCurrentLine = attributedStringOfCurrentLine.string
 			
 			let imageAttachment = NSTextAttachment()
-
-			imageAttachment.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
-			imageAttachment.image = UIImage(systemName: "circlebadge")?.imageWith(newSize: CGSize(width: 14, height: 14))//.withTintColor(.gray)
-			let attributedStringImage = NSAttributedString(attachment: imageAttachment)
+			let attributedStringImage = makeUncheckedCheckBox()
 			let stringImage = attributedStringImage.string
 			
 			updateText(attributedString)
@@ -371,12 +376,15 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			formattingCurrentlyChanged = false
 		}
 		
-		func displayUncheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
+		func makeUncheckedCheckBox() -> NSAttributedString {
 			//converting UIImage to NSAttributedString
 			let imageAttachament = NSTextAttachment()
-			imageAttachament.contents = "\(Int.random(in: 1...100))".data(using: .utf8)
-			imageAttachament.image = UIImage(systemName: "circlebadge")?.imageWith(newSize: CGSize(width: 14, height: 14)).withTintColor(.gray)
-			let imageString = NSAttributedString(attachment: imageAttachament)
+			imageAttachament.image = UIImage(systemName: "circlebadge")?.imageWidth(newSize: CGSize(width: 14, height: 14))
+			return NSAttributedString(attachment: imageAttachament)
+		}
+		
+		func displayUncheckedCheckBox(range: NSRange, attributedText: NSAttributedString) {
+			let imageString = makeUncheckedCheckBox()
 			
 			let string = NSMutableAttributedString(attributedString: attributedText)
 			
@@ -399,7 +407,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		}
 		
 		func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-			applyStyleToCurrentSelectedTextIfNeed(selectedRange: range, attributedText: textView.attributedText, doesItComeFromTextView: true, replacementText: text)
+			applyStyleToCurrentSelectedTextIfNeeded(selectedRange: range, attributedText: textView.attributedText, doesItComeFromTextView: true, replacementText: text)
 			return false
 		}
 		
@@ -418,16 +426,5 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			_text.wrappedValue = newValue
 			onUpdate(.text(newValue))
 		}
-	}
-}
-
-
-extension UIImage {
-	func imageWith(newSize: CGSize) -> UIImage {
-		let image = UIGraphicsImageRenderer(size: newSize).image { _ in
-			draw(in: CGRect(origin: .zero, size: newSize))
-		}
-		
-		return image.withRenderingMode(renderingMode)
 	}
 }

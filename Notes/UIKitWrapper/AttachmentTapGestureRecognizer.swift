@@ -4,8 +4,9 @@
 //
 //  Created by Lena Vadakkel on 31.01.2024.
 //
+import Foundation
 import UIKit
-import UIKit.UIGestureRecognizerSubclass
+import SwiftUI
 
 class AttachmentTapGestureRecognizer: UITapGestureRecognizer {
 	
@@ -52,9 +53,9 @@ class AttachmentTapGestureRecognizer: UITapGestureRecognizer {
 			return nil
 		}
 		if attachment.image == UIImage(systemName: "checkmark.circle") {
-			attachment.image = UIImage(systemName: "circlebadge")?.imageWith(newSize: CGSize(width: 14, height: 14))
+			attachment.image = UIImage(systemName: "circlebadge")?.imageWidth(newSize: CGSize(width: 14, height: 14))
 		} else {
-			attachment.image = UIImage(systemName: "checkmark.circle")?.imageWith(newSize: CGSize(width: 14, height: 14))
+			attachment.image = UIImage(systemName: "checkmark.circle")?.imageWidth(newSize: CGSize(width: 14, height: 14))
 		}
 		
 		return (attachment, characterIndex)

@@ -63,11 +63,11 @@ final class WriteOrEditNoteViewModel: ObservableObject {
 		self.noteDataManager = NoteDataManager(persistenceController: persistenceController)
 		self.username = username
 		self.note = note
-		/*
+		
 		DispatchQueue.global(qos: .background).async {
 			self.contentDisabled = false
 		}
-		 */
+		 
 	}
 	
 	func onScreenEvent(_ event: ScreenEvent) {

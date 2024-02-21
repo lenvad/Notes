@@ -5,6 +5,7 @@
 //  Created by Lena Vadakkel on 10.11.23.
 //
 import SwiftUI
+import Foundation
 
 struct WriteOrEditNoteView: View {
 	@StateObject var viewModel: WriteOrEditNoteViewModel

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		500BB24A2B7FAC33006B752A /* UITextViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503990802B18B90100E5E97D /* UITextViewRepresentable.swift */; };
 		50146FC52B738733006BB10D /* KeyboardToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50146FC42B738733006BB10D /* KeyboardToolbar.swift */; };
 		501E50172AF526FA00522448 /* NotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E50162AF526FA00522448 /* NotesApp.swift */; };
 		501E50192AF526FA00522448 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E50182AF526FA00522448 /* ContentView.swift */; };
@@ -22,7 +23,6 @@
 		501E50902AFCE77200522448 /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508C2AFCE77200522448 /* Note+CoreDataProperties.swift */; };
 		501E50912AFCE77200522448 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508D2AFCE77200522448 /* User+CoreDataClass.swift */; };
 		501E50922AFCE77200522448 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501E508E2AFCE77200522448 /* User+CoreDataProperties.swift */; };
-		503990812B18B90100E5E97D /* UITextViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503990802B18B90100E5E97D /* UITextViewRepresentable.swift */; };
 		503CE1DC2B10DB69004C7097 /* SignUpButtonText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CE1DB2B10DB69004C7097 /* SignUpButtonText.swift */; };
 		503CE1DE2B10DC8C004C7097 /* UnderliedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 503CE1DD2B10DC8C004C7097 /* UnderliedTextField.swift */; };
 		503CE1E22B10DD39004C7097 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 503CE1E42B10DD39004C7097 /* Localizable.strings */; };
@@ -38,6 +38,7 @@
 		50AD49DD2B57C098008BF09E /* XCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49DC2B57C098008BF09E /* XCTestCase.swift */; };
 		50AD49E02B59797E008BF09E /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49DF2B59797E008BF09E /* UIFont.swift */; };
 		50AD49E22B5979A7008BF09E /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AD49E12B5979A7008BF09E /* NSAttributedString.swift */; };
+		50B641E82B7FA96000BEC8CE /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50B641E72B7FA96000BEC8CE /* UIImage.swift */; };
 		50FF4BED2AFD22BB000A6E25 /* NotesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */; };
 		50FF4BEF2AFD27C9000A6E25 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */; };
 		50FF4BF12AFD2911000A6E25 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */; };
@@ -99,11 +100,12 @@
 		50AD49DC2B57C098008BF09E /* XCTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTestCase.swift; sourceTree = "<group>"; };
 		50AD49DF2B59797E008BF09E /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
 		50AD49E12B5979A7008BF09E /* NSAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedString.swift; sourceTree = "<group>"; };
+		50B641E72B7FA96000BEC8CE /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		50FF4BEC2AFD22BB000A6E25 /* NotesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListView.swift; sourceTree = "<group>"; };
 		50FF4BEE2AFD27C9000A6E25 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		50FF4BF02AFD2911000A6E25 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		50FF4BF22AFE57C6000A6E25 /* NotesListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesListViewModel.swift; sourceTree = "<group>"; };
-		50FF4BF42AFE7BC7000A6E25 /* WriteOrEditNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteOrEditNoteView.swift; sourceTree = "<group>"; usesTabs = 1; wrapsLines = 1; };
+		50FF4BF42AFE7BC7000A6E25 /* WriteOrEditNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WriteOrEditNoteView.swift; path = Notes/Features/WriteEdite/WriteOrEditNoteView.swift; sourceTree = SOURCE_ROOT; usesTabs = 1; wrapsLines = 1; };
 		50FF4BF62AFE7D67000A6E25 /* WriteOrEditNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteOrEditNoteViewModel.swift; sourceTree = "<group>"; };
 		5DE32C3F2B48401500382C49 /* FetchRequestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchRequestFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -265,6 +267,7 @@
 			children = (
 				50AD49DF2B59797E008BF09E /* UIFont.swift */,
 				50AD49E12B5979A7008BF09E /* NSAttributedString.swift */,
+				50B641E72B7FA96000BEC8CE /* UIImage.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -453,6 +456,7 @@
 				50AD49D42B5138E6008BF09E /* NoteDataManager.swift in Sources */,
 				501E508F2AFCE77200522448 /* Note+CoreDataClass.swift in Sources */,
 				5DE32C402B48401500382C49 /* FetchRequestFactory.swift in Sources */,
+				50B641E82B7FA96000BEC8CE /* UIImage.swift in Sources */,
 				50FF4BF32AFE57C6000A6E25 /* NotesListViewModel.swift in Sources */,
 				501E50192AF526FA00522448 /* ContentView.swift in Sources */,
 				503CE1E82B10E10F004C7097 /* ErrorMessageText.swift in Sources */,
@@ -472,7 +476,7 @@
 				50146FC52B738733006BB10D /* KeyboardToolbar.swift in Sources */,
 				507A75D22B6A71F70000036F /* AttachmentTapGestureRecognizer.swift in Sources */,
 				50AD49E22B5979A7008BF09E /* NSAttributedString.swift in Sources */,
-				503990812B18B90100E5E97D /* UITextViewRepresentable.swift in Sources */,
+				500BB24A2B7FAC33006B752A /* UITextViewRepresentable.swift in Sources */,
 				503CE1E62B10DEA1004C7097 /* ViewExtensionForModifiers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -651,13 +655,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 285AH7CWU6;
+				DEVELOPMENT_TEAM = L7YW9PDZP4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -670,10 +672,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ubs.wm.circleone.te1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lena.Notes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Circle One TE1 - Development";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -686,13 +687,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = NO;
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 285AH7CWU6;
+				DEVELOPMENT_TEAM = L7YW9PDZP4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -705,10 +704,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ubs.wm.circleone.te1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lena.Notes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Circle One TE1 - Development";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
