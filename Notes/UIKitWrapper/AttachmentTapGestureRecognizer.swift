@@ -52,11 +52,15 @@ class AttachmentTapGestureRecognizer: UITapGestureRecognizer {
 		guard let attachment = textView.textStorage.attribute(.attachment, at: characterIndex, effectiveRange: nil) as? NSTextAttachment else {
 			return nil
 		}
-		if attachment.image == UIImage(systemName: "checkmark.circle") {
-			attachment.image = UIImage(systemName: "circlebadge")?.imageWidth(newSize: CGSize(width: 14, height: 14))
+		var image: UIImage?
+		if attachment.image?.accessibilityIdentifier == "2" {
+			image = UIImage(systemName: "circlebadge")?.imageWidth(newSize: CGSize(width: 14, height: 14))
+			image?.accessibilityIdentifier = "1"
 		} else {
-			attachment.image = UIImage(systemName: "checkmark.circle")?.imageWidth(newSize: CGSize(width: 14, height: 14))
+			image =  UIImage(systemName: "checkmark.circle")?.imageWidth(newSize: CGSize(width: 14, height: 14))
+			image?.accessibilityIdentifier = "2"
 		}
+		attachment.image = image
 		
 		return (attachment, characterIndex)
 	}

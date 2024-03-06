@@ -38,7 +38,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 
 	func makeUIView(context: Context) -> UITextView {
 		textView.delegate = context.coordinator
-		//textView.addGestureRecognizer(tapGesture)
+		textView.addGestureRecognizer(tapGesture)
 		return textView
 	}
 	
@@ -381,16 +381,22 @@ struct UITextViewRepresentable: UIViewRepresentable {
 												  range: NSRange(location: range.location, length: 1))
 					updateText(attributedString)
 					
-                    updateSelection(
-                        NSRange(location: range.location + replacementText.count + 1, length: 0)
-                    )
+					Task {
+						await updateSelection(
+							NSRange(location: range.location + replacementText.count + 1, length: 0)
+						)
+					}
 				} else {
-                    updateSelection(
-                        NSRange(location: range.location + replacementText.count, length: 0)
-                    )
+					Task {
+						await updateSelection(
+							NSRange(location: range.location + replacementText.count, length: 0)
+						)
+					}
 				}
 			} else {
-                updateSelection(range)
+				Task {
+					await updateSelection(range)
+				}
 			}
 
 			updateformattingChanged(formattingCurrentlyChanged)
@@ -398,8 +404,11 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		
 		func makeUncheckedCheckBox() -> NSAttributedString {
 			//converting UIImage to NSAttributedString
+			var image = UIImage(systemName: "circlebadge")?.imageWidth(newSize: CGSize(width: 14, height: 14))
+			image?.accessibilityIdentifier = "1"
+			
 			let imageAttachament = NSTextAttachment()
-			imageAttachament.image = UIImage(systemName: "circlebadge")?.imageWidth(newSize: CGSize(width: 14, height: 14))
+			imageAttachament.image = image
 			return NSAttributedString(attachment: imageAttachament)
 		}
 		
@@ -415,7 +424,9 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			updateChecklist(false)
 			
 			updateText(string)
-			updateSelection(NSRange(location: range.location + 1, length: 0))
+			Task {
+				await updateSelection(NSRange(location: range.location + 1, length: 0))
+			}
 		}
 		
 		func textViewDidChange(_ textView: UITextView) {
@@ -434,7 +445,9 @@ struct UITextViewRepresentable: UIViewRepresentable {
 		func textViewDidChangeSelection(_ textView: UITextView) {
 			let range = textView.selectedRange
 			if selectedRange != range {
-                updateSelection(range)
+				Task {
+					await updateSelection(range)
+				}
 			}
 			
 			if range.length >= 1 {
@@ -447,7 +460,7 @@ struct UITextViewRepresentable: UIViewRepresentable {
 			onUpdate(.text(newValue))
 		}
 
-        private func updateSelection(_ newSelection: NSRange) {
+        private func updateSelection(_ newSelection: NSRange) async {
             selectedRange = newSelection
             onUpdate(.selectionChanged(newSelection))
         }
