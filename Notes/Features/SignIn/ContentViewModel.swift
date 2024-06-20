@@ -22,7 +22,7 @@ final class ContentViewModel: ObservableObject {
 	@Published var usernameInvalid = false
 	@Published var passwordInvalid = false
 	@Published var isLinkActive = false
-	@Published var isCodeSended = false
+	@Published var shouldCodeBeSended = false
 	var isCodegenerated = false
 	var validCode : String = ""
 	
@@ -38,22 +38,24 @@ final class ContentViewModel: ObservableObject {
 				compairUserInputAndGeneratedCode()
 			case .generateCode:
 				valiateInput()
-				if isCodeSended == true {
-					self.generateCodeNumber()
+				if shouldCodeBeSended == true {
+					self.validCode = self.generateCodeNumber()
 					self.sendCode()
 					Timer.scheduledTimer(withTimeInterval: 300.0, repeats: !isLinkActive) { _ in
-						self.generateCodeNumber()
+						self.validCode = self.generateCodeNumber()
 						self.sendCode()
 					}
 				}
 		}
 	}
 	
-	func generateCodeNumber() {
-		validCode = ""
+	func generateCodeNumber() -> String {
+		var num = ""
 		for _ in 0...5 {
-			validCode += "\(Int.random(in: 0..<10))"
+			num += "\(Int.random(in: 0..<10))"
 		}
+		
+		return num
 	}
 	
 	func sendCode() {
@@ -73,7 +75,7 @@ final class ContentViewModel: ObservableObject {
 		let user = userDataManager.fetchUsersByUsernameAndPassword(username: usernameInput, password: passwordInput)
 		
 		if user != nil {
-			isCodeSended = true
+			shouldCodeBeSended = true
 			errorMessage = ""
 			usernameInvalid = false
 			passwordInvalid = false

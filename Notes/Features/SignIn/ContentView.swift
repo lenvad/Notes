@@ -48,12 +48,12 @@ struct ContentView: View {
 						}.signUpButtonText()
 					}
 				}
-				.disabled(viewModel.isCodeSended)
+				.disabled(viewModel.shouldCodeBeSended)
 				.padding()
 				
-				if viewModel.isCodeSended {
+				if viewModel.shouldCodeBeSended {
 					mfaView.frame(maxWidth: .infinity, maxHeight: .infinity)
-						.background(viewModel.isCodeSended ? .black.opacity(0.3):.clear)
+						.background(viewModel.shouldCodeBeSended ? .black.opacity(0.3):.clear)
 					/*
 					 ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
 					 .background(viewModel.isLinkActive ? .black.opacity(0.3):.clear)
