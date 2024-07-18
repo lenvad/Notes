@@ -38,12 +38,12 @@ final class ContentViewModel: ObservableObject {
 				compairUserInputAndGeneratedCode()
 			case .generateCode:
 				valiateInput()
-				if shouldCodeBeSended == true {
-					self.validCode = self.generateCodeNumber()
-					self.sendCode()
-					Timer.scheduledTimer(withTimeInterval: 300.0, repeats: !isLinkActive) { _ in
-						self.validCode = self.generateCodeNumber()
-						self.sendCode()
+				if shouldCodeBeSended {
+					validCode = generateCodeNumber()
+					sendCode()
+					Timer.scheduledTimer(withTimeInterval: 300.0, repeats: !isLinkActive) { [weak self] _ in
+						self?.validCode = self?.generateCodeNumber() ?? ""
+						self?.sendCode()
 					}
 				}
 		}
