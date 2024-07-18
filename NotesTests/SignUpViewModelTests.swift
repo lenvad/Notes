@@ -100,7 +100,7 @@ final class SignUpViewModelTests: XCTestCase {
 
 		viewModel.usernameInput = "TestUser"
 		viewModel.emailInput = "testMail"
-		viewModel.passwordInput = "aA123456"
+		viewModel.passwordInput = "Aa111111"
 		
 		XCTAssertFalse(viewModel.isUserAdded)
 		XCTAssertFalse(viewModel.passwordInvalid)

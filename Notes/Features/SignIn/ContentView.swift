@@ -27,25 +27,17 @@ struct ContentView: View {
 					
 					HStack {
 						Button(action: {
-							viewModel.onScreenEvent(.signIn)
+							viewModel.onScreenEvent(.generateCode)
 						}) {
-							Text("Sign In")
+							Text("Send code")
 								.font(.headline)
 								.foregroundColor(.white)
 								.padding()
 								.background(Color.accentColor)
 								.cornerRadius(15.0)
-						}.frame(alignment: .bottom)
-							.background(
-								NavigationLink(
-									"",
-									destination: NotesListView(
-										viewModel: NotesListViewModel(username: viewModel.usernameInput, persistenceController: PersistenceController.shared),
-										notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.usernameInput)
-									).navigationBarBackButtonHidden(true),
-									isActive: $viewModel.isLinkActive).opacity(0).disabled(true)
-							)
-
+						}
+						.frame(alignment: .bottom)
+						
 						Spacer()
 							.frame(width: 30)
 						
@@ -56,21 +48,52 @@ struct ContentView: View {
 						}.signUpButtonText()
 					}
 				}
-				.disabled(viewModel.isLinkActive)
+				.disabled(viewModel.shouldCodeBeSended)
 				.padding()
 				
-				if viewModel.isLinkActive {
-					ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
-						.background(viewModel.isLinkActive ? .black.opacity(0.3):.clear)
+				if viewModel.shouldCodeBeSended {
+					mfaView.frame(maxWidth: UIScreen.main.bounds.width, maxHeight: UIScreen.main.bounds.height)
+						.background(viewModel.shouldCodeBeSended ? .black.opacity(0.3):.clear)
 				}
 			}
 		}
 	}
-}
-
-struct ContentView_Previews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
+	
+	private var mfaView : some View {
+		VStack {
+			Text("MFACodeText")
+			if !viewModel.errorMessageMFAView.isEmpty {
+				Text(viewModel.errorMessageMFAView)
+					.errorMessageText(errorMessage: viewModel.errorMessageMFAView)
+			}
+			
+			TextField("Code", text: $viewModel.codeInput)
+				.background(Color.accentColor.opacity(0.3))
+				.underlineTextField(errorMessageActive: viewModel.passwordInvalid)
+			
+			Button(action: {
+				viewModel.onScreenEvent(.signIn)
+			}) {
+				Text("Sign In")
+					.font(.headline)
+					.foregroundColor(.white)
+					.padding()
+					.background(Color.accentColor)
+					.cornerRadius(15.0)
+			}
+			.frame(alignment: .bottom)
+			.background(
+				NavigationLink(
+					"",
+					destination: NotesListView(
+						viewModel: NotesListViewModel(username: viewModel.usernameInput, persistenceController: PersistenceController.shared),
+						notesList: FetchRequestFactory().makeNotesListFetchRequest(username: viewModel.usernameInput)
+					).navigationBarBackButtonHidden(true),
+					isActive: $viewModel.isLinkActive).opacity(0).disabled(true)
+			)
+		}
+		.frame(maxWidth: UIScreen.main.bounds.width * 0.8, maxHeight: UIScreen.main.bounds.height * 0.5, alignment: .center)
+		.cornerRadius(3.0)
+		.background(.white)
 	}
 }
-
